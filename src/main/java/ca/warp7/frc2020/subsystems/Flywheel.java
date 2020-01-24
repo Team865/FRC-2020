@@ -9,6 +9,8 @@ package ca.warp7.frc2020.subsystems;
 
 import ca.warp7.frc2020.lib.motor.MotorControlHelper;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
@@ -26,6 +28,7 @@ public final class Flywheel implements Subsystem {
     private Solenoid flywheelHoodPiston = new Solenoid(kFlywheelHoodActuatorID);
 
     private Flywheel() {
+        flywheelMasterNeo.setIdleMode(IdleMode.kCoast);
         MotorControlHelper.assignFollowerSparkMAX(flywheelMasterNeo, kFlywheelShooterFollowerID);
     }
 

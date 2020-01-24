@@ -28,7 +28,7 @@ public final class Constants {
     // Configuration
 
     public static final boolean kDebugCommandScheduler = false;
-    public static final boolean kUseFalconDriveTrain = false;
+    public static final boolean kUseFalconDriveTrain = true;
     public static final boolean kUseKinematicsDrive = false;
     public static final boolean kUseNotifierForMainLoop = false;
 

@@ -32,6 +32,7 @@ public class TeleopCommand extends CommandBase {
     private Command feedCommand = new PowerCellFeedCommand(this::getFeedingSpeed);
     private Command unjamCommand = new PowerCellUnjamCommand(this::getUnjamSpeed);
     private Command flywheelSpeedCommand = new FlywheelSpeedCommand(this::getWantedRPM);
+    private Command climbSpeedCommand = new ClimbSpeedCommand(this::getClimbSpeed);
 
     private Command robotStateEstimationCommand = SingleFunctionCommand.getRobotStateEstimation();
     private Command setLowGearDriveCommand = SingleFunctionCommand.getSetDriveLowGear();
@@ -41,8 +42,8 @@ public class TeleopCommand extends CommandBase {
     private Command intakeExtensionToggleCommand = SingleFunctionCommand.getIntakeExtensionToggle();
     private Command flywheelHoodToggleCommand = SingleFunctionCommand.getFlywheelHoodToggle();
 
-    private LatchedBoolean kFeedThresholdLatch = new LatchedBoolean();
-    private LatchedBoolean kUnjamThresholdLatch = new LatchedBoolean();
+    private LatchedBoolean feedThresholdLatch = new LatchedBoolean();
+    private LatchedBoolean unjamThresholdLatch = new LatchedBoolean();
 
     private XboxController driver = new XboxController(0);
     private XboxController operator = new XboxController(1);
@@ -62,12 +63,16 @@ public class TeleopCommand extends CommandBase {
         return Util.applyDeadband(-driver.leftY, 0.2);
     }
 
-    private double getVisionAlignSpeed() {
-        return getXSpeed() / 2.0;
-    }
-
     private double getZRotation() {
         return Util.applyDeadband(driver.rightX, 0.15);
+    }
+
+    private boolean isQuickTurn() {
+        return driver.leftBumper.isHeldDown();
+    }
+
+    private double getVisionAlignSpeed() {
+        return getXSpeed() / 2.0;
     }
 
     private double getFeedingSpeed() {
@@ -78,8 +83,8 @@ public class TeleopCommand extends CommandBase {
         return Util.applyDeadband(driver.rightTrigger, 0.3);
     }
 
-    private boolean isQuickTurn() {
-        return driver.leftBumper.isHeldDown();
+    private double getClimbSpeed() {
+        return Util.applyDeadband(operator.rightY, 0.5);
     }
 
     @Override
@@ -88,6 +93,7 @@ public class TeleopCommand extends CommandBase {
         curvatureDriveCommand.schedule();
         controlPanelDisplay.schedule();
         flywheelSpeedCommand.schedule();
+        climbSpeedCommand.schedule();
         robotStateEstimationCommand.schedule();
     }
 
@@ -114,11 +120,11 @@ public class TeleopCommand extends CommandBase {
             intakeExtensionToggleCommand.schedule();
         }
 
-        if (kUnjamThresholdLatch.update(driver.leftTrigger > 0.3)) {
+        if (unjamThresholdLatch.update(driver.leftTrigger > 0.3)) {
             unjamCommand.cancel();
             feedCommand.schedule();
         }
-        if (kFeedThresholdLatch.update(driver.leftTrigger > 0.3)) {
+        if (feedThresholdLatch.update(driver.leftTrigger > 0.3)) {
             unjamCommand.cancel();
             feedCommand.schedule();
         }

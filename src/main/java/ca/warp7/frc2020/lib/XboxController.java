@@ -39,6 +39,8 @@ public class XboxController {
     public double rightX                = 0.0;
     public double rightY                = 0.0;
 
+    public DPad dPad                    = new DPad();
+
     private DriverStation driverStation = DriverStation.getInstance();
     private boolean unplugReported      = false;
     private int port;
@@ -89,6 +91,8 @@ public class XboxController {
 
             rightX           = driverStation    .getStickAxis(port, 4);
             rightY           = driverStation    .getStickAxis(port, 5);
+
+            dPad.value       = driverStation    .getStickPOV(port, 0);
 
             unplugReported   = false;
         } else {
@@ -163,6 +167,34 @@ public class XboxController {
          */
         public ButtonState update(boolean newState) {
             return newState ? isDown() ? HeldDown : Pressed : isUp() ? None : Released;
+        }
+    }
+
+    /**
+     * Represents the directional-pad on the controller
+     */
+    @SuppressWarnings("unused")
+    public static class DPad {
+        private int value;
+
+        public int getValue() {
+            return value;
+        }
+
+        public boolean isNorth() {
+            return value == 0;
+        }
+
+        public boolean isEast() {
+            return value == 90;
+        }
+
+        public boolean isSouth() {
+            return value == 180;
+        }
+
+        public boolean isWest() {
+            return value == 270;
         }
     }
 }

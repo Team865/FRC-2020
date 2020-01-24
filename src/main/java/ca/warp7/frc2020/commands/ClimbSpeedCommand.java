@@ -22,6 +22,11 @@ public class ClimbSpeedCommand extends CommandBase {
 
     @Override
     public void execute() {
-        climber.set(speedSupplier.getAsDouble());
+        if (climber.isLocked()) {
+            // stop if locked
+            climber.setSpeed(0);
+        } else {
+            climber.setSpeed(speedSupplier.getAsDouble());
+        }
     }
 }

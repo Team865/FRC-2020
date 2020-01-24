@@ -14,16 +14,22 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import java.util.function.IntSupplier;
 
 public class FlywheelSpeedCommand extends CommandBase {
-    private IntSupplier wantedRPM;
+    private IntSupplier wantedFarShotRPM;
     private Flywheel flywheel = Flywheel.getInstance();
 
-    public FlywheelSpeedCommand(IntSupplier wantedRPM) {
-        this.wantedRPM = wantedRPM;
+    public FlywheelSpeedCommand(IntSupplier wantedFarShotRPM) {
+        this.wantedFarShotRPM = wantedFarShotRPM;
     }
 
     @Override
     public void execute() {
-        double targetRPM = wantedRPM.getAsInt();
+
+        double targetRPM;
+        if (flywheel.getHood()) {
+            targetRPM = wantedFarShotRPM.getAsInt();
+        } else  {
+            targetRPM = 3000;
+        }
         double currentRPM = flywheel.getRPM();
 
         double newRPM;

@@ -82,10 +82,10 @@ public class Limelight {
                 .getRotation().plus(kTargetToField.getRotation());
 
         Rotation2d angle = camera_to_target_angle.plus(Rotation2d.fromDegrees(x));
-        double offset_x = camera_to_target_dist * angle.getCos();
-        double offset_y = camera_to_target_dist * angle.getSin();
+        double relative_x = camera_to_target_dist * angle.getCos();
+        double relative_y = camera_to_target_dist * angle.getSin();
 
-        return new Pose2d(new Translation2d(offset_x, offset_y), angle)
+        return new Pose2d(new Translation2d(relative_x, relative_y), angle)
                 .relativeTo(new Pose2d().plus(kCameraToRobot));
     }
 }

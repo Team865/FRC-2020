@@ -31,7 +31,7 @@ public class TeleopCommand extends CommandBase {
     private Command controlPanelDisplay = new ControlPanelCommand(this::getControlPanelSpinnerSpeed);
     private Command feedCommand = new PowerCellFeedCommand(this::getFeedingSpeed);
     private Command unjamCommand = new PowerCellUnjamCommand(this::getUnjamSpeed);
-    private Command flywheelSpeedCommand = new FlywheelSpeedCommand(this::getWantedRPM);
+    private Command flywheelSpeedCommand = new FlywheelSpeedCommand(this::getWantedFarShotRPM);
     private Command climbSpeedCommand = new ClimbSpeedCommand(this::getClimbSpeed);
 
     private Command robotStateEstimationCommand = SingleFunctionCommand.getRobotStateEstimation();
@@ -48,11 +48,11 @@ public class TeleopCommand extends CommandBase {
     private XboxController driver = new XboxController(0);
     private XboxController operator = new XboxController(1);
 
-    private int flywheelWantedRPM = 0;
+    private int flywheelWantedFarShotRPM = 0;
     private double controlPanelSpinnerSpeed = 0;
 
-    private int getWantedRPM() {
-        return flywheelWantedRPM;
+    private int getWantedFarShotRPM() {
+        return flywheelWantedFarShotRPM;
     }
 
     public double getControlPanelSpinnerSpeed() {
@@ -134,6 +134,13 @@ public class TeleopCommand extends CommandBase {
         }
         if (operator.startButton.isPressed()) {
             lockHangingClimberCommand.schedule();
+        }
+
+        if (operator.leftBumper.isPressed()) {
+            flywheelWantedFarShotRPM = Math.max(4000, (flywheelWantedFarShotRPM - 200));
+        }
+        if (operator.rightBumper.isPressed()) {
+            flywheelWantedFarShotRPM = Math.min(8000, (flywheelWantedFarShotRPM + 200));
         }
     }
 }

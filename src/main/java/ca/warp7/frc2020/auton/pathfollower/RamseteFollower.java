@@ -18,7 +18,14 @@ public class RamseteFollower implements PathFollower {
         return calculate(v, w, error);
     }
 
-    private ChassisVelocity calculate(double v, double w, Transform2d error) {
+    /**
+     * Calculate the ramsete follower
+     * @param v velocity in metres per second
+     * @param w angular velocity in radians per second
+     * @param error the error to correct
+     * @return the corrected velocity
+     */
+    public ChassisVelocity calculate(double v, double w, Transform2d error) {
         double k = 2.0 * kZeta * Math.sqrt(kBeta * v * v + w * w);
 
         double angularError = error.getRotation().getRadians();

@@ -49,14 +49,13 @@ public class TeleopCommand extends CommandBase {
     private XboxController operator = new XboxController(1);
 
     private int flywheelWantedFarShotRPM = 0;
-    private double controlPanelSpinnerSpeed = 0;
 
     private int getWantedFarShotRPM() {
         return flywheelWantedFarShotRPM;
     }
 
     public double getControlPanelSpinnerSpeed() {
-        return controlPanelSpinnerSpeed;
+        return operator.leftTrigger;
     }
 
     private double getXSpeed() {

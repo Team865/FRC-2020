@@ -59,7 +59,7 @@ public class SingleFunctionCommand {
 
     public static Command getIntakeExtensionToggle() {
         Intake intake = Intake.getInstance();
-        return new InstantCommand(intake::toggleFourBarExtension);
+        return new InstantCommand(intake::toggle);
     }
 
     public static Command getFlywheelHoodToggle() {

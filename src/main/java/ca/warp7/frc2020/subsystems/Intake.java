@@ -37,7 +37,7 @@ public final class Intake implements Subsystem {
         return intakeExtensionPistons.get();
     }
 
-    public void toggleFourBarExtension() {
+    public void toggle() {
         intakeExtensionPistons.set(!intakeExtensionPistons.get());
     }
 }

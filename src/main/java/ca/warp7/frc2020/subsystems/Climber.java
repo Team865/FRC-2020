@@ -31,11 +31,15 @@ public final class Climber implements Subsystem {
         MotorControlHelper.assignFollowerVictorSPX(climberMaster775, Constants.kClimberFollowerID);
     }
 
-    public void set(double speed) {
+    public void setSpeed(double speed) {
         climberMaster775.set(ControlMode.PercentOutput, speed);
     }
 
     public void lock() {
         climberPancakeCylinder.set(true);
+    }
+
+    public boolean isLocked() {
+        return climberPancakeCylinder.get();
     }
 }

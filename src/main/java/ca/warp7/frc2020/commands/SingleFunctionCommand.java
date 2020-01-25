@@ -37,11 +37,11 @@ public class SingleFunctionCommand {
         });
     }
 
-    public static Command getLockHangingClimber() {
+    public static Command getClimbLockToggle() {
         Climber climber = Climber.getInstance();
-        return new InstantCommand(climber::lock);
+        return new InstantCommand(climber::toggleLock);
     }
-
+    
     public static Command getZeroYaw() {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new InstantCommand(driveTrain::zeroYaw);

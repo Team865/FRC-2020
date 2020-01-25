@@ -67,7 +67,7 @@ public class KinematicsDriveCommand extends CommandBase {
 
             // The linear velocity is the independent variable here.
             //
-            // We first find that the magnitude of thedesired curvature 
+            // We first find that the magnitude of the desired curvature 
             // lies between 0 (going straight) and 1 / kWheelBaseRadius
             // (the maximum curvature that the robot can drive in before 
             // one side has to go in the opposite direction).

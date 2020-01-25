@@ -12,11 +12,13 @@ import ca.warp7.frc2020.auton.commands.VisionAlignCommand;
 import ca.warp7.frc2020.lib.Util;
 import ca.warp7.frc2020.lib.XboxController;
 import ca.warp7.frc2020.lib.control.LatchedBoolean;
+import ca.warp7.frc2020.subsystems.Flywheel;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
- * This class is responsible for scheduling the proper commands while operator controlled
+ * This class is responsible for scheduling the proper commands while operator
+ * controlled
  */
 @SuppressWarnings("FieldCanBeLocal")
 public class TeleopCommand extends CommandBase {
@@ -25,37 +27,47 @@ public class TeleopCommand extends CommandBase {
     private Command curvatureDriveCommand = Constants.kUseKinematicsDrive ?
             new KinematicsDriveCommand(this::getXSpeed, this::getZRotation, this::isQuickTurn) :
             new PercentDriveCommand(this::getXSpeed, this::getZRotation, this::isQuickTurn);
-
+ 
     private Command visionAlignCommand = new VisionAlignCommand(this::getVisionAlignSpeed);
 
     private Command controlPanelDisplay = new ControlPanelCommand(this::getControlPanelSpinnerSpeed);
     private Command feedCommand = new PowerCellFeedCommand(this::getFeedingSpeed);
-    private Command unjamCommand = new PowerCellUnjamCommand(this::getUnjamSpeed);
-    private Command flywheelSpeedCommand = new FlywheelSpeedCommand(this::getWantedFarShotRPM);
+    private Command intakingCommand = new IntakingCommand(this::getIsIntaking);
+    private Command flywheelSpeedCommand = new FlywheelSpeedCommand(this::getWantedFlywheelRPM);
     private Command climbSpeedCommand = new ClimbSpeedCommand(this::getClimbSpeed);
 
     private Command robotStateEstimationCommand = SingleFunctionCommand.getRobotStateEstimation();
     private Command setLowGearDriveCommand = SingleFunctionCommand.getSetDriveLowGear();
     private Command setHighGearDriveCommand = SingleFunctionCommand.getSetDriveHighGear();
 
-    private Command lockHangingClimberCommand = SingleFunctionCommand.getLockHangingClimber();
-    private Command intakeExtensionToggleCommand = SingleFunctionCommand.getIntakeExtensionToggle();
+    private Command lockHangingClimberCommand = SingleFunctionCommand.getClimbLockToggle();
     private Command flywheelHoodToggleCommand = SingleFunctionCommand.getFlywheelHoodToggle();
 
     private LatchedBoolean feedThresholdLatch = new LatchedBoolean();
-    private LatchedBoolean unjamThresholdLatch = new LatchedBoolean();
 
     private XboxController driver = new XboxController(0);
     private XboxController operator = new XboxController(1);
 
-    private int flywheelWantedFarShotRPM = 0;
+    private boolean isIntaking = false;
 
-    private int getWantedFarShotRPM() {
-        return flywheelWantedFarShotRPM;
+    private int farShotAdjustment = 0;
+    private int closeShotAdjustment = 0;
+    private boolean isClose = false;
+    private boolean isPriming = false;
+
+    private int getWantedFlywheelRPM() {
+        if (isPriming)
+            return isClose ? Constants.flywheelDefaultCloseRPM + closeShotAdjustment
+                    : Constants.flywheelFarRPM + farShotAdjustment;
+        return 0;
     }
 
     public double getControlPanelSpinnerSpeed() {
         return operator.leftTrigger;
+    }
+
+    public boolean getIsIntaking() {
+        return isIntaking;
     }
 
     private double getXSpeed() {
@@ -78,10 +90,6 @@ public class TeleopCommand extends CommandBase {
         return Util.applyDeadband(driver.leftTrigger, 0.3);
     }
 
-    private double getUnjamSpeed() {
-        return Util.applyDeadband(driver.rightTrigger, 0.3);
-    }
-
     private double getClimbSpeed() {
         return Util.applyDeadband(operator.rightY, 0.5);
     }
@@ -93,6 +101,7 @@ public class TeleopCommand extends CommandBase {
         controlPanelDisplay.schedule();
         flywheelSpeedCommand.schedule();
         climbSpeedCommand.schedule();
+        intakingCommand.schedule();
         robotStateEstimationCommand.schedule();
     }
 
@@ -101,45 +110,52 @@ public class TeleopCommand extends CommandBase {
         driver.collectControllerData();
         operator.collectControllerData();
 
-        if (driver.rightBumper.isPressed()) {
+        // Driver
+
+        if (driver.rightBumper.isPressed())
             setHighGearDriveCommand.schedule();
-        } else if (driver.rightBumper.isReleased()) {
+        else if (driver.rightBumper.isReleased())
             setLowGearDriveCommand.schedule();
-        }
 
-        if (driver.aButton.isPressed()) {
-            curvatureDriveCommand.cancel();
+        if (isIntaking)
+            isIntaking = driver.leftTrigger > 0.25;
+        else
+            isIntaking = driver.leftTrigger > 0.3;
+
+        if (driver.aButton.isPressed())
             visionAlignCommand.schedule();
-        } else if (driver.aButton.isReleased()) {
+        else if (driver.aButton.isReleased())
             visionAlignCommand.cancel();
-            curvatureDriveCommand.schedule();
-        }
 
-        if (driver.bButton.isPressed()) {
-            intakeExtensionToggleCommand.schedule();
-        }
-
-        if (unjamThresholdLatch.update(driver.leftTrigger > 0.3)) {
-            unjamCommand.cancel();
-            feedCommand.schedule();
-        }
         if (feedThresholdLatch.update(driver.leftTrigger > 0.3)) {
-            unjamCommand.cancel();
             feedCommand.schedule();
-        }
+        } else if (driver.leftTrigger < 0.25)
+            feedCommand.cancel();
 
-        if (operator.bButton.isPressed()) {
-            flywheelHoodToggleCommand.schedule();
-        }
-        if (operator.startButton.isPressed()) {
+        // Operator
+        if (operator.rightBumper.isDown()) {
+            isPriming = true;
+            isClose = false;
+            if (operator.rightBumper.isPressed() && Flywheel.getInstance().getHood())
+                flywheelHoodToggleCommand.schedule();
+        } else if (operator.rightBumper.isDown()) {
+            isPriming = true;
+            isClose = true;
+            if (operator.leftBumper.isPressed() && !Flywheel.getInstance().getHood())
+                flywheelHoodToggleCommand.schedule();
+        } else 
+            isPriming = false;
+
+        if (operator.aButton.isPressed())
+            farShotAdjustment += 200;
+        if (operator.bButton.isPressed())
+            farShotAdjustment -= 200;
+        if (operator.xButton.isPressed())
+            closeShotAdjustment += 200;
+        if (operator.yButton.isPressed())
+            closeShotAdjustment -= 200;
+
+        if (operator.backButton.isPressed())
             lockHangingClimberCommand.schedule();
-        }
-
-        if (operator.leftBumper.isPressed()) {
-            flywheelWantedFarShotRPM = Math.max(4000, (flywheelWantedFarShotRPM - 200));
-        }
-        if (operator.rightBumper.isPressed()) {
-            flywheelWantedFarShotRPM = Math.min(8000, (flywheelWantedFarShotRPM + 200));
-        }
     }
 }

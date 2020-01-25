@@ -29,8 +29,8 @@ public final class Intake implements Subsystem {
         intakeMiniNeo.set(speed);
     }
 
-    public void extend(){
-        intakeExtensionPistons.set(true);
+    public void setExtended(boolean extended) {
+        intakeExtensionPistons.set(extended);
     }
 
     public boolean isExtended() {

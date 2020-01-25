@@ -79,8 +79,14 @@ public final class Constants {
 
     // Flywheel Tuning
 
+    public static final int flywheelDefaultCloseRPM = 2500; // TODO
+    public static final int flywheelFarRPM = 5000; // TODO
     public static final double kFlywheelSpeedKp = 0.5; // rpm per loop
     public static final double kFlywheelFeedInterval = 1.0; // seconds
+    
+    // Intake Constants
+    
+    public static final double intakingSpeed = 0.3;
 
     // Drive Train Constants
 

@@ -16,10 +16,10 @@ def getLatestGitCommitHash = { ->
     try {
         def stdout = new ByteArrayOutputStream()
         exec {
-            commandLine 'git', 'rev-parse', 'HEAD'
+            commandLine "git", "show", "--oneline", "--summary", "--no-abbrev-commit"
             standardOutput = stdout
         }
-        return stdout.toString().trim()
+        return stdout.toString().trim().replace("\n\n", "\n").replace("\n", "\\n")
     } catch(e) {
         e.printStackTrace()
         return "No Git Revision"

@@ -19,6 +19,7 @@ public class IntakingCommand extends CommandBase {
 
     public IntakingCommand(BooleanSupplier intakingSupplier) {
         this.intakingSupplier = intakingSupplier;
+        addRequirements(intake);
     }
 
     @Override

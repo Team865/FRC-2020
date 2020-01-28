@@ -36,6 +36,10 @@ public final class Flywheel implements Subsystem {
         flywheelMasterNeo.set(-1 * rpm / 2.0 / 5676.0);
     }
 
+    public void setVoltage(double voltage) {
+        flywheelMasterNeo.setVoltage(voltage);
+    }
+
     public double getRPM() {
         return -1 * flywheelMasterNeo.getEncoder().getVelocity() * 2;
     }

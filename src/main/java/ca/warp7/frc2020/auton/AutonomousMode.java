@@ -1,6 +1,7 @@
 package ca.warp7.frc2020.auton;
 
 import ca.warp7.frc2020.auton.commands.DriveTrajectoryCommand;
+import ca.warp7.frc2020.auton.commands.FlywheelCharacterizationCommand;
 import ca.warp7.frc2020.commands.SingleFunctionCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -19,5 +20,9 @@ public class AutonomousMode {
                 SingleFunctionCommand.getIntakeExtensionToggle(),
                 new DriveTrajectoryCommand(AutonomousPath.getInitLineShootingToTrench())
         );
+    }
+
+    public static Command flywheelCharacterizationMode() {
+        return new FlywheelCharacterizationCommand();
     }
 }

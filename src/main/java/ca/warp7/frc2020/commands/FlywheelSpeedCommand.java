@@ -19,6 +19,7 @@ public class FlywheelSpeedCommand extends CommandBase {
 
     public FlywheelSpeedCommand(IntSupplier wantedFarShotRPM) {
         this.wantedFarShotRPM = wantedFarShotRPM;
+        addRequirements(flywheel);
     }
 
     @Override

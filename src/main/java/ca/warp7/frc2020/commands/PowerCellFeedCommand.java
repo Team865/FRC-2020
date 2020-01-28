@@ -39,12 +39,10 @@ public class PowerCellFeedCommand extends CommandBase {
             elevator.setOuterSpeed(speed);
             elevator.setInnerSpeed(speed);
             hopper.setSpeed(speed);
-            intake.setSpeed(speed);
         } else {
             elevator.setOuterSpeed(0.0);
             elevator.setInnerSpeed(0.0);
             hopper.setSpeed(speed / 2.0);
-            intake.setSpeed(speed / 2.0);
         }
     }
 }

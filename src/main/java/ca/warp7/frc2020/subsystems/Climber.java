@@ -42,4 +42,8 @@ public final class Climber implements Subsystem {
     public boolean isLocked() {
         return climberPancakeCylinder.get();
     }
+    
+    public void toggleLock() {
+        climberPancakeCylinder.set(!isLocked());
+    }
 }

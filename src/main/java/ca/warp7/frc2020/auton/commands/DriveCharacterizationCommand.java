@@ -59,13 +59,13 @@ public class DriveCharacterizationCommand extends CommandBase {
         double now = Timer.getFPGATimestamp();
 
         double leftPosition = driveTrain.getLeftPosition();
-        double leftRate = driveTrain.getLeftVelocity();
+        double leftVelocity = driveTrain.getLeftVelocity();
 
         double rightPosition = driveTrain.getRightPosition();
-        double rightRate = driveTrain.getRightVelocity();
+        double rightVelocity = driveTrain.getRightVelocity();
 
-        double battery = RobotController.getBatteryVoltage();
-        double motorVolts = battery * Math.abs(priorSpeed);
+        double batteryVoltage = RobotController.getBatteryVoltage();
+        double motorVoltage = batteryVoltage * Math.abs(priorSpeed);
 
         // Retrieve the commanded speed from NetworkTables
         double autospeed = autoSpeedEntry.getDouble(0);
@@ -78,14 +78,14 @@ public class DriveCharacterizationCommand extends CommandBase {
 
         // send telemetry data array back to NT
         numberArray[0] = now;
-        numberArray[1] = battery;
+        numberArray[1] = batteryVoltage;
         numberArray[2] = autospeed;
-        numberArray[3] = motorVolts;
-        numberArray[4] = motorVolts;
+        numberArray[3] = motorVoltage;
+        numberArray[4] = motorVoltage;
         numberArray[5] = leftPosition;
         numberArray[6] = rightPosition;
-        numberArray[7] = leftRate;
-        numberArray[8] = rightRate;
+        numberArray[7] = leftVelocity;
+        numberArray[8] = rightVelocity;
         numberArray[9] = driveTrain.getYaw().getRadians();
 
         telemetryEntry.setNumberArray(numberArray);

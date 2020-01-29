@@ -54,10 +54,10 @@ public final class DriveTrain implements Subsystem {
     private double previousTime = 0.0;
 
     // Used to calculate robot state estimation
-    private Pose2d robotState = new Pose2d(); // metresm
+    private Pose2d robotState = new Pose2d(); // metres
     private Rotation2d previousYaw = new Rotation2d();
-    private double previousLeftPosition = 0.0; // m
-    private double previousRightPosition = 0.0; // m
+    private double previousLeftPosition = 0.0; // metres
+    private double previousRightPosition = 0.0; // metres
 
     private DriveTrain() {
     }

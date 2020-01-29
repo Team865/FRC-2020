@@ -20,14 +20,13 @@ import java.util.function.DoubleSupplier;
 public class PowerCellFeedCommand extends CommandBase {
     private Elevator elevator = Elevator.getInstance();
     private Hopper hopper = Hopper.getInstance();
-    private Intake intake = Intake.getInstance();
     private MinTimeBoolean flywheelMinTime = new MinTimeBoolean(Constants.kFlywheelFeedInterval);
 
     private DoubleSupplier speedSupplier;
 
     public PowerCellFeedCommand(DoubleSupplier speedSupplier) {
         this.speedSupplier = speedSupplier;
-        addRequirements(elevator, hopper, intake);
+        addRequirements(elevator, hopper);
     }
 
     @Override

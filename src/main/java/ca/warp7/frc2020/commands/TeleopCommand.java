@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  * This class is responsible for scheduling the proper commands while operator
  * controlled
  */
-@SuppressWarnings("FieldCanBeLocal")
 public class TeleopCommand extends CommandBase {
 
 
@@ -138,7 +137,7 @@ public class TeleopCommand extends CommandBase {
             isClose = false;
             if (operator.rightBumper.isPressed() && Flywheel.getInstance().getHood())
                 flywheelHoodToggleCommand.schedule();
-        } else if (operator.rightBumper.isDown()) {
+        } else if (operator.leftBumper.isDown()) {
             isPriming = true;
             isClose = true;
             if (operator.leftBumper.isPressed() && !Flywheel.getInstance().getHood())

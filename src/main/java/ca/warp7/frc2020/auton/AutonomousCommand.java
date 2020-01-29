@@ -10,7 +10,6 @@ public class AutonomousCommand extends CommandBase {
 
     private Command zeroYawCommand = SingleFunctionCommand.getZeroYaw();
     private Command resetRobotStateCommand = SingleFunctionCommand.getResetRobotState();
-    private Command robotStateEstimationCommand = SingleFunctionCommand.getRobotStateEstimation();
 
     private Supplier<Command> autonomousModeSupplier = AutonomousMode::nothingMode;
 
@@ -18,7 +17,6 @@ public class AutonomousCommand extends CommandBase {
     public void initialize() {
         zeroYawCommand.schedule();
         resetRobotStateCommand.schedule();
-        robotStateEstimationCommand.schedule();
 
         Command mode = autonomousModeSupplier.get();
         if (mode != null) {

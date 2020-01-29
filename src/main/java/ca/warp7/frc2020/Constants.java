@@ -28,17 +28,16 @@ public final class Constants {
     // Configuration
 
     public static final boolean kDebugCommandScheduler = false;
-    public static final boolean kUseFalconDriveTrain = true;
     public static final boolean kUseKinematicsDrive = false;
     public static final boolean kUseNotifierForMainLoop = false;
 
     // CAN IDs
 
-    public static final int kDriveLeftMasterID = -1;
-    public static final int kDriveLeftFollowerID = -1;
+    public static final int kDriveLeftMasterID = 31;
+    public static final int kDriveLeftFollowerID = 32;
 
-    public static final int kDriveRightMasterID = -1;
-    public static final int kDriveRightFollowerID = -1;
+    public static final int kDriveRightMasterID = 33;
+    public static final int kDriveRightFollowerID = 34;
 
     public static final int kFlywheelShooterMasterID = -1;
     public static final int kFlywheelShooterFollowerID = -1;
@@ -90,7 +89,7 @@ public final class Constants {
 
     // Drive Train Constants
 
-    public static final double kWheelBaseRadius = 0.44; // metres
+    public static final double kWheelBaseRadius = 0.15; // metres
     public static final double kDriveWheelRadius = 2.99 * 0.0254; // m
     public static final double kMaxVoltage = 12.0; // volts
     public static final DifferentialDriveKinematics kKinematics =

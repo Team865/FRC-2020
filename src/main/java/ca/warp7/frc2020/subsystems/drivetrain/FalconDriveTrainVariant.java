@@ -9,8 +9,17 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import static ca.warp7.frc2020.Constants.*;
 
-@SuppressWarnings("unused")
 public final class FalconDriveTrainVariant implements DriveTrainVariant {
+
+    private static final double kTicksPerRotation = 2048.0;
+    private static final double kVelocityMeasurementPeriod = 0.100;
+
+    public static final double kCurrentLimitAfterActivation = 35.0;
+    public static final double kCurrentLimitTriggerThreshold = 40.0;
+    public static final double kCurrentLimitTriggerTime = 1.0;
+    public static final StatorCurrentLimitConfiguration kDriveStatorCurrentLimit =
+            new StatorCurrentLimitConfiguration(true, kCurrentLimitAfterActivation,
+                    kCurrentLimitTriggerThreshold, kCurrentLimitTriggerTime);
 
     private final TalonFX driveLeftMasterFalcon = MotorControlHelper.createMasterTalonFX(kDriveLeftMasterID);
     private final TalonFX driveRightMasterFalcon = MotorControlHelper.createMasterTalonFX(kDriveRightMasterID);
@@ -31,13 +40,15 @@ public final class FalconDriveTrainVariant implements DriveTrainVariant {
             double rightVoltage) {
         driveLeftMasterFalcon.set(
                 ControlMode.Velocity,
-                leftVelocityRotationsPerSecond * 2048 / 10.0,
+                leftVelocityRotationsPerSecond *
+                        kTicksPerRotation * kVelocityMeasurementPeriod,
                 DemandType.ArbitraryFeedForward,
                 leftVoltage / kMaxVoltage
         );
         driveRightMasterFalcon.set(
                 ControlMode.Velocity,
-                rightVelocityRotationsPerSecond * 2048 / 10.0,
+                rightVelocityRotationsPerSecond *
+                        kTicksPerRotation * kVelocityMeasurementPeriod,
                 DemandType.ArbitraryFeedForward,
                 rightVoltage / kMaxVoltage
         );
@@ -47,11 +58,11 @@ public final class FalconDriveTrainVariant implements DriveTrainVariant {
     public void setPositionPID(double leftDistanceRotations, double rightDistanceRotations) {
         driveLeftMasterFalcon.set(
                 ControlMode.Position,
-                leftDistanceRotations * 2048
+                leftDistanceRotations * kTicksPerRotation
         );
         driveRightMasterFalcon.set(
                 ControlMode.Position,
-                rightDistanceRotations * 2048
+                rightDistanceRotations * kTicksPerRotation
         );
     }
 
@@ -67,29 +78,34 @@ public final class FalconDriveTrainVariant implements DriveTrainVariant {
         driveRightMasterFalcon.configOpenloopRamp(secondsFromNeutralToFull);
     }
 
-    double previousLeft = 0;
-    double previousRight = 0;
-
     @Override
     public void setEncoderPosition(double leftRotations, double rightRotations) {
-        driveLeftMasterFalcon.setSelectedSensorPosition((int) (leftRotations * 2048));
-        driveRightMasterFalcon.setSelectedSensorPosition((int) (rightRotations * 2048));
+        driveLeftMasterFalcon
+                .setSelectedSensorPosition((int) (leftRotations * kTicksPerRotation));
+        driveRightMasterFalcon
+                .setSelectedSensorPosition((int) (rightRotations * kTicksPerRotation));
     }
 
     @Override
-    public double getLeftDeltaRotation() {
-        double left = driveLeftMasterFalcon.getSelectedSensorPosition() / 2048.0;
-        double delta = left - previousLeft;
-        previousLeft = left;
-        return delta;
+    public double getLeftPositionRotations() {
+        return driveLeftMasterFalcon.getSelectedSensorPosition() / kTicksPerRotation;
     }
 
     @Override
-    public double getRightDeltaRotation() {
-        double right = driveRightMasterFalcon.getSelectedSensorPosition() / 2048.0;
-        double delta = right - previousRight;
-        previousRight = right;
-        return delta;
+    public double getRightPositionRotations() {
+        return driveRightMasterFalcon.getSelectedSensorPosition() / kTicksPerRotation;
+    }
+
+    @Override
+    public double getLeftVelocityRotationsPerSecond() {
+        return driveLeftMasterFalcon.getSelectedSensorVelocity() /
+                kTicksPerRotation / kVelocityMeasurementPeriod;
+    }
+
+    @Override
+    public double getRightVelocityRotationsPerSecond() {
+        return driveRightMasterFalcon.getSelectedSensorVelocity() /
+                kTicksPerRotation / kVelocityMeasurementPeriod;
     }
 
     @Override
@@ -108,13 +124,4 @@ public final class FalconDriveTrainVariant implements DriveTrainVariant {
     public void setVoltage(double leftVoltage, double rightVoltage) {
         setPercentOutput(leftVoltage / kMaxVoltage, rightVoltage / kMaxVoltage);
     }
-
-    // Current Limiting
-
-    public static final double kCurrentLimitAfterActivation = 35.0;
-    public static final double kCurrentLimitTriggerThreshold = 40.0;
-    public static final double kCurrentLimitTriggerTime = 1.0;
-    public static final StatorCurrentLimitConfiguration kDriveStatorCurrentLimit =
-            new StatorCurrentLimitConfiguration(true, kCurrentLimitAfterActivation,
-                    kCurrentLimitTriggerThreshold, kCurrentLimitTriggerTime);
 }

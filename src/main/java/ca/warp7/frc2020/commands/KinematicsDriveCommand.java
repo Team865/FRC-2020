@@ -29,6 +29,7 @@ public class KinematicsDriveCommand extends CommandBase {
         this.xSpeedSupplier = xSpeedSupplier;
         this.zRotationSupplier = zRotationSupplier;
         this.quickTurnSupplier = quickTurnSupplier;
+        addRequirements(driveTrain);
     }
 
     @Override
@@ -78,11 +79,11 @@ public class KinematicsDriveCommand extends CommandBase {
             // Now we find the maximum linear velocity that the robot can
             // reach given the curvature, which is:
             // maxVelocity / (1 + abs(curvature) * kWheelbaseRadius).
-
+            //
             // Substituting curvature with the equation above, we get:
             // maxVelocity / (1 + abs(zRotation * (1 / kWheelBaseRadius)) * kWheelbaseRadius)
             // 
-            // Since kWheelBaseRadius is positive, we can move it ouside
+            // Since kWheelBaseRadius is positive, we can move it outside
             // the absolute value and cancel it out
             //
             // Finally we map xSpeed between 0 and the maximum possible velocity

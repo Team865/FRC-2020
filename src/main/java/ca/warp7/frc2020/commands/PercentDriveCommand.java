@@ -28,6 +28,7 @@ public class PercentDriveCommand extends CommandBase {
         this.xSpeedSupplier = xSpeedSupplier;
         this.zRotationSupplier = zRotationSupplier;
         this.quickTurnSupplier = quickTurnSupplier;
+        addRequirements(driveTrain);
     }
 
     @Override

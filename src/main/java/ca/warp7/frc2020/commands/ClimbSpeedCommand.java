@@ -18,6 +18,7 @@ public class ClimbSpeedCommand extends CommandBase {
 
     public ClimbSpeedCommand(DoubleSupplier speedSupplier) {
         this.speedSupplier = speedSupplier;
+        addRequirements(climber);
     }
 
     @Override

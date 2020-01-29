@@ -54,8 +54,10 @@ public final class DriveTrain implements Subsystem {
     private double previousTime = 0.0;
 
     // Used to calculate robot state estimation
-    private Pose2d robotState = new Pose2d();
+    private Pose2d robotState = new Pose2d(); // metresm
     private Rotation2d previousYaw = new Rotation2d();
+    private double previousLeftPosition = 0.0; // m
+    private double previousRightPosition = 0.0; // m
 
     private DriveTrain() {
     }
@@ -128,14 +130,50 @@ public final class DriveTrain implements Subsystem {
     }
 
     /**
+     * @return the encoder position of the left motors in m
+     */
+    public double getLeftPosition() {
+        return driveTrainVariant.getLeftPositionRotations() *
+                getMetresPerRotation();
+    }
+
+    /**
+     * @return the encoder position of the right motors in m
+     */
+    public double getRightPosition() {
+        return driveTrainVariant.getRightPositionRotations() *
+                getMetresPerRotation();
+    }
+
+    /**
+     * @return the encoder velocity of the left motors in m/s
+     */
+    public double getLeftVelocity() {
+        return driveTrainVariant.getLeftVelocityRotationsPerSecond() *
+                getMetresPerRotation();
+    }
+
+    /**
+     * @return the encoder velocity of the right motors in m/s
+     */
+    public double getRightVelocity() {
+        return driveTrainVariant.getRightVelocityRotationsPerSecond() *
+                getMetresPerRotation();
+    }
+
+    /**
      * Update robot state estimation.
      * If gyro is connected, use the gyro for heading, otherwise
      * calculate the change in heading from the difference between
      * left and right wheels
      */
     public void updateRobotStateEstimation() {
-        double leftDelta = driveTrainVariant.getLeftDeltaRotation() / getMetresPerRotation();
-        double rightDelta = driveTrainVariant.getRightDeltaRotation() / getMetresPerRotation();
+        double leftPosition = getLeftPosition();
+        double rightPosition = getRightPosition();
+        double leftDelta = leftPosition - previousLeftPosition;
+        double rightDelta = rightPosition - previousRightPosition;
+        previousLeftPosition = leftPosition;
+        previousRightPosition = rightPosition;
 
         Rotation2d angleDelta;
         if (navx.isConnected() && !navx.isCalibrating()) {
@@ -272,7 +310,8 @@ public final class DriveTrain implements Subsystem {
 
         if (isUsingNativeVelocityPID) {
             driveTrainVariant.setVelocityPID(
-                    leftRotationsPerSecond, rightRotationsPerSecond, leftVoltage, rightVoltage);
+                    leftRotationsPerSecond, rightRotationsPerSecond,
+                    leftVoltage, rightVoltage);
         } else {
             driveTrainVariant.setVoltage(leftVoltage, rightVoltage);
         }
@@ -293,10 +332,10 @@ public final class DriveTrain implements Subsystem {
             double angularAcceleration
     ) {
         double leftVelocity = linearVelocity - angularVelocity * kWheelBaseRadius;
-        double leftAcceleration = linearAcceleration - angularAcceleration * kDriveWheelRadius;
+        double leftAcceleration = linearAcceleration - angularAcceleration * kWheelBaseRadius;
 
         double rightVelocity = linearVelocity + angularVelocity * kWheelBaseRadius;
-        double rightAcceleration = linearAcceleration + angularAcceleration * kDriveWheelRadius;
+        double rightAcceleration = linearAcceleration + angularAcceleration * kWheelBaseRadius;
 
         SimpleMotorFeedforward transmission = getTransmission();
         double leftVoltage = transmission.calculate(leftVelocity, leftAcceleration);

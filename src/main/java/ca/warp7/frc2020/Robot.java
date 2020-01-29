@@ -10,9 +10,7 @@ package ca.warp7.frc2020;
 import ca.warp7.frc2020.auton.AutonomousCommand;
 import ca.warp7.frc2020.lib.VersionControl;
 import ca.warp7.frc2020.subsystems.*;
-import ca.warp7.frc2020.subsystems.drivetrain.DriveTrainVariant;
 import ca.warp7.frc2020.subsystems.drivetrain.FalconDriveTrainVariant;
-import ca.warp7.frc2020.subsystems.drivetrain.NeoDriveTrainVariant;
 import ca.warp7.frc2020.commands.DisabledCommand;
 import ca.warp7.frc2020.commands.TeleopCommand;
 import edu.wpi.first.wpilibj.Notifier;
@@ -46,14 +44,7 @@ public final class Robot extends TimedRobot {
         // Print out software version
         VersionControl.printVersionInfo();
 
-        DriveTrainVariant driveTrainVariant;
-        if (Constants.kUseFalconDriveTrain) {
-            driveTrainVariant = new FalconDriveTrainVariant();
-        } else {
-            driveTrainVariant = new NeoDriveTrainVariant();
-        }
-
-        DriveTrain.setVariant(driveTrainVariant);
+        DriveTrain.setVariant(new FalconDriveTrainVariant());
 
         scheduler = CommandScheduler.getInstance();
 

@@ -3,7 +3,7 @@ package ca.warp7.frc2020.subsystems.drivetrain;
 import ca.warp7.frc2020.lib.control.PID;
 
 /**
- * makes it easy to swap drive train motors
+ * makes it easy to swap drive train motors (or simulate them)
  */
 public interface DriveTrainVariant {
     void setVelocityPID(
@@ -24,9 +24,13 @@ public interface DriveTrainVariant {
 
     void setEncoderPosition(double leftRotations, double rightRotations);
 
-    double getLeftDeltaRotation();
+    double getLeftPositionRotations();
 
-    double getRightDeltaRotation();
+    double getRightPositionRotations();
+
+    double getLeftVelocityRotationsPerSecond();
+
+    double getRightVelocityRotationsPerSecond();
 
     void neutralOutput();
 

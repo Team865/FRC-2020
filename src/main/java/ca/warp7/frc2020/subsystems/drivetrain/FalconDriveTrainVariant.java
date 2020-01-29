@@ -9,7 +9,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import static ca.warp7.frc2020.Constants.*;
 
-@SuppressWarnings("unused")
 public final class FalconDriveTrainVariant implements DriveTrainVariant {
 
     private final TalonFX driveLeftMasterFalcon = MotorControlHelper.createMasterTalonFX(kDriveLeftMasterID);
@@ -67,9 +66,6 @@ public final class FalconDriveTrainVariant implements DriveTrainVariant {
         driveRightMasterFalcon.configOpenloopRamp(secondsFromNeutralToFull);
     }
 
-    double previousLeft = 0;
-    double previousRight = 0;
-
     @Override
     public void setEncoderPosition(double leftRotations, double rightRotations) {
         driveLeftMasterFalcon.setSelectedSensorPosition((int) (leftRotations * 2048));
@@ -77,19 +73,23 @@ public final class FalconDriveTrainVariant implements DriveTrainVariant {
     }
 
     @Override
-    public double getLeftDeltaRotation() {
-        double left = driveLeftMasterFalcon.getSelectedSensorPosition() / 2048.0;
-        double delta = left - previousLeft;
-        previousLeft = left;
-        return delta;
+    public double getLeftPositionRotations() {
+        return driveLeftMasterFalcon.getSelectedSensorPosition() / 2048.0;
     }
 
     @Override
-    public double getRightDeltaRotation() {
-        double right = driveRightMasterFalcon.getSelectedSensorPosition() / 2048.0;
-        double delta = right - previousRight;
-        previousRight = right;
-        return delta;
+    public double getRightPositionRotations() {
+        return driveRightMasterFalcon.getSelectedSensorPosition() / 2048.0;
+    }
+
+    @Override
+    public double getLeftVelocityRotationsPerSecond() {
+        return driveLeftMasterFalcon.getSelectedSensorVelocity() / 2048.0 * 10;
+    }
+
+    @Override
+    public double getRightVelocityRotationsPerSecond() {
+        return driveRightMasterFalcon.getSelectedSensorVelocity() / 2048.0 * 10;
     }
 
     @Override

@@ -28,8 +28,8 @@ public final class FalconDriveTrainVariant implements DriveTrainVariant {
         driveRightMasterFalcon.setInverted(true);
         driveLeftMasterFalcon.configStatorCurrentLimit(kDriveStatorCurrentLimit, 50);
         driveRightMasterFalcon.configStatorCurrentLimit(kDriveStatorCurrentLimit, 50);
-        MotorControlHelper.assignFollowerTalonFX(driveLeftMasterFalcon, kDriveLeftFollowerID);
-        MotorControlHelper.assignFollowerTalonFX(driveRightMasterFalcon, kDriveRightFollowerID);
+        MotorControlHelper.assignFollowerTalonFX(driveLeftMasterFalcon, kDriveLeftFollowerID, false);
+        MotorControlHelper.assignFollowerTalonFX(driveRightMasterFalcon, kDriveRightFollowerID, true);
     }
 
     @Override

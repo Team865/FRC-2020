@@ -23,7 +23,7 @@ public class SingleFunctionCommand {
     public static Command getSetDriveLowGear() {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new InstantCommand(() -> {
-            driveTrain.configureRampRate(1.0);
+            driveTrain.configureRampRate(0.5);
             driveTrain.configurePID(kTeleopLowGearVelocityPID);
             driveTrain.setHighGear(false);
         });

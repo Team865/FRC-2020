@@ -11,7 +11,6 @@ import ca.warp7.frc2020.lib.control.PID;
 import ca.warp7.frc2020.subsystems.drivetrain.DriveTrainVariant;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -42,7 +41,7 @@ public final class DriveTrain implements Subsystem {
         driveTrainVariant = variant;
     }
 
-    private final Solenoid shifterSolenoid = new Solenoid(kDriveShifterID);
+    // private final Solenoid shifterSolenoid = new Solenoid(kDriveShifterID);
     private final AHRS navx = new AHRS(I2C.Port.kMXP, (byte) 100);
 
     private boolean isHighGear = false;
@@ -78,7 +77,7 @@ public final class DriveTrain implements Subsystem {
     public void setHighGear(boolean highGear) {
         if (highGear != isHighGear) {
             isHighGear = highGear;
-            shifterSolenoid.set(highGear);
+            // shifterSolenoid.set(highGear);
         }
     }
 

@@ -60,9 +60,10 @@ public class MotorControlHelper {
      * @param master   the master motor controller to follow
      * @param deviceID the CAN id
      */
-    public static void assignFollowerTalonFX(BaseMotorController master, int deviceID) {
+    public static void assignFollowerTalonFX(BaseMotorController master, int deviceID, boolean inverted) {
         TalonFX follower = new TalonFX(deviceID);
         follower.configFactoryDefault();
+        follower.setInverted(inverted);
         follower.follow(master);
     }
 

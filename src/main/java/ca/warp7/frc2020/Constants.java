@@ -36,17 +36,17 @@ public final class Constants {
     public static final int kDriveLeftMasterID = 31;
     public static final int kDriveLeftFollowerID = 32;
 
-    public static final int kDriveRightMasterID = 33;
-    public static final int kDriveRightFollowerID = 34;
+    public static final int kDriveRightMasterID = 34;
+    public static final int kDriveRightFollowerID = 33;
 
-    public static final int kFlywheelShooterMasterID = -1;
-    public static final int kFlywheelShooterFollowerID = -1;
+    public static final int kFlywheelShooterMasterID = 20;
+    public static final int kFlywheelShooterFollowerID = 22;
 
     public static final int kIntakeID = -1;
     public static final int kHopperID = -1;
 
-    public static final int kClimberMasterID = -1;
-    public static final int kClimberFollowerID = -1;
+    public static final int kClimberMasterID = 1;
+    public static final int kClimberFollowerID = 2;
 
     public static final int kElevatorOuterID = -1;
     public static final int kElevatorInnerID = -1;
@@ -56,7 +56,7 @@ public final class Constants {
 
     // PCM IDs
 
-    public static final int kDriveShifterID = 0;
+//    public static final int kDriveShifterID = 0;
     public static final int kFlywheelHoodActuatorID = 1;
     public static final int kClimberLockActuatorID = 2;
     public static final int kIntakeExtensionID = 3;

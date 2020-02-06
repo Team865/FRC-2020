@@ -16,28 +16,28 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 
 import static ca.warp7.frc2020.Constants.kPhotoSensorID;
 
-public final class Elevator implements Subsystem {
-    private static Elevator instance;
+public final class Feeder implements Subsystem {
+    private static Feeder instance;
 
-    public static Elevator getInstance() {
-        if (instance == null) instance = new Elevator();
+    public static Feeder getInstance() {
+        if (instance == null) instance = new Feeder();
         return instance;
     }
 
     private DigitalInput photoSensor = new DigitalInput(kPhotoSensorID);
 
-    private VictorSPX elevatorOuter775 = MotorControlHelper.createMasterVictorSPX(Constants.kElevatorOuterID);
-    private VictorSPX elevatorInner775 = MotorControlHelper.createMasterVictorSPX(Constants.kElevatorInnerID);
+    private VictorSPX feederOuter775 = MotorControlHelper.createMasterVictorSPX(Constants.kElevatorOuterID);
+    private VictorSPX feederInner775 = MotorControlHelper.createMasterVictorSPX(Constants.kElevatorInnerID);
 
-    private Elevator() {
+    private Feeder() {
     }
 
     public void setOuterSpeed(double speed) {
-        elevatorOuter775.set(ControlMode.PercentOutput, speed);
+        feederOuter775.set(ControlMode.PercentOutput, speed);
     }
 
     public void setInnerSpeed(double speed) {
-        elevatorInner775.set(ControlMode.PercentOutput, speed);
+        feederInner775.set(ControlMode.PercentOutput, speed);
     }
 
     public boolean getPhotoSensor() {

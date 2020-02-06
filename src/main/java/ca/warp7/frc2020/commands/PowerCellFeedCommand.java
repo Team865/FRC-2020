@@ -9,7 +9,7 @@ package ca.warp7.frc2020.commands;
 
 import ca.warp7.frc2020.Constants;
 import ca.warp7.frc2020.lib.control.MinTimeBoolean;
-import ca.warp7.frc2020.subsystems.Elevator;
+import ca.warp7.frc2020.subsystems.Feeder;
 import ca.warp7.frc2020.subsystems.Hopper;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import java.util.function.DoubleSupplier;
 
 public class PowerCellFeedCommand extends CommandBase {
-    private Elevator elevator = Elevator.getInstance();
+    private Feeder feeder = Feeder.getInstance();
     private Hopper hopper = Hopper.getInstance();
     private MinTimeBoolean flywheelMinTime = new MinTimeBoolean(Constants.kFlywheelFeedInterval);
 
@@ -25,21 +25,21 @@ public class PowerCellFeedCommand extends CommandBase {
 
     public PowerCellFeedCommand(DoubleSupplier speedSupplier) {
         this.speedSupplier = speedSupplier;
-        addRequirements(elevator, hopper);
+        addRequirements(feeder, hopper);
     }
 
     @Override
     public void execute() {
         double speed = speedSupplier.getAsDouble();
-        boolean photoSensorTriggered = elevator.getPhotoSensor();
+        boolean photoSensorTriggered = feeder.getPhotoSensor();
 
         if (flywheelMinTime.update(photoSensorTriggered, Timer.getFPGATimestamp())) {
-            elevator.setOuterSpeed(speed);
-            elevator.setInnerSpeed(speed);
+            feeder.setOuterSpeed(speed);
+            feeder.setInnerSpeed(speed);
             hopper.setSpeed(speed);
         } else {
-            elevator.setOuterSpeed(0.0);
-            elevator.setInnerSpeed(0.0);
+            feeder.setOuterSpeed(0.0);
+            feeder.setInnerSpeed(0.0);
             hopper.setSpeed(speed / 2.0);
         }
     }

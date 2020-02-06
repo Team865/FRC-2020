@@ -214,6 +214,13 @@ public class TimedPath2d {
         return generateTrajectory(points, config, optimizePath);
     }
 
+    /**
+     * This helps with builder-style programming
+     */
+    public <T> T convertTo(Function<TimedPath2d, T> function) {
+        return function.apply(this);
+    }
+
     private static List<Trajectory> generateTrajectory(
             List<ControlPoint> points,
             TrajectoryConfig config,

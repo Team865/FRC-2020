@@ -8,6 +8,7 @@ import ca.warp7.frc2020.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 
+@SuppressWarnings("unused")
 public class QuickTurn {
     public static Command ofFieldOrientedAngle(Rotation2d target) {
         DriveTrain driveTrain = DriveTrain.getInstance();

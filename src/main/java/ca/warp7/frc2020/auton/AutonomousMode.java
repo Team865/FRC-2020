@@ -1,12 +1,10 @@
 package ca.warp7.frc2020.auton;
 
 import ca.warp7.frc2020.auton.commands.DriveCharacterizationCommand;
-import ca.warp7.frc2020.auton.commands.DriveTrajectoryCommand;
 import ca.warp7.frc2020.auton.commands.FlywheelCharacterizationCommand;
 import ca.warp7.frc2020.commands.SingleFunctionCommand;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.*;
 
 @SuppressWarnings("unused")
 public class AutonomousMode {
@@ -20,7 +18,7 @@ public class AutonomousMode {
                 SingleFunctionCommand.getSetDriveNativeVelocityPID(),
                 SingleFunctionCommand.getSetDriveAutonomousLowGear(),
                 SingleFunctionCommand.getIntakeExtensionToggle(),
-                new DriveTrajectoryCommand(AutonomousPath.getInitLineShootingToTrench())
+                AutonomousPath.getInitLineShootingToTrench()
         );
     }
 
@@ -39,6 +37,21 @@ public class AutonomousMode {
         return new SequentialCommandGroup(
                 SingleFunctionCommand.getSetDriveHighGear(),
                 new DriveCharacterizationCommand()
+        );
+    }
+
+    private static Command directShootThenTrenchIntakeMode() {
+        return new SequentialCommandGroup(
+                new ScheduleCommand(
+                        SingleFunctionCommand.getRobotStateEstimation()
+                ),
+                new ParallelCommandGroup(
+                        SingleFunctionCommand.getSetDriveNativeVelocityPID(),
+                        SingleFunctionCommand.getSetDriveAutonomousLowGear(),
+                        SingleFunctionCommand.getIntakeExtensionToggle()
+                ),
+                QuickTurn.ofFieldOrientedAngle(Rotation2d.fromDegrees(30.0)),
+                AutonomousPath.getInitLineShootingToTrench()
         );
     }
 }

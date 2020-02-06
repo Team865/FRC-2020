@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 
 import static ca.warp7.frc2020.Constants.*;
 
+@SuppressWarnings("unused")
 public class SingleFunctionCommand {
     public static Command getSetDriveHighGear() {
         DriveTrain driveTrain = DriveTrain.getInstance();

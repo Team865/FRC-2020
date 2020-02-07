@@ -7,7 +7,7 @@
 
 package ca.warp7.frc2020.commands;
 
-import ca.warp7.frc2020.subsystems.Elevator;
+import ca.warp7.frc2020.subsystems.Feeder;
 import ca.warp7.frc2020.subsystems.Hopper;
 import ca.warp7.frc2020.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import java.util.function.DoubleSupplier;
 
 public class PowerCellUnjamCommand extends CommandBase {
-    private Elevator elevator = Elevator.getInstance();
+    private Feeder feeder = Feeder.getInstance();
     private Hopper hopper = Hopper.getInstance();
     private Intake intake = Intake.getInstance();
 
@@ -23,15 +23,15 @@ public class PowerCellUnjamCommand extends CommandBase {
 
     public PowerCellUnjamCommand(DoubleSupplier speedSupplier) {
         this.speedSupplier = speedSupplier;
-        addRequirements(elevator, hopper, intake);
+        addRequirements(feeder, hopper, intake);
     }
 
     @Override
     public void execute() {
         if (intake.isExtended()) {
             double speed = speedSupplier.getAsDouble();
-            elevator.setInnerSpeed(-speed);
-            elevator.setOuterSpeed(-speed);
+            feeder.setInnerSpeed(-speed);
+            feeder.setOuterSpeed(-speed);
             hopper.setSpeed(-speed);
             intake.setSpeed(-speed);
         }

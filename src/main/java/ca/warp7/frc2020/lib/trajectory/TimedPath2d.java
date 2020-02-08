@@ -55,7 +55,6 @@ public class TimedPath2d {
     private boolean optimizePath;
 
     public TimedPath2d(String pathName, Pose2d initialPoint, Pose2d... initialPoints) {
-
         points = new ArrayList<>();
         points.add(new ControlPoint(initialPoint));
         for (Pose2d point : initialPoints) {
@@ -218,6 +217,10 @@ public class TimedPath2d {
         return generateTrajectory(points, config, optimizePath);
     }
 
+    public List<ControlPoint> getPoints() {
+        return points;
+    }
+
     /**
      * This helps with builder-style programming
      */
@@ -240,7 +243,7 @@ public class TimedPath2d {
             TimedPath2d.ControlPoint b = points.get(i + 1);
             if (a.pose.getTranslation().equals(b.pose.getTranslation())) {
                 if (isReversed(a.pose.getRotation(), b.pose.getRotation())) {
-                    if (splines.size() >= 2) {
+                    if (!splines.isEmpty()) {
                         trajectories.add(generateTrajectory(splines, config, optimizePath, reversed));
                         splines.clear();
                     }
@@ -255,7 +258,7 @@ public class TimedPath2d {
             }
         }
 
-        if (splines.size() >= 2) {
+        if (!splines.isEmpty()) {
             trajectories.add(generateTrajectory(splines, config, optimizePath, reversed));
         }
 

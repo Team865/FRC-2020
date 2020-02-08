@@ -1,9 +1,11 @@
 package ca.warp7.frc2020.lib.trajectory;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TimedPath2dTest {
 
@@ -13,8 +15,17 @@ public class TimedPath2dTest {
     @Test
     void testOnePointThrows() {
         var tp = new TimedPath2d("test", new Pose2d());
-        Assertions.assertThrows(NullPointerException.class, tp::asTrajectory);
+        assertThrows(NullPointerException.class, tp::asTrajectory);
         tp.setConfig(kConfig);
-        Assertions.assertThrows(IllegalArgumentException.class, tp::asTrajectory);
+        assertThrows(IllegalArgumentException.class, tp::asTrajectory);
+    }
+
+    @Test
+    void testSimple() {
+        var tp = new TimedPath2d("test", new Pose2d());
+        tp.addForward(3.0);
+        assertEquals(new Pose2d(3.0, 0.0, new Rotation2d()), tp.getPoints().get(1).pose);
+        tp.setConfig(kConfig);
+        assertFalse(tp.asTrajectory().isEmpty());
     }
 }

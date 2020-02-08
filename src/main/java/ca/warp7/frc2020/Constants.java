@@ -39,24 +39,24 @@ public final class Constants {
     public static final int kDriveRightMasterID = 34;
     public static final int kDriveRightFollowerID = 33;
 
-    public static final int kFlywheelShooterMasterID = 20;
-    public static final int kFlywheelShooterFollowerID = 22;
+    public static final int kFlywheelShooterMasterID = 22;
+    public static final int kFlywheelShooterFollowerID = 20;
 
+    public static final int kHopperID = 24;
     public static final int kIntakeID = -1;
-    public static final int kHopperID = -1;
 
     public static final int kClimberMasterID = 1;
     public static final int kClimberFollowerID = 2;
 
-    public static final int kElevatorOuterID = -1;
-    public static final int kElevatorInnerID = -1;
+    public static final int kFeederOuterID = 1;
+    public static final int kFeederInnerID = 2;
 
     public static final int kControlPanelManipulatorID = -1;
 
 
     // PCM IDs
 
-//    public static final int kDriveShifterID = 0;
+    //    public static final int kDriveShifterID = 0;
     public static final int kFlywheelHoodActuatorID = 1;
     public static final int kClimberLockActuatorID = 2;
     public static final int kIntakeExtensionID = 3;
@@ -80,11 +80,14 @@ public final class Constants {
 
     public static final int flywheelDefaultCloseRPM = 2500; // TODO
     public static final int flywheelFarRPM = 5000; // TODO
-    public static final double kFlywheelSpeedKp = 0.5; // rpm per loop
-    public static final double kFlywheelFeedInterval = 1.0; // seconds
-    
+    public static final double kFlywheelKp = 2.2;
+    public static final double kFlywheelKs = 0.0767;
+    public static final double kFlywheelKv = 0.0648;
+    public static final double kFlywheelKa = 0.0447;
+    public static final double kFlywheelGearRatio = 1.0 / 2.0; // 0.5
+
     // Intake Constants
-    
+
     public static final double intakingSpeed = 0.3;
 
     // Drive Train Constants
@@ -111,8 +114,8 @@ public final class Constants {
 
         public static final TrajectoryConfig kTrajectoryConfig =
                 new TrajectoryConfig(4.6, 2.0)
-                .addConstraint(kKinematicsConstraint)
-                .addConstraint(kVoltageConstraint);
+                        .addConstraint(kKinematicsConstraint)
+                        .addConstraint(kVoltageConstraint);
     }
 
     public static class HighGear {

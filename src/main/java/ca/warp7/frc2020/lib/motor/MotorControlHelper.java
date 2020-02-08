@@ -1,6 +1,7 @@
 package ca.warp7.frc2020.lib.motor;
 
 import ca.warp7.frc2020.lib.control.PID;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
@@ -22,6 +23,7 @@ public class MotorControlHelper {
     public static VictorSPX createMasterVictorSPX(int deviceID) {
         VictorSPX master = new VictorSPX(deviceID);
         master.configFactoryDefault();
+        master.setNeutralMode(NeutralMode.Brake);
         master.configVoltageCompSaturation(12.0);
         master.enableVoltageCompensation(true);
         return master;
@@ -86,10 +88,10 @@ public class MotorControlHelper {
      * @param deviceID the CAN id
      */
     @SuppressWarnings("resource")
-    public static void assignFollowerSparkMAX(CANSparkMax master, int deviceID) {
+    public static void assignFollowerSparkMAX(CANSparkMax master, int deviceID, boolean inverted) {
         CANSparkMax follower = new CANSparkMax(deviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
         follower.restoreFactoryDefaults();
-        follower.follow(master);
+        follower.follow(master, inverted);
     }
 
     /**

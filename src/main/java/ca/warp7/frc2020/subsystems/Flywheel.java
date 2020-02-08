@@ -25,34 +25,32 @@ public final class Flywheel implements Subsystem {
     }
 
     private CANSparkMax flywheelMasterNeo = MotorControlHelper.createMasterSparkMAX(kFlywheelShooterMasterID);
-    private Solenoid flywheelHoodPiston = new Solenoid(kFlywheelHoodActuatorID);
+//    private Solenoid flywheelHoodPiston = new Solenoid(kFlywheelHoodActuatorID);
 
     private Flywheel() {
         flywheelMasterNeo.setIdleMode(IdleMode.kCoast);
-        MotorControlHelper.assignFollowerSparkMAX(flywheelMasterNeo, kFlywheelShooterFollowerID);
+        flywheelMasterNeo.setOpenLoopRampRate(3.0);
+        MotorControlHelper.assignFollowerSparkMAX(flywheelMasterNeo, kFlywheelShooterFollowerID, true);
     }
 
-    public void setRPM(int rpm) {
-        flywheelMasterNeo.set(-1 * rpm / 2.0 / 5676.0);
+    public double getRotationsPerSecond() {
+        return flywheelMasterNeo.getEncoder().getVelocity() / kFlywheelGearRatio / 60;
     }
 
     public void setVoltage(double voltage) {
         flywheelMasterNeo.setVoltage(voltage);
     }
 
-    public double getRPM() {
-        return -1 * flywheelMasterNeo.getEncoder().getVelocity() * 2;
+    public void setHoodCloseShot(boolean hoodCloseShot) {
+//        flywheelHoodPiston.set(up);
     }
 
-    public void setHood(boolean up) {
-        flywheelHoodPiston.set(up);
-    }
-
-    public boolean getHood() {
-        return flywheelHoodPiston.get();
+    public boolean isHoodCloseShot() {
+        return false;
+//        return flywheelHoodPiston.get();
     }
 
     public void toggleHood() {
-        setHood(!getHood());
+//        setHood(!getHood());
     }
 }

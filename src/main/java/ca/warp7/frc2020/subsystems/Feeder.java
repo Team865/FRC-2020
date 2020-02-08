@@ -26,17 +26,16 @@ public final class Feeder implements Subsystem {
 
     private DigitalInput photoSensor = new DigitalInput(kPhotoSensorID);
 
-    private VictorSPX feederOuter775 = MotorControlHelper.createMasterVictorSPX(Constants.kElevatorOuterID);
-    private VictorSPX feederInner775 = MotorControlHelper.createMasterVictorSPX(Constants.kElevatorInnerID);
+    private VictorSPX feederOuter775 = MotorControlHelper.createMasterVictorSPX(Constants.kFeederOuterID);
+    private VictorSPX feederInner775 = MotorControlHelper.createMasterVictorSPX(Constants.kFeederInnerID);
 
     private Feeder() {
+        feederInner775.setInverted(true);
+        feederOuter775.setInverted(true);
     }
 
-    public void setOuterSpeed(double speed) {
+    public void setSpeed(double speed) {
         feederOuter775.set(ControlMode.PercentOutput, speed);
-    }
-
-    public void setInnerSpeed(double speed) {
         feederInner775.set(ControlMode.PercentOutput, speed);
     }
 

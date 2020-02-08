@@ -7,46 +7,44 @@
 
 package ca.warp7.frc2020.commands;
 
-import ca.warp7.frc2020.Constants;
 import ca.warp7.frc2020.subsystems.Flywheel;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpiutil.math.MathUtil;
 
-import java.util.function.IntSupplier;
+import java.util.function.DoubleSupplier;
+
+import static ca.warp7.frc2020.Constants.*;
 
 public class FlywheelSpeedCommand extends CommandBase {
-    private IntSupplier wantedFarShotRPM;
+    private DoubleSupplier wantedFarShotRPS;
     private Flywheel flywheel = Flywheel.getInstance();
 
-    public FlywheelSpeedCommand(IntSupplier wantedFarShotRPM) {
-        this.wantedFarShotRPM = wantedFarShotRPM;
+    public FlywheelSpeedCommand(DoubleSupplier wantedFarShotRPS) {
+        this.wantedFarShotRPS = wantedFarShotRPS;
         addRequirements(flywheel);
     }
 
     @Override
     public void execute() {
 
-        double targetRPM;
-        if (flywheel.getHood()) {
-            targetRPM = wantedFarShotRPM.getAsInt();
-        } else  {
-            targetRPM = 3000;
-        }
-        double currentRPM = flywheel.getRPM();
+        double targetRPS;
+//        if (flywheel.getHood()) {
+//            targetRPM = wantedFarShotRPM.getAsInt();
+//        } else  {
+//            targetRPM = 3000;
+//        }
 
-        double newRPM;
-        // do a P controller if target is above current, otherwise just set to targetRPM
-        // (so that kP does not overshoot going down)
-        if (targetRPM > currentRPM) {
-            newRPM = Math.min(targetRPM, currentRPM + (targetRPM - currentRPM) * Constants.kFlywheelSpeedKp);
-        } else {
-            newRPM = targetRPM;
-        }
+        targetRPS = wantedFarShotRPS.getAsDouble();
+        double currentRPS = flywheel.getRotationsPerSecond();
 
-        flywheel.setRPM((int) newRPM);
+        double voltage = (currentRPS + (targetRPS - currentRPS) * kFlywheelKp)
+                * kFlywheelKv + kFlywheelKs;
+
+        flywheel.setVoltage(MathUtil.clamp(voltage, 0, 12.0));
     }
 
     @Override
     public void end(boolean interrupted) {
-        flywheel.setRPM(0);
+        flywheel.setVoltage(0);
     }
 }

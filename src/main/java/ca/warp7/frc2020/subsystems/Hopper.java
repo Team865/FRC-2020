@@ -23,6 +23,10 @@ public final class Hopper implements Subsystem {
     private CANSparkMax hopperMiniNeo = MotorControlHelper
             .createMasterSparkMAX(Constants.kHopperID);
 
+    private Hopper() {
+        hopperMiniNeo.setInverted(true);
+    }
+
     public void setSpeed(double speed) {
         hopperMiniNeo.set(speed);
     }

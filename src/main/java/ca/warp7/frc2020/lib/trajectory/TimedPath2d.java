@@ -34,12 +34,17 @@ public class TimedPath2d {
             this.pose = pose;
         }
 
+        public ControlPoint(Pose2d pose, double headingMagnitude) {
+            this.pose = pose;
+            this.headingMagnitude = headingMagnitude;
+        }
+
         @Override
         public String toString() {
-            return "ControlPoint{" +
-                    "pose=" + pose +
-                    ", headingMagnitude=" + headingMagnitude +
-                    '}';
+            return "ControlPoint(" +
+                    pose +
+                    ", headingMag: " + headingMagnitude +
+                    ')';
         }
     }
 
@@ -105,7 +110,8 @@ public class TimedPath2d {
      * @param func the function
      */
     public TimedPath2d applyConfig(Function<TrajectoryConfig, TrajectoryConfig> func) {
-        func.apply(getConfig());
+        Objects.requireNonNull(config, "config cannot be null");
+        func.apply(config);
         return this;
     }
 
@@ -205,7 +211,6 @@ public class TimedPath2d {
     }
 
     public List<Trajectory> asTrajectory() {
-        Objects.requireNonNull(points, "points cannot be null");
         Objects.requireNonNull(config, "config cannot be null");
         if (points.size() < 2) {
             throw new IllegalArgumentException("<2 points cannot be made into a path");
@@ -284,6 +289,7 @@ public class TimedPath2d {
         StringBuilder builder = new StringBuilder();
         builder.append("TimedPath2d([\n");
         for (ControlPoint point : points) {
+            builder.append("\t");
             builder.append(point);
             builder.append('\n');
         }

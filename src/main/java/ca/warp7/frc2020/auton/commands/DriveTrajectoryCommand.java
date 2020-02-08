@@ -127,13 +127,12 @@ public class DriveTrajectoryCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        if (debug) {
-            System.out.println("Start Generating Trajectory: " + logger.getName());
-        }
+        System.out.println("Start Generating Trajectory: " + logger.getName());
         driveTrain.neutralOutput();
         if (trajectoryGenerator != null) {
             throw new IllegalStateException("Trajectory is already generated");
         }
+        // create a new trajectory generator on another thread
         trajectoryGenerator = new FutureTask<>(() -> {
             long initialTime = System.nanoTime();
             List<Trajectory> result = path.asTrajectory();
@@ -146,6 +145,7 @@ public class DriveTrajectoryCommand extends CommandBase {
     @Override
     public void execute() {
         if (!notifierStarted) {
+            // only run if the trajectory is not started
             if (trajectoryGenerator == null || !trajectoryGenerator.isDone()) {
                 // trajectories is not done yet
                 generationLoopCount++;
@@ -161,16 +161,18 @@ public class DriveTrajectoryCommand extends CommandBase {
 
                 // calculate the trajectory offset to the robot state
                 Pose2d firstTrajectoryPose = trajectories.get(0).getInitialPose();
-                offset = new Pose2d().plus(driveTrain.getRobotState().minus(firstTrajectoryPose));
+                offset = driveTrain.getRobotState().relativeTo(firstTrajectoryPose);
 
-                totalTrajectoryTime = trajectories.stream().mapToDouble(Trajectory::getTotalTimeSeconds).sum();
-
-                if (debug) {
-                    System.out.println("Finished Generating Trajectory in " +
-                            generationTimeMs + "ms, and " + generationLoopCount + " loops.");
-                    System.out.println("Computed Offset: " + offset);
-                    System.out.println("==== BEGIN TRAJECTORY FOLLOWING ====");
+                // find the  total trajectory time
+                totalTrajectoryTime = 0;
+                for (Trajectory trajectory : trajectories) {
+                    totalTrajectoryTime += trajectory.getTotalTimeSeconds();
                 }
+
+                System.out.println("Finished Generating Trajectory in " +
+                        generationTimeMs + "ms, and " + generationLoopCount + " loops.");
+                System.out.println("Computed Offset: " + offset);
+                System.out.println("==== BEGIN TRAJECTORY FOLLOWING ====");
 
                 notifierStarted = true;
                 rioTime = Timer.getFPGATimestamp();
@@ -181,15 +183,13 @@ public class DriveTrajectoryCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return trajectoryTime >= totalTrajectoryTime;
+        return trajectoryTime > totalTrajectoryTime;
     }
 
     @Override
     public void end(boolean interrupted) {
         driveTrain.neutralOutput();
         logger.saveToFile();
-        if (debug) {
-            System.out.println("==== END TRAJECTORY FOLLOWING ====");
-        }
+        System.out.println("==== END TRAJECTORY FOLLOWING ====");
     }
 }

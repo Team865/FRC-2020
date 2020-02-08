@@ -1,17 +1,13 @@
 package ca.warp7.frc2020.auton;
 
 import ca.warp7.frc2020.auton.commands.DriveCharacterizationCommand;
-import ca.warp7.frc2020.auton.commands.FlywheelCharacterizationCommand;
-import ca.warp7.frc2020.auton.commands.DriveTrajectoryCommand;
+import ca.warp7.frc2020.auton.commands.QuickTurnCommand;
 import ca.warp7.frc2020.commands.SingleFunctionCommand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
 
 @SuppressWarnings("unused")
 public class AutonomousMode {
-    public static Command nothingMode() {
-        return new InstantCommand();
-    }
 
     public static Command testMode() {
         return new SequentialCommandGroup(
@@ -47,7 +43,7 @@ public class AutonomousMode {
                         SingleFunctionCommand.getSetDriveAutonomousLowGear(),
                         SingleFunctionCommand.getIntakeExtensionToggle()
                 ),
-                QuickTurn.ofFieldOrientedAngle(Rotation2d.fromDegrees(30.0)),
+                QuickTurnCommand.ofFieldOrientedAngle(Rotation2d.fromDegrees(30.0)),
                 AutonomousPath.getInitLineShootingToTrench()
         );
     }

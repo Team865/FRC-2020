@@ -56,10 +56,10 @@ public final class Robot extends TimedRobot {
 
         // Register subsystems
         scheduler.registerSubsystem(
-                DriveTrain.getInstance()//,
-                // Flywheel.getInstance(),
-                // Elevator.getInstance(),
-                // Hopper.getInstance(),
+                DriveTrain.getInstance(),
+                Flywheel.getInstance(),
+                Feeder.getInstance(),
+                Hopper.getInstance()
                 // Intake.getInstance(),
                 // Climber.getInstance(),
                 // ControlPanelSpinner.getInstance()

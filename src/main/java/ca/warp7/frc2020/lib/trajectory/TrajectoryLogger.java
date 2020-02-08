@@ -24,40 +24,13 @@ public class TrajectoryLogger {
         return name;
     }
 
-    private void writeToBuffer(double... data) {
+    public void writeToBuffer(double... data) {
         for (double datum : data) {
             writer.print(datum);
             writer.print(',');
         }
         writer.print('\n');
         writer.flush();
-    }
-
-    public void writeToBuffer(
-            Pose2d expectedState,
-            double expectedVelocity,
-            double expectedAcceleration,
-            double curvature,
-            Pose2d robotState,
-            Transform2d error,
-            double correctedLinearVelocity,
-            double correctedAngularVelocity) {
-        writeToBuffer(
-                expectedState.getTranslation().getX(),
-                expectedState.getTranslation().getY(),
-                expectedState.getRotation().getDegrees(),
-                expectedVelocity,
-                expectedAcceleration,
-                curvature,
-                robotState.getTranslation().getX(),
-                robotState.getTranslation().getY(),
-                robotState.getRotation().getDegrees(),
-                error.getTranslation().getX(),
-                error.getTranslation().getY(),
-                error.getRotation().getDegrees(),
-                correctedLinearVelocity,
-                correctedAngularVelocity
-        );
     }
 
     public void saveToFile() {

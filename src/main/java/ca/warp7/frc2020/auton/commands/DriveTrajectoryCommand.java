@@ -7,7 +7,10 @@
 
 package ca.warp7.frc2020.auton.commands;
 
-import ca.warp7.frc2020.lib.trajectory.*;
+import ca.warp7.frc2020.lib.trajectory.ChassisVelocity;
+import ca.warp7.frc2020.lib.trajectory.PathFollower;
+import ca.warp7.frc2020.lib.trajectory.TimedPath2d;
+import ca.warp7.frc2020.lib.trajectory.TrajectoryLogger;
 import ca.warp7.frc2020.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
@@ -62,7 +65,9 @@ public class DriveTrajectoryCommand extends CommandBase {
 
         // First make sure that we know where we are
         driveTrain.updateRobotStateEstimation();
-        Pose2d robotRelativeToTrajectory = driveTrain.getRobotState().relativeTo(offset);
+        Pose2d robotState = driveTrain.getRobotState();
+
+        Pose2d robotRelativeToTrajectory = robotState.relativeTo(offset);
 
         // Add dt to the amount of time tracked
         trajectoryTime += dt;
@@ -103,12 +108,18 @@ public class DriveTrajectoryCommand extends CommandBase {
 
         // Write logs
         logger.writeToBuffer(
-                targetPose,
+                targetPose.getTranslation().getX(),
+                targetPose.getTranslation().getY(),
+                targetPose.getRotation().getDegrees(),
                 sample.velocityMetersPerSecond,
                 sample.accelerationMetersPerSecondSq,
                 sample.curvatureRadPerMeter,
-                driveTrain.getRobotState(),
-                error,
+                robotState.getTranslation().getX(),
+                robotState.getTranslation().getY(),
+                robotState.getRotation().getDegrees(),
+                error.getTranslation().getX(),
+                error.getTranslation().getY(),
+                error.getRotation().getDegrees(),
                 correctedVelocity.getLinear(),
                 correctedVelocity.getAngular()
         );

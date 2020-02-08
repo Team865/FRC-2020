@@ -49,8 +49,6 @@ public class TimedPath2d {
     private boolean optimizePath;
 
     public TimedPath2d(String pathName, Pose2d initialPoint, Pose2d... initialPoints) {
-        Objects.requireNonNull(initialPoint, "initialPoint cannot be null");
-        Objects.requireNonNull(initialPoints, "initialPoints cannot be null");
 
         points = new ArrayList<>();
         points.add(new ControlPoint(initialPoint));

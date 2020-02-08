@@ -16,6 +16,7 @@ import java.util.function.Function;
 /**
  * Represents a path configuration
  */
+@SuppressWarnings("unused")
 public class TimedPath2d {
 
     /**
@@ -128,12 +129,12 @@ public class TimedPath2d {
         return this;
     }
 
-    public TimedPath2d moveTo(double x, double y, double headingDegrees) {
+    public TimedPath2d addPoint(double x, double y, double headingDegrees) {
         points.add(new ControlPoint(new Pose2d(x, y, Rotation2d.fromDegrees(headingDegrees))));
         return this;
     }
 
-    public TimedPath2d moveRelative(double forward, double lateral, double headingChangeDegrees) {
+    public TimedPath2d addRelative(double forward, double lateral, double headingChangeDegrees) {
         Pose2d previousPose = points.isEmpty() ? new Pose2d() :
                 points.get(points.size() - 1).pose;
         Transform2d delta = new Transform2d(
@@ -172,34 +173,34 @@ public class TimedPath2d {
         return new TimedPath2d(pathName, newPoints, follower, config, optimizePath);
     }
 
-    public TimedPath2d moveTo(Pose2d pose) {
-        return moveTo(
+    public TimedPath2d addPoint(Pose2d pose) {
+        return addPoint(
                 pose.getTranslation().getX(),
                 pose.getTranslation().getY(),
                 pose.getRotation().getDegrees()
         );
     }
 
-    public TimedPath2d moveRelative(Transform2d transform) {
-        return moveRelative(transform.getTranslation().getX(),
+    public TimedPath2d addRelative(Transform2d transform) {
+        return addRelative(transform.getTranslation().getX(),
                 transform.getTranslation().getY(), transform.getRotation().getDegrees());
     }
 
-    public TimedPath2d translate(double forward, double lateral) {
-        return moveRelative(forward, lateral, 0);
+    public TimedPath2d addTranslate(double forward, double lateral) {
+        return addRelative(forward, lateral, 0);
     }
 
-    public TimedPath2d translate(Translation2d translation) {
-        return moveRelative(translation.getX(), translation.getY(), 0);
+    public TimedPath2d addTranslate(Translation2d translation) {
+        return addRelative(translation.getX(), translation.getY(), 0);
     }
 
-    public TimedPath2d forward(double forward) {
-        return moveRelative(forward, 0, 0);
+    public TimedPath2d addForward(double forward) {
+        return addRelative(forward, 0, 0);
     }
 
     public TimedPath2d expTo(Twist2d twist) {
         Pose2d exp = new Pose2d().exp(twist);
-        return moveRelative(exp.getTranslation().getX(),
+        return addRelative(exp.getTranslation().getX(),
                 exp.getTranslation().getY(), exp.getRotation().getDegrees());
     }
 

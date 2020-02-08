@@ -25,7 +25,7 @@ public class AutonomousPath {
 
     public static Command getInitLineShootingToTrench() {
         return new TimedPath2d("InitLineShootingToTrench", InitLineLocation.kFacingTarget)
-                .moveTo(PowerCellIntakeLocation.kTrenchPowerCell3)
+                .addPoint(PowerCellIntakeLocation.kTrenchPowerCell3)
                 .setConfig(Constants.LowGear.kTrajectoryConfig)
                 .setFollower(new RamseteFollower())
                 .convertTo(DriveTrajectoryCommand::new);
@@ -33,7 +33,7 @@ public class AutonomousPath {
 
     public static Command getTrenchToInitLineShooting() {
         return new TimedPath2d("TrenchToInitLineShooting", InitLineLocation.kFacingTarget)
-                .moveTo(PowerCellIntakeLocation.kTrenchPowerCell3)
+                .addPoint(PowerCellIntakeLocation.kTrenchPowerCell3)
                 .setConfig(Constants.LowGear.kTrajectoryConfig)
                 .setFollower(new RamseteFollower())
                 .convertTo(DriveTrajectoryCommand::new);

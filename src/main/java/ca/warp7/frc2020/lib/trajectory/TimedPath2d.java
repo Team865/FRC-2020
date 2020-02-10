@@ -16,6 +16,7 @@ import java.util.function.Function;
 /**
  * Represents a path configuration
  */
+@SuppressWarnings("unused")
 public class TimedPath2d {
 
     /**
@@ -33,12 +34,17 @@ public class TimedPath2d {
             this.pose = pose;
         }
 
+        public ControlPoint(Pose2d pose, double headingMagnitude) {
+            this.pose = pose;
+            this.headingMagnitude = headingMagnitude;
+        }
+
         @Override
         public String toString() {
-            return "ControlPoint{" +
-                    "pose=" + pose +
-                    ", headingMagnitude=" + headingMagnitude +
-                    '}';
+            return "ControlPoint(" +
+                    pose +
+                    ", headingMag: " + headingMagnitude +
+                    ')';
         }
     }
 
@@ -49,9 +55,6 @@ public class TimedPath2d {
     private boolean optimizePath;
 
     public TimedPath2d(String pathName, Pose2d initialPoint, Pose2d... initialPoints) {
-        Objects.requireNonNull(initialPoint, "initialPoint cannot be null");
-        Objects.requireNonNull(initialPoints, "initialPoints cannot be null");
-
         points = new ArrayList<>();
         points.add(new ControlPoint(initialPoint));
         for (Pose2d point : initialPoints) {
@@ -106,7 +109,8 @@ public class TimedPath2d {
      * @param func the function
      */
     public TimedPath2d applyConfig(Function<TrajectoryConfig, TrajectoryConfig> func) {
-        func.apply(getConfig());
+        Objects.requireNonNull(config, "config cannot be null");
+        func.apply(config);
         return this;
     }
 
@@ -130,12 +134,12 @@ public class TimedPath2d {
         return this;
     }
 
-    public TimedPath2d moveTo(double x, double y, double headingDegrees) {
+    public TimedPath2d addPoint(double x, double y, double headingDegrees) {
         points.add(new ControlPoint(new Pose2d(x, y, Rotation2d.fromDegrees(headingDegrees))));
         return this;
     }
 
-    public TimedPath2d moveRelative(double forward, double lateral, double headingChangeDegrees) {
+    public TimedPath2d addRelative(double forward, double lateral, double headingChangeDegrees) {
         Pose2d previousPose = points.isEmpty() ? new Pose2d() :
                 points.get(points.size() - 1).pose;
         Transform2d delta = new Transform2d(
@@ -174,44 +178,54 @@ public class TimedPath2d {
         return new TimedPath2d(pathName, newPoints, follower, config, optimizePath);
     }
 
-    public TimedPath2d moveTo(Pose2d pose) {
-        return moveTo(
+    public TimedPath2d addPoint(Pose2d pose) {
+        return addPoint(
                 pose.getTranslation().getX(),
                 pose.getTranslation().getY(),
                 pose.getRotation().getDegrees()
         );
     }
 
-    public TimedPath2d moveRelative(Transform2d transform) {
-        return moveRelative(transform.getTranslation().getX(),
+    public TimedPath2d addRelative(Transform2d transform) {
+        return addRelative(transform.getTranslation().getX(),
                 transform.getTranslation().getY(), transform.getRotation().getDegrees());
     }
 
-    public TimedPath2d translate(double forward, double lateral) {
-        return moveRelative(forward, lateral, 0);
+    public TimedPath2d addTranslate(double forward, double lateral) {
+        return addRelative(forward, lateral, 0);
     }
 
-    public TimedPath2d translate(Translation2d translation) {
-        return moveRelative(translation.getX(), translation.getY(), 0);
+    public TimedPath2d addTranslate(Translation2d translation) {
+        return addRelative(translation.getX(), translation.getY(), 0);
     }
 
-    public TimedPath2d forward(double forward) {
-        return moveRelative(forward, 0, 0);
+    public TimedPath2d addForward(double forward) {
+        return addRelative(forward, 0, 0);
     }
 
     public TimedPath2d expTo(Twist2d twist) {
         Pose2d exp = new Pose2d().exp(twist);
-        return moveRelative(exp.getTranslation().getX(),
+        return addRelative(exp.getTranslation().getX(),
                 exp.getTranslation().getY(), exp.getRotation().getDegrees());
     }
 
     public List<Trajectory> asTrajectory() {
-        Objects.requireNonNull(points, "points cannot be null");
         Objects.requireNonNull(config, "config cannot be null");
         if (points.size() < 2) {
             throw new IllegalArgumentException("<2 points cannot be made into a path");
         }
         return generateTrajectory(points, config, optimizePath);
+    }
+
+    public List<ControlPoint> getPoints() {
+        return points;
+    }
+
+    /**
+     * This helps with builder-style programming
+     */
+    public <T> T convertTo(Function<TimedPath2d, T> function) {
+        return function.apply(this);
     }
 
     private static List<Trajectory> generateTrajectory(
@@ -229,7 +243,7 @@ public class TimedPath2d {
             TimedPath2d.ControlPoint b = points.get(i + 1);
             if (a.pose.getTranslation().equals(b.pose.getTranslation())) {
                 if (isReversed(a.pose.getRotation(), b.pose.getRotation())) {
-                    if (splines.size() >= 2) {
+                    if (!splines.isEmpty()) {
                         trajectories.add(generateTrajectory(splines, config, optimizePath, reversed));
                         splines.clear();
                     }
@@ -244,7 +258,7 @@ public class TimedPath2d {
             }
         }
 
-        if (splines.size() >= 2) {
+        if (!splines.isEmpty()) {
             trajectories.add(generateTrajectory(splines, config, optimizePath, reversed));
         }
 
@@ -278,6 +292,7 @@ public class TimedPath2d {
         StringBuilder builder = new StringBuilder();
         builder.append("TimedPath2d([\n");
         for (ControlPoint point : points) {
+            builder.append("\t");
             builder.append(point);
             builder.append('\n');
         }

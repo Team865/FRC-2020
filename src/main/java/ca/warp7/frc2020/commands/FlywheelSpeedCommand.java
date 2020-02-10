@@ -37,7 +37,7 @@ public class FlywheelSpeedCommand extends CommandBase {
         targetRPS = wantedFarShotRPS.getAsDouble();
         double currentRPS = flywheel.getRotationsPerSecond();
 
-        double voltage = (currentRPS + (targetRPS - currentRPS) * kFlywheelKp)
+        double voltage = (targetRPS + (targetRPS - currentRPS) * kFlywheelKp)
                 * kFlywheelKv + kFlywheelKs;
 
         flywheel.setVoltage(MathUtil.clamp(voltage, 0, 12.0));

@@ -126,13 +126,5 @@ public final class Constants {
 
         public static final SimpleMotorFeedforward kTransmission =
                 new SimpleMotorFeedforward(1.0, 12.0, 0.4);
-
-        public static final TrajectoryConstraint kVoltageConstraint =
-                new DifferentialDriveVoltageConstraint(kTransmission, kKinematics, kMaxVoltage);
-
-        public static final TrajectoryConfig kTrajectoryConfig =
-                new TrajectoryConfig(2.2, 3.0)
-                        .addConstraint(kKinematicsConstraint)
-                        .addConstraint(kVoltageConstraint);
     }
 }

@@ -181,20 +181,13 @@ public class XboxController {
             return value;
         }
 
-        public boolean isNorth() {
-            return value == 0;
+
+        public double getY() {
+            return Math.cos(Math.toRadians(value));
         }
 
-        public boolean isEast() {
-            return value == 90;
-        }
-
-        public boolean isSouth() {
-            return value == 180;
-        }
-
-        public boolean isWest() {
-            return value == 270;
+        public double getX() {
+            return -Math.sin(Math.toRadians(value));
         }
     }
 }

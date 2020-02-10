@@ -13,13 +13,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import java.util.function.DoubleSupplier;
 
-public class ForwardFeedCommand extends CommandBase {
+public class FeedCommand extends CommandBase {
     private Feeder feeder = Feeder.getInstance();
     private Hopper hopper = Hopper.getInstance();
 
     private DoubleSupplier speedSupplier;
 
-    public ForwardFeedCommand(DoubleSupplier speedSupplier) {
+    public FeedCommand(DoubleSupplier speedSupplier) {
         this.speedSupplier = speedSupplier;
         addRequirements(feeder, hopper);
     }

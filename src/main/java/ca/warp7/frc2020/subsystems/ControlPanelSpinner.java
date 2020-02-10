@@ -23,6 +23,10 @@ import static ca.warp7.frc2020.Constants.kControlPanelManipulatorID;
 
 public final class ControlPanelSpinner implements Subsystem {
     
+    public ControlPanelSpinner(){
+        testRgbToHue();
+    }
+
     private int count = 0;
 
     private static ControlPanelSpinner instance;
@@ -32,62 +36,65 @@ public final class ControlPanelSpinner implements Subsystem {
         return instance;
     }
 
-    //@Override
-    //public void periodic() {
-    //}
+    @Override
+    public void periodic() {
+        if(count % 5 == 0){
+            //System.out.println("Going...going..going...");
+        }
+        count++;
+    }
 
     /*
-        Converts a RGB value to it's HSL hue value.
+        Converts a 0-1 R G and B value to it's HSL hue value.
         Depending on what value is the highest, we use a difrent formula.
-        ===This function needs some work and testing===
     */
-    public static double rgbToHue(final double R, final double G, final double B){ 
-        //used in hue calculation
-        final double altR = R / 255;
-        final double altG = G / 255;
-        final double altB = B / 255;
-        //we'll loop through this
-        double[] RGB = new double[3];
-        RGB[0] = R;
-        RGB[1] = G;
-        RGB[2] = B;
+    public static int rgbToHue(final double R, final double G, final double B){
         //stores max and min values
-        double min = 0;
-        double max = 0;
+        double max = Math.max(R, Math.max(G, B));
+        double min = Math.min(R, Math.min(G, B));;
         //ult return value
         double hue;
-        
-        //gets the highest value
-        for(double v : RGB){
-            if (v < min){
-                min = v;
-            }
-            else if(v > max){
-                max = v;
-            }
-        }
+        boolean hasHue; //is true if the colour is not white black or gray
 
         //gets hue value
-        if(max == R){
-            hue = (altG - altB) / (max - min);
+        double maxMinDiff = max - min;
+
+        if(maxMinDiff == 0){
+            hue = 0; //white or gray or black
+            hasHue = false;
+        }
+        else if(max == R){
+            hue = (G - B) / maxMinDiff;
+            hasHue = true;
         }
         else if(max == G){
-            hue = 2.0 + (altB - altR) / (max - min);
+            hue = 2.0 + (B - R) / maxMinDiff;
+            hasHue = true;
         }
         else if(max == B){
-            hue = 4.0 + (altB - altR) / (max - min);
+            hue = 4.0 + (B - R) / maxMinDiff;
+            hasHue = true;
         }
         else{
             hue = 0.0;
+            hasHue = false;
         }
 
-        //makes the value into degrees
-        hue *= 60;
+        //The hue is a number from 0-6.
         if(hue < 0){
-            hue += 360;
+            hue += 6;
         }
 
-        return (hue);
+        hue *= 60; //convert to angle
+
+        int theCoolerHue = (int)hue;
+
+        //-1 will be our value for no hue.
+        if(hasHue == false){
+            hue = -1;
+        }
+
+        return (theCoolerHue);
     }
 
     //Acsess the RGB precentages inside the returned Color with .red .green and .blue
@@ -106,4 +113,24 @@ public final class ControlPanelSpinner implements Subsystem {
     public ColorSensorV3 getColorSensor() {
         return colorSensor;
     }
+
+
+    //===TEST FUNCTIONS===
+
+    private void testRgbToHue(){
+        System.out.println("Testing rgbToHue in ControlPanelSpinner");
+        //red
+        System.out.println(rgbToHue(1.0, 0.0, 0.0));
+        //orange
+        System.out.println(rgbToHue(1.0, 0.5, 0.0));
+        //yellow
+        System.out.println(rgbToHue(1.0, 1.0, 0.0));
+        //grean
+        System.out.println(rgbToHue(0.0, 1.0, 0.0));
+        //blue
+        System.out.println(rgbToHue(0.0, 0.0, 1.0));
+        //purple
+        System.out.println(rgbToHue(0.0, 1.0, 1.0));
+    }
+
 }

@@ -27,7 +27,7 @@ public class TeleopCommand extends CommandBase {
 //
 //    private Command controlPanelDisplay = new ControlPanelCommand(this::getControlPanelSpinnerSpeed);
     private Command feedCommand = new FeedCommand(this::getFeedSpeed);
-    private Command intakingCommand = new IntakingCommand(this::getIsIntaking);
+    private Command intakingCommand = new IntakingCommand(this::getIntakeSpeed);
     private Command flywheelSpeedCommand = new FlywheelSpeedCommand(this::getWantedFlywheelRPS);
 //    private Command climbSpeedCommand = new ClimbSpeedCommand(this::getClimbSpeed);
 
@@ -61,7 +61,7 @@ public class TeleopCommand extends CommandBase {
 //        return operator.leftTrigger;
 //    }
 
-    public double getIsIntaking() {
+    public double getIntakeSpeed() {
         if (isIntaking)
             return Util.applyDeadband(driver.leftTrigger, 0.2) * (isReversed ? -1 : 1);
         return 0.0;

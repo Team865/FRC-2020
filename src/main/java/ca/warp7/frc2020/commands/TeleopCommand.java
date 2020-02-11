@@ -23,7 +23,7 @@ public class TeleopCommand extends CommandBase {
             new KinematicsDriveCommand(this::getXSpeed, this::getZRotation, this::isQuickTurn) :
             new PercentDriveCommand(this::getXSpeed, this::getZRotation, this::isQuickTurn);
 
-    //    private Command visionAlignCommand = new VisionAlignCommand(this::getVisionAlignSpeed);
+//    private Command visionAlignCommand = new VisionAlignCommand(this::getVisionAlignSpeed);
 //
 //    private Command controlPanelDisplay = new ControlPanelCommand(this::getControlPanelSpinnerSpeed);
     private Command feedCommand = new FeedCommand(this::getFeedSpeed);
@@ -130,7 +130,7 @@ public class TeleopCommand extends CommandBase {
         isReversed = driver.yButton.isHeldDown();
 
 //         if (driver.aButton.isPressed())
-//             visionAlignCommand.schedule();
+//             visionAlignCommand.schedule(); 
 //         else if (driver.aButton.isReleased())
 //             visionAlignCommand.cancel();
 

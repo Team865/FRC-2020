@@ -25,23 +25,24 @@ public final class Intake implements Subsystem {
 
     private VictorSPX intakeBagMotor = MotorControlHelper
             .createMasterVictorSPX(Constants.kIntakeID);
-    private Solenoid intakeExtensionPiston1 = new Solenoid(kIntakeExtensionLeftID);
-    private Solenoid intakeExtensionPiston2 = new Solenoid(kIntakeExtensionRightID);
+    // private Solenoid intakeExtensionPiston1 = new Solenoid(kIntakeExtensionLeftID);
+    // private Solenoid intakeExtensionPiston2 = new Solenoid(kIntakeExtensionRightID);
 
     public void setSpeed(double speed) {
 //        intakeBagMotor.set(ControlMode.PercentOutput, speed);
     }
 
     public void setExtended(boolean extended) {
-        intakeExtensionPiston1.set(extended);
-        intakeExtensionPiston2.set(extended);
+        // intakeExtensionPiston1.set(extended);
+        // intakeExtensionPiston2.set(extended);
     }
 
     public boolean isExtended() {
-        return intakeExtensionPiston1.get();
+        // return intakeExtensionPiston1.get();
+        return false;
     }
 
     public void toggle() {
-        setExtended(!intakeExtensionPiston1.get());
+        // setExtended(!intakeExtensionPiston1.get());
     }
 }

@@ -93,11 +93,11 @@ public final class Constants {
 
     //Feeder Constants
 
-    public static final double feedingSpeed = 0.6; //percent
+    public static final double kFeedingSpeed = 0.6; //percent
 
     //Hopper constants
 
-    public static final double hopperSpeed = 0.6; //percent
+    public static final double kHopperSpeed = 0.6; //percent
     // Drive Train Constants
 
     public static final double kWheelBaseRadius = 0.15; // metres

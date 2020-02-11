@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package ca.warp7.frc2020.commands;
+package ca.warp7.frc2020.auton.commands;
 
 import ca.warp7.frc2020.Constants;
 import ca.warp7.frc2020.subsystems.Feeder;
@@ -30,8 +30,8 @@ public class FeedAutoCommand extends CommandBase {
         SmartDashboard.putNumber("Velocity", currentFlywheelSpeed);
         SmartDashboard.putNumber("Error", error);
         if(Math.abs(error) <= 1.5){
-            feeder.setSpeed(Constants.feedingSpeed);
-            hopper.setSpeed(Constants.hopperSpeed);
+            feeder.setSpeed(Constants.kFeedingSpeed);
+            hopper.setSpeed(Constants.kHopperSpeed);
         } else {
             feeder.setSpeed(0);
             hopper.setSpeed(0);

@@ -21,7 +21,7 @@ public class SingleFunctionCommand {
         });
     }
 
-    public static Command getSetDriveLowGear() {
+    public static Command  getSetDriveLowGear() {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new InstantCommand(() -> {
             driveTrain.configureRampRate(0.5);

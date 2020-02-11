@@ -61,6 +61,7 @@ public class MotorControlHelper {
      *
      * @param master   the master motor controller to follow
      * @param deviceID the CAN id
+     * @param inverted whether the follower is inverted
      */
     public static void assignFollowerTalonFX(BaseMotorController master, int deviceID, boolean inverted) {
         TalonFX follower = new TalonFX(deviceID);
@@ -74,10 +75,12 @@ public class MotorControlHelper {
      *
      * @param master   the master motor controller to follow
      * @param deviceID the CAN id
+     * @param inverted whether the follower is inverted
      */
-    public static void assignFollowerVictorSPX(BaseMotorController master, int deviceID) {
+    public static void assignFollowerVictorSPX(BaseMotorController master, int deviceID, boolean inverted) {
         VictorSPX follower = new VictorSPX(deviceID);
         follower.configFactoryDefault();
+        follower.setInverted(inverted);
         follower.follow(master);
     }
 
@@ -86,6 +89,7 @@ public class MotorControlHelper {
      *
      * @param master   the master motor controller to follow
      * @param deviceID the CAN id
+     * @param inverted whether the follower is inverted
      */
     @SuppressWarnings("resource")
     public static void assignFollowerSparkMAX(CANSparkMax master, int deviceID, boolean inverted) {

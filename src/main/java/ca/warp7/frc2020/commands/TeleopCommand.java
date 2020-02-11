@@ -67,7 +67,7 @@ public class TeleopCommand extends CommandBase {
         return 0.0;
     }
 
-    double speed = Constants.flywheelFarRPS;
+    double speed = 50.0;
 
     private double getWantedFlywheelRPS() {
         return speed + farShotAdjustment;
@@ -117,17 +117,17 @@ public class TeleopCommand extends CommandBase {
 
         // Driver
 
-//        if (driver.rightBumper.isPressed())
-//             setHighGearDriveCommand.schedule();
-//         else if (driver.rightBumper.isReleased())
-//             setLowGearDriveCommand.schedule();
+        if (driver.rightBumper.isPressed())
+             setHighGearDriveCommand.schedule();
+         else if (driver.rightBumper.isReleased())
+             setLowGearDriveCommand.schedule();
 
         if (isIntaking)
             isIntaking = driver.leftTrigger > 0.2;
         else
             isIntaking = driver.leftTrigger > 0.25;
 
-        isReversed = driver.yButton.isPressed();
+        isReversed = driver.yButton.isHeldDown();
 
 //         if (driver.aButton.isPressed())
 //             visionAlignCommand.schedule();

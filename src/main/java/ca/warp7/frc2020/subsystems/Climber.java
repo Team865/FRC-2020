@@ -28,7 +28,7 @@ public final class Climber implements Subsystem {
     private Solenoid climberPancakeCylinder = new Solenoid(Constants.kClimberLockActuatorID);
 
     public Climber() {
-        MotorControlHelper.assignFollowerVictorSPX(climberMaster775, Constants.kClimberFollowerID);
+        MotorControlHelper.assignFollowerVictorSPX(climberMaster775, Constants.kClimberFollowerID, true);
     }
 
     public void setSpeed(double speed) {

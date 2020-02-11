@@ -57,7 +57,7 @@ public final class Constants {
     // PCM IDs
 
     //    public static final int kDriveShifterID = 0;
-    public static final int kFlywheelHoodActuatorID = 4;
+    public static final int kFlywheelHoodActuatorID = 1;
     public static final int kClimberLockActuatorID = 2;
     public static final int kIntakeExtensionLeftID = -1;
     public static final int kIntakeExtensionRightID = 7;

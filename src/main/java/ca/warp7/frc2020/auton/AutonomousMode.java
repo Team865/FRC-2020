@@ -1,7 +1,10 @@
 package ca.warp7.frc2020.auton;
 
+import ca.warp7.frc2020.Constants;
 import ca.warp7.frc2020.auton.commands.DriveCharacterizationCommand;
 import ca.warp7.frc2020.auton.commands.QuickTurnCommand;
+import ca.warp7.frc2020.commands.FeedAutoCommand;
+import ca.warp7.frc2020.commands.FlywheelSpeedCommand;
 import ca.warp7.frc2020.commands.SingleFunctionCommand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
@@ -24,6 +27,12 @@ public class AutonomousMode {
                 SingleFunctionCommand.getSetDriveLowGear(),
                 new DriveCharacterizationCommand()
         );
+    }
+    
+    public static Command shooterTest(){
+        return new ParallelCommandGroup(
+                new FlywheelSpeedCommand(() -> Constants.flywheelDefaultCloseRPS), 
+                new FeedAutoCommand());
     }
 
     public static Command highGearCharacterizationMode() {

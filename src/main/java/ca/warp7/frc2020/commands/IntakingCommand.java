@@ -9,6 +9,7 @@ package ca.warp7.frc2020.commands;
 
 import ca.warp7.frc2020.Constants;
 import ca.warp7.frc2020.subsystems.Intake;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import java.util.function.DoubleSupplier;
@@ -16,6 +17,7 @@ import java.util.function.DoubleSupplier;
 public class IntakingCommand extends CommandBase {
     private DoubleSupplier intakingSupplier;
     private Intake intake = Intake.getInstance();
+    private double pTime = 0.0;
 
     public IntakingCommand(DoubleSupplier intakingSupplier) {
         this.intakingSupplier = intakingSupplier;
@@ -23,10 +25,20 @@ public class IntakingCommand extends CommandBase {
     }
 
     @Override
+    public void initialize() {
+        pTime = Double.POSITIVE_INFINITY;
+    }
+
+    @Override
     public void execute() {
+        double time = Timer.getFPGATimestamp();
         double intakeSpeed = intakingSupplier.getAsDouble();
         boolean intaking = intakeSpeed != 0.0;
         intake.setExtended(intaking);
-        intake.setSpeed(Constants.intakingSpeed);
+        if (intakeSpeed != 0) {
+            intake.setSpeed(0.75 * intakeSpeed);
+            pTime = time;
+        } else if (time - pTime < 1)
+            intake.setSpeed(0.55);
     }
 }

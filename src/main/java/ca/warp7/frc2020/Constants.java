@@ -43,7 +43,7 @@ public final class Constants {
     public static final int kFlywheelShooterFollowerID = 20;
 
     public static final int kHopperID = 24;
-    public static final int kIntakeID = -1;
+    public static final int kIntakeID = 4;
 
     public static final int kClimberMasterID = 1;
     public static final int kClimberFollowerID = 2;
@@ -78,12 +78,13 @@ public final class Constants {
 
     // Flywheel Tuning
 
+
     public static final double flywheelDefaultCloseRPS = 54.0;
     public static final double flywheelFarRPS = 80.0;
-    public static final double kFlywheelKp = 0.0;//2.2;
-    public static final double kFlywheelKs = 0.0767;
-    public static final double kFlywheelKv = 0.0648;
-    public static final double kFlywheelKa = 0.0447;
+    public static final double kFlywheelKp = 0.0;//2.24;
+    public static final double kFlywheelKs = 0.0938;
+    public static final double kFlywheelKv = 0.0666;
+    public static final double kFlywheelKa = 0.0455;
     public static final double kFlywheelGearRatio = 1.0 / 2.0; // 0.5
 
     // Intake Constants

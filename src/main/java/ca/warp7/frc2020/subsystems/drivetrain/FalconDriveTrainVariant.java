@@ -109,6 +109,16 @@ public final class FalconDriveTrainVariant implements DriveTrainVariant {
     }
 
     @Override
+    public double getLeftVoltage() {
+        return driveLeftMasterFalcon.getMotorOutputVoltage();
+    }
+
+    @Override
+    public double getRightVoltage() {
+        return driveRightMasterFalcon.getMotorOutputVoltage();
+    }
+
+    @Override
     public void neutralOutput() {
         driveLeftMasterFalcon.neutralOutput();
         driveRightMasterFalcon.neutralOutput();

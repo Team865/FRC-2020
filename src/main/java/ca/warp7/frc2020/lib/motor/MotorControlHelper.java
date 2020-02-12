@@ -1,6 +1,7 @@
 package ca.warp7.frc2020.lib.motor;
 
 import ca.warp7.frc2020.lib.control.PID;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -60,30 +61,38 @@ public class MotorControlHelper {
     /**
      * Create a follower TalonFX
      *
-     * @param master   the master motor controller to follow
-     * @param deviceID the CAN id
-     * @param inverted whether the follower is inverted
+     * @param master     the master motor controller to follow
+     * @param deviceID   the CAN id
+     * @param invertType the invert type
      */
-    public static void assignFollowerTalonFX(BaseMotorController master, int deviceID, boolean inverted) {
+    public static void assignFollowerTalonFX(
+            BaseMotorController master,
+            int deviceID,
+            InvertType invertType
+    ) {
         TalonFX follower = new TalonFX(deviceID);
         follower.configFactoryDefault();
         follower.setNeutralMode(NeutralMode.Brake);
-        follower.setInverted(inverted);
+        follower.setInverted(invertType);
         follower.follow(master);
     }
 
     /**
      * Create a follower VictorSPX
      *
-     * @param master   the master motor controller to follow
-     * @param deviceID the CAN id
-     * @param inverted whether the follower is inverted
+     * @param master     the master motor controller to follow
+     * @param deviceID   the CAN id
+     * @param invertType the invert type
      */
-    public static void assignFollowerVictorSPX(BaseMotorController master, int deviceID, boolean inverted) {
+    public static void assignFollowerVictorSPX(
+            BaseMotorController master,
+            int deviceID,
+            InvertType invertType
+    ) {
         VictorSPX follower = new VictorSPX(deviceID);
         follower.configFactoryDefault();
         follower.setNeutralMode(NeutralMode.Brake);
-        follower.setInverted(inverted);
+        follower.setInverted(invertType);
         follower.follow(master);
     }
 
@@ -95,7 +104,11 @@ public class MotorControlHelper {
      * @param inverted whether the follower is inverted
      */
     @SuppressWarnings("resource")
-    public static void assignFollowerSparkMAX(CANSparkMax master, int deviceID, boolean inverted) {
+    public static void assignFollowerSparkMAX(
+            CANSparkMax master,
+            int deviceID,
+            boolean inverted
+    ) {
         CANSparkMax follower = new CANSparkMax(deviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
         follower.restoreFactoryDefaults();
         follower.setIdleMode(CANSparkMax.IdleMode.kBrake);

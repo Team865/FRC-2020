@@ -4,6 +4,7 @@ import ca.warp7.frc2020.lib.control.PID;
 import ca.warp7.frc2020.lib.motor.MotorControlHelper;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
@@ -26,10 +27,20 @@ public final class FalconDriveTrainVariant implements DriveTrainVariant {
 
     public FalconDriveTrainVariant() {
         driveRightMasterFalcon.setInverted(true);
+
         driveLeftMasterFalcon.configStatorCurrentLimit(kDriveStatorCurrentLimit, 50);
         driveRightMasterFalcon.configStatorCurrentLimit(kDriveStatorCurrentLimit, 50);
-        MotorControlHelper.assignFollowerTalonFX(driveLeftMasterFalcon, kDriveLeftFollowerID, false);
-        MotorControlHelper.assignFollowerTalonFX(driveRightMasterFalcon, kDriveRightFollowerID, true);
+
+        MotorControlHelper.assignFollowerTalonFX(
+                driveLeftMasterFalcon,
+                kDriveLeftFollowerID,
+                InvertType.FollowMaster
+        );
+        MotorControlHelper.assignFollowerTalonFX(
+                driveRightMasterFalcon,
+                kDriveRightFollowerID,
+                InvertType.FollowMaster
+        );
     }
 
     @Override

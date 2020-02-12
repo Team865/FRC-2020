@@ -41,7 +41,8 @@ public class AutonomousPath {
 
     public static Command getSimplePath() {
         return new TimedPath2d("Simple", new Pose2d())
-                .addPoint(2, 1, 0)
+                .addPoint(2, 0, 0)
+                .addPoint(4, -2, -90)
                 .setConfig(Constants.kTrajectoryConfig)
                 .setFollower(new RamseteFollower())
                 .convertTo(DriveTrajectoryCommand::new);

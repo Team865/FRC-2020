@@ -5,7 +5,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 
@@ -38,6 +37,7 @@ public class MotorControlHelper {
     public static TalonFX createMasterTalonFX(int deviceID) {
         TalonFX master = new TalonFX(deviceID);
         master.configFactoryDefault();
+        master.setNeutralMode(NeutralMode.Brake);
         master.configVoltageCompSaturation(12.0);
         master.enableVoltageCompensation(true);
         return master;
@@ -52,6 +52,7 @@ public class MotorControlHelper {
     public static CANSparkMax createMasterSparkMAX(int deviceID) {
         CANSparkMax master = new CANSparkMax(deviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
         master.restoreFactoryDefaults();
+        master.setIdleMode(CANSparkMax.IdleMode.kBrake);
         master.enableVoltageCompensation(12.0);
         return master;
     }
@@ -66,6 +67,7 @@ public class MotorControlHelper {
     public static void assignFollowerTalonFX(BaseMotorController master, int deviceID, boolean inverted) {
         TalonFX follower = new TalonFX(deviceID);
         follower.configFactoryDefault();
+        follower.setNeutralMode(NeutralMode.Brake);
         follower.setInverted(inverted);
         follower.follow(master);
     }
@@ -80,6 +82,7 @@ public class MotorControlHelper {
     public static void assignFollowerVictorSPX(BaseMotorController master, int deviceID, boolean inverted) {
         VictorSPX follower = new VictorSPX(deviceID);
         follower.configFactoryDefault();
+        follower.setNeutralMode(NeutralMode.Brake);
         follower.setInverted(inverted);
         follower.follow(master);
     }
@@ -95,6 +98,7 @@ public class MotorControlHelper {
     public static void assignFollowerSparkMAX(CANSparkMax master, int deviceID, boolean inverted) {
         CANSparkMax follower = new CANSparkMax(deviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
         follower.restoreFactoryDefaults();
+        follower.setIdleMode(CANSparkMax.IdleMode.kBrake);
         follower.follow(master, inverted);
     }
 
@@ -109,18 +113,5 @@ public class MotorControlHelper {
         motor.config_kI(0, pid.kI);
         motor.config_kD(0, pid.kD);
         motor.selectProfileSlot(0, 0);
-    }
-
-    /**
-     * Configures the PID gains of a motor controller
-     *
-     * @param motor the motor controller to configure
-     * @param pid   the PID values to configure
-     */
-    public static void configurePID(CANSparkMax motor, PID pid) {
-        CANPIDController c = motor.getPIDController();
-        c.setP(pid.kP);
-        c.setI(pid.kI);
-        c.setD(pid.kD);
     }
 }

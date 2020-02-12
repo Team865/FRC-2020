@@ -14,7 +14,6 @@ import ca.warp7.frc2020.subsystems.DriveTrain;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Transform2d;
@@ -29,12 +28,10 @@ import java.util.concurrent.FutureTask;
 public class DriveTrajectoryCommand extends CommandBase {
     private DriveTrain driveTrain = DriveTrain.getInstance();
 
-    private final boolean debug;
     private final String name;
     private final PathFollower follower;
     private final TimedPath2d path;
 
-    private final Notifier calculationNotifier = new Notifier(this::calculateTrajectory);
     private final NetworkTable table = NetworkTableInstance.getDefault().getTable("trajectory");
     private final NetworkTableEntry e_t = table.getEntry("t");
     private final NetworkTableEntry e_x = table.getEntry("x");
@@ -44,12 +41,7 @@ public class DriveTrajectoryCommand extends CommandBase {
     private final NetworkTableEntry e_angular = table.getEntry("angular");
 
     public DriveTrajectoryCommand(TimedPath2d path) {
-        this(path, false);
-    }
-
-    public DriveTrajectoryCommand(TimedPath2d path, boolean debug) {
         Objects.requireNonNull(path, "path cannot be null");
-        this.debug = debug;
         this.follower = path.getFollower();
         this.name = path.getName() + "+" + follower.getClass().getSimpleName();
         this.path = path;
@@ -59,7 +51,7 @@ public class DriveTrajectoryCommand extends CommandBase {
     private double rioTime;
     private double trajectoryTime;
     private double totalTrajectoryTime;
-    private boolean notifierStarted;
+    private boolean trajectoryStarted;
     private double generationTimeMs;
     private int generationLoopCount;
 
@@ -108,9 +100,7 @@ public class DriveTrajectoryCommand extends CommandBase {
         ChassisVelocity correctedVelocity = follower
                 .calculateTrajectory(currentTrajectory, sample, error);
 
-        if (debug) {
-            System.out.println("Goal: " + targetPose + "\t Error:" + error);
-        }
+        System.out.println("Trajectory Error:" + error);
 
         // Send signal to drive train
         driveTrain.setChassisVelocity(correctedVelocity.getLinear(), correctedVelocity.getAngular());
@@ -122,6 +112,41 @@ public class DriveTrajectoryCommand extends CommandBase {
         e_theta.setDouble(robotState.getRotation().getDegrees());
         e_linear.setDouble(correctedVelocity.getLinear());
         e_angular.setDouble(correctedVelocity.getAngular());
+    }
+
+    private void tryStartTrajectory() {
+        // only run if the trajectory is not started
+        if (trajectoryGenerator == null || !trajectoryGenerator.isDone()) {
+            // trajectories is not done yet
+            generationLoopCount++;
+        } else {
+
+            // get the calculated trajectories
+            try {
+                trajectories = trajectoryGenerator.get();
+                trajectoryGenerator = null;
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            // calculate the trajectory offset to the robot state
+            Pose2d firstTrajectoryPose = trajectories.get(0).getInitialPose();
+            offset = driveTrain.getRobotState().relativeTo(firstTrajectoryPose);
+
+            // find the  total trajectory time
+            totalTrajectoryTime = 0;
+            for (Trajectory trajectory : trajectories) {
+                totalTrajectoryTime += trajectory.getTotalTimeSeconds();
+            }
+
+            System.out.println("Finished Generating Trajectory in " +
+                    generationTimeMs + "ms, and " + generationLoopCount + " loops.");
+            System.out.println("Computed Offset: " + offset);
+            System.out.println("==== BEGIN TRAJECTORY FOLLOWING ====");
+
+            trajectoryStarted = true;
+            rioTime = Timer.getFPGATimestamp();
+        }
     }
 
     @Override
@@ -143,40 +168,10 @@ public class DriveTrajectoryCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (!notifierStarted) {
-            // only run if the trajectory is not started
-            if (trajectoryGenerator == null || !trajectoryGenerator.isDone()) {
-                // trajectories is not done yet
-                generationLoopCount++;
-            } else {
-
-                // get the calculated trajectories
-                try {
-                    trajectories = trajectoryGenerator.get();
-                    trajectoryGenerator = null;
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
-
-                // calculate the trajectory offset to the robot state
-                Pose2d firstTrajectoryPose = trajectories.get(0).getInitialPose();
-                offset = driveTrain.getRobotState().relativeTo(firstTrajectoryPose);
-
-                // find the  total trajectory time
-                totalTrajectoryTime = 0;
-                for (Trajectory trajectory : trajectories) {
-                    totalTrajectoryTime += trajectory.getTotalTimeSeconds();
-                }
-
-                System.out.println("Finished Generating Trajectory in " +
-                        generationTimeMs + "ms, and " + generationLoopCount + " loops.");
-                System.out.println("Computed Offset: " + offset);
-                System.out.println("==== BEGIN TRAJECTORY FOLLOWING ====");
-
-                notifierStarted = true;
-                rioTime = Timer.getFPGATimestamp();
-                calculationNotifier.startPeriodic(0.01);
-            }
+        if (trajectoryStarted) {
+            calculateTrajectory();
+        } else {
+            tryStartTrajectory();
         }
     }
 
@@ -188,7 +183,6 @@ public class DriveTrajectoryCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         driveTrain.neutralOutput();
-        calculationNotifier.stop();
         System.out.println("==== END TRAJECTORY FOLLOWING ====");
     }
 }

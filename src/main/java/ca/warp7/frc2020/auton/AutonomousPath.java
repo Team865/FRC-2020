@@ -3,7 +3,6 @@ package ca.warp7.frc2020.auton;
 import ca.warp7.frc2020.Constants;
 import ca.warp7.frc2020.auton.commands.DriveTrajectoryCommand;
 import ca.warp7.frc2020.auton.pathfollower.RamseteFollower;
-import ca.warp7.frc2020.auton.pathfollower.SimpleFollower;
 import ca.warp7.frc2020.lib.trajectory.TimedPath2d;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -44,7 +43,7 @@ public class AutonomousPath {
         return new TimedPath2d("Simple", new Pose2d())
                 .addPoint(2, 1, 0)
                 .setConfig(Constants.kTrajectoryConfig)
-                .setFollower(new SimpleFollower())
+                .setFollower(new RamseteFollower())
                 .convertTo(DriveTrajectoryCommand::new);
     }
 }

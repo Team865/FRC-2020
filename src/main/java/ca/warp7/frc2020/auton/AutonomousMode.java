@@ -33,6 +33,7 @@ public class AutonomousMode {
         return new SequentialCommandGroup(
                 SingleFunctionCommand.getSetDriveAutonomousLowGear(),
                 SingleFunctionCommand.getZeroYaw(),
+                SingleFunctionCommand.getResetRobotState(),
                 AutonomousPath.getSimplePath()
         );
     }

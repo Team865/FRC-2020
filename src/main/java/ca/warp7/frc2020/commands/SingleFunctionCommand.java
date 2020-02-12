@@ -58,6 +58,11 @@ public class SingleFunctionCommand {
         return new RunCommand(driveTrain::updateRobotStateEstimation);
     }
 
+    public static Command getReportRobotState() {
+        DriveTrain driveTrain = DriveTrain.getInstance();
+        return new RunCommand(() -> System.out.println("Robot State: " + driveTrain.getRobotState()));
+    }
+
     public static Command getIntakeExtensionToggle() {
         Intake intake = Intake.getInstance();
         return new InstantCommand(intake::toggle);

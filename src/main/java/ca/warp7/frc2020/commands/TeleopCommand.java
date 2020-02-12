@@ -30,7 +30,9 @@ public class TeleopCommand extends CommandBase {
     private Command flywheelSpeedCommand = new FlywheelSpeedCommand(this::getWantedFlywheelRPS);
 //    private Command climbSpeedCommand = new ClimbSpeedCommand(this::getClimbSpeed);
 
-    //    private Command robotStateEstimationCommand = SingleFunctionCommand.getRobotStateEstimation();
+    private Command resetRobotStateCommand = SingleFunctionCommand.getResetRobotState();
+    private Command robotStateEstimationCommand = SingleFunctionCommand.getRobotStateEstimation();
+    private Command reportStateCommand = SingleFunctionCommand.getReportRobotState();
     private Command setLowGearDriveCommand = SingleFunctionCommand.getSetDriveLowGear();
     private Command setHighGearDriveCommand = SingleFunctionCommand.getSetDriveHighGear();
     private Command zeroYawCommand = SingleFunctionCommand.getZeroYaw();
@@ -107,8 +109,9 @@ public class TeleopCommand extends CommandBase {
         // controlPanelDisplay.schedule();
         // climbSpeedCommand.schedule();
         intakingCommand.schedule();
+        resetRobotStateCommand.schedule();
+        robotStateEstimationCommand.schedule();
         zeroYawCommand.schedule();
-        // robotStateEstimationCommand.schedule();
     }
 
     @Override

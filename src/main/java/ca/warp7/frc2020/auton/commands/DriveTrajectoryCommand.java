@@ -188,6 +188,7 @@ public class DriveTrajectoryCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         driveTrain.neutralOutput();
+        calculationNotifier.stop();
         System.out.println("==== END TRAJECTORY FOLLOWING ====");
     }
 }

@@ -28,6 +28,14 @@ public class AutonomousMode {
                 new DriveCharacterizationCommand()
         );
     }
+
+    public static Command simplePathMode() {
+        return new SequentialCommandGroup(
+                SingleFunctionCommand.getSetDriveAutonomousLowGear(),
+                SingleFunctionCommand.getZeroYaw(),
+                AutonomousPath.getSimplePath()
+        );
+    }
     
     public static Command shooterTest(){
         return new ParallelCommandGroup(

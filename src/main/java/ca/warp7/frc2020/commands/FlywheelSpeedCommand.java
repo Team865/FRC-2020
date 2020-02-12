@@ -8,6 +8,7 @@
 package ca.warp7.frc2020.commands;
 
 import ca.warp7.frc2020.subsystems.Flywheel;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 
@@ -18,6 +19,7 @@ import static ca.warp7.frc2020.Constants.*;
 public class FlywheelSpeedCommand extends CommandBase {
     private DoubleSupplier wantedFarShotRPS;
     private Flywheel flywheel = Flywheel.getInstance();
+    public double prev=0.0;
 
     public FlywheelSpeedCommand(DoubleSupplier wantedFarShotRPS) {
         this.wantedFarShotRPS = wantedFarShotRPS;
@@ -37,10 +39,13 @@ public class FlywheelSpeedCommand extends CommandBase {
         targetRPS = wantedFarShotRPS.getAsDouble();
         double currentRPS = flywheel.getRotationsPerSecond();
 
-        double voltage = (currentRPS + (targetRPS - currentRPS) * kFlywheelKp)
+        double voltage = (targetRPS + (targetRPS - currentRPS) * kFlywheelKp)
                 * kFlywheelKv + kFlywheelKs;
 
         flywheel.setVoltage(MathUtil.clamp(voltage, 0, 12.0));
+        //Calculate flywheel acceleration
+        SmartDashboard.putNumber("Acceleration", (currentRPS - prev) / 0.02);
+        prev=flywheel.getRotationsPerSecond();
     }
 
     @Override

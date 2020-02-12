@@ -56,10 +56,10 @@ public final class Constants {
 
     // PCM IDs
 
-    //    public static final int kDriveShifterID = 0;
-    public static final int kFlywheelHoodActuatorID = 1;
-    public static final int kClimberLockActuatorID = 2;
-    public static final int kIntakeExtensionID = 3;
+    public static final int kFlywheelHoodActuatorID = 4;
+    public static final int kIntakeExtensionID = 5;
+    public static final int kClimberLockActuatorID = 6;
+    public static final int kDriveShifterID = 7;
 
     // DIO IDs
 
@@ -78,9 +78,9 @@ public final class Constants {
 
     // Flywheel Tuning
 
-    public static final int flywheelDefaultCloseRPM = 2500; // TODO
-    public static final int flywheelFarRPM = 5000; // TODO
-    public static final double kFlywheelKp = 2.2;
+    public static final double flywheelDefaultCloseRPS = 54.0;
+    public static final double flywheelFarRPS = 80.0;
+    public static final double kFlywheelKp = 0.0;//2.2;
     public static final double kFlywheelKs = 0.0767;
     public static final double kFlywheelKv = 0.0648;
     public static final double kFlywheelKa = 0.0447;
@@ -88,12 +88,19 @@ public final class Constants {
 
     // Intake Constants
 
-    public static final double intakingSpeed = 0.3;
+    public static final double intakingSpeed = 0.3; // percent
 
+    //Feeder Constants
+
+    public static final double kFeedingSpeed = 0.6; //percent
+
+    //Hopper constants
+
+    public static final double kHopperSpeed = 0.6; //percent
     // Drive Train Constants
 
     public static final double kWheelBaseRadius = 0.15; // metres
-    public static final double kDriveWheelRadius = 2.99 * 0.0254; // m
+    public static final double kDriveWheelRadius = 2.99 * 0.0254; // meters
     public static final double kMaxVoltage = 12.0; // volts
     public static final DifferentialDriveKinematics kKinematics =
             new DifferentialDriveKinematics(kWheelBaseRadius * 2);
@@ -119,7 +126,7 @@ public final class Constants {
     }
 
     public static class HighGear {
-        public static final double kGearRatio = 42.0 / 10.0 * 50 / 24.0; // 8.75
+        public static final double kGearRatio = 42.0 / 10.0 * 50.0 / 24.0; // 8.75
 
         public static final double kMetresPerRotation =
                 (2 * Math.PI * kDriveWheelRadius) / kGearRatio; // m/rotation

@@ -11,24 +11,22 @@ import ca.warp7.frc2020.Constants;
 import ca.warp7.frc2020.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 public class IntakingCommand extends CommandBase {
-    private BooleanSupplier intakingSupplier;
+    private DoubleSupplier intakingSupplier;
     private Intake intake = Intake.getInstance();
 
-    public IntakingCommand(BooleanSupplier intakingSupplier) {
+    public IntakingCommand(DoubleSupplier intakingSupplier) {
         this.intakingSupplier = intakingSupplier;
         addRequirements(intake);
     }
 
     @Override
     public void execute() {
-        boolean intaking = intakingSupplier.getAsBoolean();
+        double intakeSpeed = intakingSupplier.getAsDouble();
+        boolean intaking = intakeSpeed != 0.0;
         intake.setExtended(intaking);
-        if (intaking) 
-            intake.setSpeed(Constants.intakingSpeed);
-        else
-            intake.setSpeed(0.0);
+        intake.setSpeed(Constants.intakingSpeed);
     }
 }

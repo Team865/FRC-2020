@@ -100,7 +100,7 @@ public final class Constants {
     // Drive Train Constants
 
     public static final double kWheelBaseRadius = 0.15; // metres
-    public static final double kDriveWheelRadius = 2.99 * 0.0254; // meters
+    public static final double kDriveWheelRadius = 3.0 * 0.0254; // meters
     public static final double kMaxVoltage = 12.0; // volts
     public static final DifferentialDriveKinematics kKinematics =
             new DifferentialDriveKinematics(kWheelBaseRadius * 2);

@@ -111,6 +111,13 @@ public final class DriveTrain implements Subsystem {
     }
 
     /**
+     * @return the accumulative angle for the gyro, used for characterization
+     */
+    public double getContinousAngleRadians() {
+        return Math.toRadians(-1 * navx.getAngle());
+    }
+
+    /**
      * Reset the gyro's yaw to 0 (keep track of internal offset)
      */
     public void zeroYaw() {
@@ -150,7 +157,7 @@ public final class DriveTrain implements Subsystem {
     }
 
     /**
-     * @return the encoder velocity of the left motors in m/s
+     * @return the encoder velocity of the left motors in m/s, used for characterization
      */
     public double getLeftVelocity() {
         return driveTrainVariant.getLeftVelocityRotationsPerSecond() *
@@ -158,11 +165,25 @@ public final class DriveTrain implements Subsystem {
     }
 
     /**
-     * @return the encoder velocity of the right motors in m/s
+     * @return the encoder velocity of the right motors in m/s, used for characterization
      */
     public double getRightVelocity() {
         return driveTrainVariant.getRightVelocityRotationsPerSecond() *
                 getMetresPerRotation();
+    }
+
+    /**
+     * @return the left motor voltage in volts, used for characterization
+     */
+    public double getLeftVoltage() {
+        return driveTrainVariant.getLeftVoltage();
+    }
+
+    /**
+     * @return the right motor voltage in volts, used for characterization
+     */
+    public double getRightVoltage() {
+        return driveTrainVariant.getRightVoltage();
     }
 
     /**

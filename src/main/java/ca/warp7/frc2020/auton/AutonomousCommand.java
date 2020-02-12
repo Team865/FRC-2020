@@ -16,7 +16,7 @@ public class AutonomousCommand extends CommandBase {
         zeroYawCommand.schedule();
         resetRobotStateCommand.schedule();
 
-        Command mode = AutonomousMode.shooterTest();//selector.getSelectedMode().create();
+        Command mode = AutonomousMode.driveCharacterizationMode();//selector.getSelectedMode().create();
         if (mode != null) {
             mode.schedule();
         }

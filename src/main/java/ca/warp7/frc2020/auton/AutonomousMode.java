@@ -25,6 +25,7 @@ public class AutonomousMode {
     public static Command driveCharacterizationMode() {
         return new SequentialCommandGroup(
                 SingleFunctionCommand.getSetDriveLowGear(),
+                SingleFunctionCommand.getZeroYaw(),
                 new DriveCharacterizationCommand()
         );
     }

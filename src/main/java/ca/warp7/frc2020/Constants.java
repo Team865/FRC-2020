@@ -114,7 +114,7 @@ public final class Constants {
                 (2 * Math.PI * kDriveWheelRadius) / kGearRatio; // ticks/m
 
         public static final SimpleMotorFeedforward kTransmission =
-                new SimpleMotorFeedforward(1.0, 0.1, 0.4);
+                new SimpleMotorFeedforward(0.0639, 4.25, 0.704);
 
         public static final TrajectoryConstraint kVoltageConstraint =
                 new DifferentialDriveVoltageConstraint(kTransmission, kKinematics, kMaxVoltage);

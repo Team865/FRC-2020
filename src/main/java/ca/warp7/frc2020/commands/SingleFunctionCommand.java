@@ -15,7 +15,7 @@ public class SingleFunctionCommand {
     public static Command getSetDriveHighGear() {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new InstantCommand(() -> {
-            driveTrain.configureRampRate(1.5);
+            driveTrain.configureRampRate(0.3);
             driveTrain.configurePID(kTeleopHighGearVelocityPID);
             driveTrain.setHighGear(true);
         });
@@ -24,7 +24,7 @@ public class SingleFunctionCommand {
     public static Command  getSetDriveLowGear() {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new InstantCommand(() -> {
-            driveTrain.configureRampRate(0.5);
+            driveTrain.configureRampRate(0.15);
             driveTrain.configurePID(kTeleopLowGearVelocityPID);
             driveTrain.setHighGear(false);
         });

@@ -39,6 +39,4 @@ public interface DriveTrainVariant {
     void neutralOutput();
 
     void setPercentOutput(double leftPercent, double rightPercent);
-
-    void setVoltage(double leftVoltage, double rightVoltage);
 }

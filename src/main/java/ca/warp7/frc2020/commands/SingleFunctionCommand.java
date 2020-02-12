@@ -67,14 +67,4 @@ public class SingleFunctionCommand {
         Flywheel flywheel = Flywheel.getInstance();
         return new InstantCommand(flywheel::toggleHood);
     }
-
-    public static Command getSetDriveNativeVelocityPID() {
-        DriveTrain driveTrain = DriveTrain.getInstance();
-        return new InstantCommand(() -> driveTrain.setUsingNativeVelocityPID(true));
-    }
-
-    public static Command getSetDriveVoltageOnly() {
-        DriveTrain driveTrain = DriveTrain.getInstance();
-        return new InstantCommand(() -> driveTrain.setUsingNativeVelocityPID(false));
-    }
 }

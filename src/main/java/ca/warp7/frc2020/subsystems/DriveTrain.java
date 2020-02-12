@@ -46,7 +46,6 @@ public final class DriveTrain implements Subsystem {
     private final AHRS navx = new AHRS(I2C.Port.kMXP, (byte) 100);
 
     private boolean isHighGear = true;
-    private boolean isUsingNativeVelocityPID = false;
 
     // Used to calculate expected acceleration
     private double previousLinear = 0.0;
@@ -81,17 +80,6 @@ public final class DriveTrain implements Subsystem {
             // shifter solenoid is inverted. On is low gear
             shifterSolenoid.set(!highGear);
         }
-    }
-
-    /**
-     * Set whether to offload velocity commands to the motor controller so
-     * that it can respond to errors at a faster rate. If false, velocity
-     * commands are converted to percent output
-     *
-     * @param usingNativeVelocityPID whether to run the native velocity PID
-     */
-    public void setUsingNativeVelocityPID(boolean usingNativeVelocityPID) {
-        isUsingNativeVelocityPID = usingNativeVelocityPID;
     }
 
     /**
@@ -332,13 +320,9 @@ public final class DriveTrain implements Subsystem {
         double leftRotationsPerSecond = leftVelocity / metresPerRotation;
         double rightRotationsPerSecond = rightVelocity / metresPerRotation;
 
-        if (isUsingNativeVelocityPID) {
-            driveTrainVariant.setVelocityPID(
-                    leftRotationsPerSecond, rightRotationsPerSecond,
-                    leftVoltage, rightVoltage);
-        } else {
-            driveTrainVariant.setVoltage(leftVoltage, rightVoltage);
-        }
+        driveTrainVariant.setVelocityPID(
+                leftRotationsPerSecond, rightRotationsPerSecond,
+                leftVoltage, rightVoltage);
     }
 
     /**

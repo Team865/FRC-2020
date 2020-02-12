@@ -15,7 +15,6 @@ public class AutonomousMode {
     public static Command testMode() {
         return new SequentialCommandGroup(
                 SingleFunctionCommand.getRobotStateEstimation(),
-                SingleFunctionCommand.getSetDriveNativeVelocityPID(),
                 SingleFunctionCommand.getSetDriveAutonomousLowGear(),
                 SingleFunctionCommand.getIntakeExtensionToggle(),
                 AutonomousPath.getInitLineShootingToTrench()
@@ -49,7 +48,6 @@ public class AutonomousMode {
                         SingleFunctionCommand.getRobotStateEstimation()
                 ),
                 new ParallelCommandGroup(
-                        SingleFunctionCommand.getSetDriveNativeVelocityPID(),
                         SingleFunctionCommand.getSetDriveAutonomousLowGear(),
                         SingleFunctionCommand.getIntakeExtensionToggle()
                 ),

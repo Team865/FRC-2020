@@ -140,9 +140,4 @@ public final class FalconDriveTrainVariant implements DriveTrainVariant {
         driveLeftMasterFalcon.set(ControlMode.PercentOutput, leftPercent);
         driveRightMasterFalcon.set(ControlMode.PercentOutput, rightPercent);
     }
-
-    @Override
-    public void setVoltage(double leftVoltage, double rightVoltage) {
-        setPercentOutput(leftVoltage / kMaxVoltage, rightVoltage / kMaxVoltage);
-    }
 }

@@ -45,6 +45,7 @@ public final class DriveTrain implements Subsystem {
     private final Solenoid shifterSolenoid = new Solenoid(kDriveShifterID);
     private final AHRS navx = new AHRS(I2C.Port.kMXP, (byte) 100);
 
+    // the robot is wired so that high gear is the default (off) state
     private boolean isHighGear = true;
 
     // Used to calculate expected acceleration

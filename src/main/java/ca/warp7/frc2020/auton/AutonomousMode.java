@@ -23,7 +23,7 @@ public class AutonomousMode {
 
     public static Command driveCharacterizationMode() {
         return new SequentialCommandGroup(
-                SingleFunctionCommand.getSetDriveLowGear(),
+                SingleFunctionCommand.getSetDriveAutonomousLowGear(),
                 SingleFunctionCommand.getZeroYaw(),
                 new DriveCharacterizationCommand()
         );
@@ -33,13 +33,6 @@ public class AutonomousMode {
         return new ParallelCommandGroup(
                 new FlywheelSpeedCommand(() -> Constants.flywheelDefaultCloseRPS), 
                 new FeedAutoCommand());
-    }
-
-    public static Command highGearCharacterizationMode() {
-        return new SequentialCommandGroup(
-                SingleFunctionCommand.getSetDriveHighGear(),
-                new DriveCharacterizationCommand()
-        );
     }
 
     private static Command directShootThenTrenchIntakeMode() {

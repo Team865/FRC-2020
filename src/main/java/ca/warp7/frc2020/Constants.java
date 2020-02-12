@@ -99,8 +99,8 @@ public final class Constants {
     public static final double kHopperSpeed = 0.6; //percent
     // Drive Train Constants
 
-    public static final double kWheelBaseRadius = 0.15; // metres
-    public static final double kDriveWheelRadius = 3.0 * 0.0254; // meters
+    public static final double kWheelBaseRadius = 0.35; // metres
+    public static final double kDriveWheelRadius = 3.0 * 0.0254; // 0.1524 meters
     public static final double kMaxVoltage = 12.0; // volts
     public static final DifferentialDriveKinematics kKinematics =
             new DifferentialDriveKinematics(kWheelBaseRadius * 2);
@@ -114,7 +114,7 @@ public final class Constants {
                 (2 * Math.PI * kDriveWheelRadius) / kGearRatio; // ticks/m
 
         public static final SimpleMotorFeedforward kTransmission =
-                new SimpleMotorFeedforward(0.0639, 4.25, 0.704);
+                new SimpleMotorFeedforward(0.0534, 4.180, 0.429);
 
         public static final TrajectoryConstraint kVoltageConstraint =
                 new DifferentialDriveVoltageConstraint(kTransmission, kKinematics, kMaxVoltage);

@@ -43,7 +43,7 @@ public final class Constants {
     public static final int kFlywheelShooterFollowerID = 20;
 
     public static final int kHopperID = 24;
-    public static final int kIntakeID = -1;
+    public static final int kIntakeID = 4;
 
     public static final int kClimberMasterID = 1;
     public static final int kClimberFollowerID = 2;
@@ -68,7 +68,7 @@ public final class Constants {
     // Drive Train Tuning
 
     public static final PID kAutonLowGearVelocityPID =
-            new PID(0.0, 0.0, 0.0, 0.0);
+            new PID(1.0, 0.0, 5.0, 0.0);
     public static final PID kTeleopLowGearVelocityPID =
             new PID(0.0, 0.0, 0.0, 0.0);
     public static final PID kTeleopHighGearVelocityPID =
@@ -78,12 +78,13 @@ public final class Constants {
 
     // Flywheel Tuning
 
+
     public static final double flywheelDefaultCloseRPS = 54.0;
     public static final double flywheelFarRPS = 80.0;
-    public static final double kFlywheelKp = 0.0;//2.2;
-    public static final double kFlywheelKs = 0.0767;
-    public static final double kFlywheelKv = 0.0648;
-    public static final double kFlywheelKa = 0.0447;
+    public static final double kFlywheelKp = 0.0;//2.24;
+    public static final double kFlywheelKs = 0.0938;
+    public static final double kFlywheelKv = 0.0666;
+    public static final double kFlywheelKa = 0.0455;
     public static final double kFlywheelGearRatio = 1.0 / 2.0; // 0.5
 
     // Intake Constants
@@ -99,13 +100,11 @@ public final class Constants {
     public static final double kHopperSpeed = 0.6; //percent
     // Drive Train Constants
 
-    public static final double kWheelBaseRadius = 0.15; // metres
-    public static final double kDriveWheelRadius = 2.99 * 0.0254; // meters
+    public static final double kWheelBaseRadius = 0.35; // metres
+    public static final double kDriveWheelRadius = 3.0 * 0.0254; // 0.1524 meters
     public static final double kMaxVoltage = 12.0; // volts
     public static final DifferentialDriveKinematics kKinematics =
             new DifferentialDriveKinematics(kWheelBaseRadius * 2);
-    public static final TrajectoryConstraint kKinematicsConstraint =
-            new DifferentialDriveKinematicsConstraint(kKinematics, 10.0);
 
     public static class LowGear {
         public static final double kGearRatio = 42.0 / 10.0 * 60.0 / 14.0; // 18.0
@@ -114,15 +113,8 @@ public final class Constants {
                 (2 * Math.PI * kDriveWheelRadius) / kGearRatio; // ticks/m
 
         public static final SimpleMotorFeedforward kTransmission =
-                new SimpleMotorFeedforward(1.0, 0.1, 0.4);
+                new SimpleMotorFeedforward(0.0534, 4.180, 0.429);
 
-        public static final TrajectoryConstraint kVoltageConstraint =
-                new DifferentialDriveVoltageConstraint(kTransmission, kKinematics, kMaxVoltage);
-
-        public static final TrajectoryConfig kTrajectoryConfig =
-                new TrajectoryConfig(4.6, 2.0)
-                        .addConstraint(kKinematicsConstraint)
-                        .addConstraint(kVoltageConstraint);
     }
 
     public static class HighGear {
@@ -134,4 +126,15 @@ public final class Constants {
         public static final SimpleMotorFeedforward kTransmission =
                 new SimpleMotorFeedforward(1.0, 12.0, 0.4);
     }
+
+    public static final TrajectoryConstraint kKinematicsConstraint =
+            new DifferentialDriveKinematicsConstraint(kKinematics, 10.0);
+
+    public static final TrajectoryConstraint kVoltageConstraint =
+            new DifferentialDriveVoltageConstraint(LowGear.kTransmission, kKinematics, kMaxVoltage);
+
+    public static final TrajectoryConfig kTrajectoryConfig =
+            new TrajectoryConfig(2.2, 1.0)
+                    .addConstraint(kKinematicsConstraint)
+                    .addConstraint(kVoltageConstraint);
 }

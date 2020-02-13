@@ -32,9 +32,11 @@ public interface DriveTrainVariant {
 
     double getRightVelocityRotationsPerSecond();
 
+    double getLeftVoltage();
+
+    double getRightVoltage();
+
     void neutralOutput();
 
     void setPercentOutput(double leftPercent, double rightPercent);
-
-    void setVoltage(double leftVoltage, double rightVoltage);
 }

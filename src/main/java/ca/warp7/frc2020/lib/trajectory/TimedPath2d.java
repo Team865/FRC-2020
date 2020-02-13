@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 /**
- * Represents a path configuration
+ * Helper class for a path configuration
  */
 @SuppressWarnings("unused")
 public class TimedPath2d {

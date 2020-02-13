@@ -9,6 +9,7 @@ package ca.warp7.frc2020.subsystems;
 
 import ca.warp7.frc2020.Constants;
 import ca.warp7.frc2020.lib.motor.MotorControlHelper;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -28,7 +29,7 @@ public final class Intake implements Subsystem {
     private Solenoid intakeExtensionPiston = new Solenoid(kIntakeExtensionID);
 
     public void setSpeed(double speed) {
-//        intakeBagMotor.set(ControlMode.PercentOutput, speed);
+        intakeBagMotor.set(ControlMode.PercentOutput, -speed);
     }
 
     public void setExtended(boolean extended) {

@@ -29,7 +29,7 @@ public class FeedAutoCommand extends CommandBase {
         double error = Constants.flywheelDefaultCloseRPS - currentFlywheelSpeed;
         SmartDashboard.putNumber("Velocity", currentFlywheelSpeed);
         SmartDashboard.putNumber("Error", error);
-        if(Math.abs(error) <= 1.5){
+        if(Math.abs(error) <= -1){
             feeder.setSpeed(Constants.kFeedingSpeed);
             hopper.setSpeed(Constants.kHopperSpeed);
         } else {

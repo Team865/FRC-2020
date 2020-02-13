@@ -92,6 +92,7 @@ public class TeleopCommand extends CommandBase {
 //    }
 
     private double getFeedSpeed() {
+
         return Util.applyDeadband(driver.rightTrigger, 0.2) * (isReversed ? -1 : 1);
     }
 

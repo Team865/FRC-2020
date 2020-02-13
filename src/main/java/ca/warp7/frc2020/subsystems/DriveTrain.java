@@ -123,7 +123,7 @@ public final class DriveTrain implements Subsystem {
     }
 
     /**
-     * @return the robot state estimation on the field
+     * @return the robot state estimation on the field, in m
      */
     public Pose2d getRobotState() {
         return robotState;
@@ -173,6 +173,22 @@ public final class DriveTrain implements Subsystem {
      */
     public double getRightVoltage() {
         return driveTrainVariant.getRightVoltage();
+    }
+
+    /**
+     * @return the left motor closed-loop error,
+     * m in position and m/s in velocity control mode
+     */
+    public double getLeftPIDError() {
+        return driveTrainVariant.getLeftPIDErrorRotations() * getMetresPerRotation();
+    }
+
+    /**
+     * @return the right motor closed-loop error,
+     * m in position and m/s in velocity control mode
+     */
+    public double getRightPIDError() {
+        return driveTrainVariant.getRightPIDErrorRotations() * getMetresPerRotation();
     }
 
     /**
@@ -323,7 +339,8 @@ public final class DriveTrain implements Subsystem {
 
         driveTrainVariant.setVelocityPID(
                 leftRotationsPerSecond, rightRotationsPerSecond,
-                leftVoltage, rightVoltage);
+                leftVoltage, rightVoltage
+        );
     }
 
     /**

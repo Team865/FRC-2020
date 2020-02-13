@@ -68,7 +68,7 @@ public final class Constants {
     // Drive Train Tuning
 
     public static final PID kAutonLowGearVelocityPID =
-            new PID(0.0, 0.0, 0.0, 0.0);
+            new PID(1.0, 0.0, 5.0, 0.0);
     public static final PID kTeleopLowGearVelocityPID =
             new PID(0.0, 0.0, 0.0, 0.0);
     public static final PID kTeleopHighGearVelocityPID =
@@ -100,13 +100,11 @@ public final class Constants {
     public static final double kHopperSpeed = 0.6; //percent
     // Drive Train Constants
 
-    public static final double kWheelBaseRadius = 0.15; // metres
-    public static final double kDriveWheelRadius = 2.99 * 0.0254; // meters
+    public static final double kWheelBaseRadius = 0.35; // metres
+    public static final double kDriveWheelRadius = 3.0 * 0.0254; // 0.1524 meters
     public static final double kMaxVoltage = 12.0; // volts
     public static final DifferentialDriveKinematics kKinematics =
             new DifferentialDriveKinematics(kWheelBaseRadius * 2);
-    public static final TrajectoryConstraint kKinematicsConstraint =
-            new DifferentialDriveKinematicsConstraint(kKinematics, 10.0);
 
     public static class LowGear {
         public static final double kGearRatio = 42.0 / 10.0 * 60.0 / 14.0; // 18.0
@@ -115,15 +113,8 @@ public final class Constants {
                 (2 * Math.PI * kDriveWheelRadius) / kGearRatio; // ticks/m
 
         public static final SimpleMotorFeedforward kTransmission =
-                new SimpleMotorFeedforward(1.0, 0.1, 0.4);
+                new SimpleMotorFeedforward(0.0534, 4.180, 0.429);
 
-        public static final TrajectoryConstraint kVoltageConstraint =
-                new DifferentialDriveVoltageConstraint(kTransmission, kKinematics, kMaxVoltage);
-
-        public static final TrajectoryConfig kTrajectoryConfig =
-                new TrajectoryConfig(4.6, 2.0)
-                        .addConstraint(kKinematicsConstraint)
-                        .addConstraint(kVoltageConstraint);
     }
 
     public static class HighGear {
@@ -135,4 +126,15 @@ public final class Constants {
         public static final SimpleMotorFeedforward kTransmission =
                 new SimpleMotorFeedforward(1.0, 12.0, 0.4);
     }
+
+    public static final TrajectoryConstraint kKinematicsConstraint =
+            new DifferentialDriveKinematicsConstraint(kKinematics, 10.0);
+
+    public static final TrajectoryConstraint kVoltageConstraint =
+            new DifferentialDriveVoltageConstraint(LowGear.kTransmission, kKinematics, kMaxVoltage);
+
+    public static final TrajectoryConfig kTrajectoryConfig =
+            new TrajectoryConfig(2.2, 1.0)
+                    .addConstraint(kKinematicsConstraint)
+                    .addConstraint(kVoltageConstraint);
 }

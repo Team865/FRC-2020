@@ -42,11 +42,11 @@ public final class DriveTrain implements Subsystem {
         driveTrainVariant = variant;
     }
 
-     private final Solenoid shifterSolenoid = new Solenoid(kDriveShifterID);
+    private final Solenoid shifterSolenoid = new Solenoid(kDriveShifterID);
     private final AHRS navx = new AHRS(I2C.Port.kMXP, (byte) 100);
 
-    private boolean isHighGear = false;
-    private boolean isUsingNativeVelocityPID = false;
+    // the robot is wired so that high gear is the default (off) state
+    private boolean isHighGear = true;
 
     // Used to calculate expected acceleration
     private double previousLinear = 0.0;
@@ -78,18 +78,9 @@ public final class DriveTrain implements Subsystem {
     public void setHighGear(boolean highGear) {
         if (highGear != isHighGear) {
             isHighGear = highGear;
-            shifterSolenoid.set(highGear);
+            // shifter solenoid is inverted. On is low gear
+            shifterSolenoid.set(!highGear);
         }
-    }
-
-    /**
-     * Set whether to offload velocity commands to the motor controller so
-     * that it can respond to errors at a faster rate. If false, velocity
-     * commands are converted to percent output
-     * @param usingNativeVelocityPID whether to run the native velocity PID
-     */
-    public void setUsingNativeVelocityPID(boolean usingNativeVelocityPID) {
-        isUsingNativeVelocityPID = usingNativeVelocityPID;
     }
 
     /**
@@ -100,10 +91,19 @@ public final class DriveTrain implements Subsystem {
     }
 
     /**
-     * @return the direction reading of the gyro as a Rotation2D
+     * @return the direction reading of the gyro as a Rotation2D. Also negates
+     * the value because the NavX returns positive for clockwise, which is
+     * opposite to the coordinates used in the code
      */
     public Rotation2d getYaw() {
-        return Rotation2d.fromDegrees(navx.getYaw());
+        return Rotation2d.fromDegrees(-1 * navx.getYaw());
+    }
+
+    /**
+     * @return the accumulative angle for the gyro, used for characterization
+     */
+    public double getContinousAngleRadians() {
+        return Math.toRadians(-1 * navx.getAngle());
     }
 
     /**
@@ -146,7 +146,7 @@ public final class DriveTrain implements Subsystem {
     }
 
     /**
-     * @return the encoder velocity of the left motors in m/s
+     * @return the encoder velocity of the left motors in m/s, used for characterization
      */
     public double getLeftVelocity() {
         return driveTrainVariant.getLeftVelocityRotationsPerSecond() *
@@ -154,11 +154,25 @@ public final class DriveTrain implements Subsystem {
     }
 
     /**
-     * @return the encoder velocity of the right motors in m/s
+     * @return the encoder velocity of the right motors in m/s, used for characterization
      */
     public double getRightVelocity() {
         return driveTrainVariant.getRightVelocityRotationsPerSecond() *
                 getMetresPerRotation();
+    }
+
+    /**
+     * @return the left motor voltage in volts, used for characterization
+     */
+    public double getLeftVoltage() {
+        return driveTrainVariant.getLeftVoltage();
+    }
+
+    /**
+     * @return the right motor voltage in volts, used for characterization
+     */
+    public double getRightVoltage() {
+        return driveTrainVariant.getRightVoltage();
     }
 
     /**
@@ -227,9 +241,8 @@ public final class DriveTrain implements Subsystem {
     /**
      * Configures the open-loop ramp rate of throttle output.
      *
-     * @param secondsFromNeutralToFull
-     *            Minimum desired time to go from neutral to full throttle. A
-     *            value of '0' will disable the ramp.
+     * @param secondsFromNeutralToFull Minimum desired time to go from neutral to full throttle. A
+     *                                 value of '0' will disable the ramp.
      */
     public void configureRampRate(double secondsFromNeutralToFull) {
         driveTrainVariant.configureRampRate(secondsFromNeutralToFull);
@@ -238,7 +251,7 @@ public final class DriveTrain implements Subsystem {
     /**
      * Set the encoder position
      *
-     * @param left the left position in metres
+     * @param left  the left position in metres
      * @param right the right position in metres
      */
     public void setEncoderPosition(double left, double right) {
@@ -278,7 +291,7 @@ public final class DriveTrain implements Subsystem {
     /**
      * Set the position setpoint for individual sides of the drive train
      *
-     * @param left the left position target, in metres
+     * @param left  the left position target, in metres
      * @param right the right position target, in metres
      */
     @SuppressWarnings("unused")
@@ -308,13 +321,9 @@ public final class DriveTrain implements Subsystem {
         double leftRotationsPerSecond = leftVelocity / metresPerRotation;
         double rightRotationsPerSecond = rightVelocity / metresPerRotation;
 
-        if (isUsingNativeVelocityPID) {
-            driveTrainVariant.setVelocityPID(
-                    leftRotationsPerSecond, rightRotationsPerSecond,
-                    leftVoltage, rightVoltage);
-        } else {
-            driveTrainVariant.setVoltage(leftVoltage, rightVoltage);
-        }
+        driveTrainVariant.setVelocityPID(
+                leftRotationsPerSecond, rightRotationsPerSecond,
+                leftVoltage, rightVoltage);
     }
 
     /**

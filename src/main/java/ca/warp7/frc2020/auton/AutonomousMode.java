@@ -15,7 +15,6 @@ public class AutonomousMode {
     public static Command testMode() {
         return new SequentialCommandGroup(
                 SingleFunctionCommand.getRobotStateEstimation(),
-                SingleFunctionCommand.getSetDriveNativeVelocityPID(),
                 SingleFunctionCommand.getSetDriveAutonomousLowGear(),
                 SingleFunctionCommand.getIntakeExtensionToggle(),
                 AutonomousPath.getInitLineShootingToTrench()
@@ -24,8 +23,18 @@ public class AutonomousMode {
 
     public static Command driveCharacterizationMode() {
         return new SequentialCommandGroup(
-                SingleFunctionCommand.getSetDriveLowGear(),
+                SingleFunctionCommand.getSetDriveAutonomousLowGear(),
+                SingleFunctionCommand.getZeroYaw(),
                 new DriveCharacterizationCommand()
+        );
+    }
+
+    public static Command simplePathMode() {
+        return new SequentialCommandGroup(
+                SingleFunctionCommand.getSetDriveAutonomousLowGear(),
+                SingleFunctionCommand.getZeroYaw(),
+                SingleFunctionCommand.getResetRobotState(),
+                AutonomousPath.getSimplePath()
         );
     }
     
@@ -35,20 +44,12 @@ public class AutonomousMode {
                 new FeedAutoCommand());
     }
 
-    public static Command highGearCharacterizationMode() {
-        return new SequentialCommandGroup(
-                SingleFunctionCommand.getSetDriveHighGear(),
-                new DriveCharacterizationCommand()
-        );
-    }
-
     private static Command directShootThenTrenchIntakeMode() {
         return new SequentialCommandGroup(
                 new ScheduleCommand(
                         SingleFunctionCommand.getRobotStateEstimation()
                 ),
                 new ParallelCommandGroup(
-                        SingleFunctionCommand.getSetDriveNativeVelocityPID(),
                         SingleFunctionCommand.getSetDriveAutonomousLowGear(),
                         SingleFunctionCommand.getIntakeExtensionToggle()
                 ),

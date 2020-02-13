@@ -33,12 +33,18 @@ public class DriveTrajectoryCommand extends CommandBase {
     private final TimedPath2d path;
 
     private final NetworkTable table = NetworkTableInstance.getDefault().getTable("trajectory");
-    private final NetworkTableEntry e_t = table.getEntry("t");
-    private final NetworkTableEntry e_x = table.getEntry("x");
-    private final NetworkTableEntry e_y = table.getEntry("y");
-    private final NetworkTableEntry e_theta = table.getEntry("theta");
-    private final NetworkTableEntry e_linear = table.getEntry("linear");
-    private final NetworkTableEntry e_angular = table.getEntry("angular");
+    private final NetworkTableEntry tEntry = table.getEntry("t");
+
+    private final NetworkTableEntry xEntry = table.getEntry("x");
+    private final NetworkTableEntry yEntry = table.getEntry("y");
+    private final NetworkTableEntry angleEntry = table.getEntry("angle");
+
+    private final NetworkTableEntry xErrorEntry = table.getEntry("xError");
+    private final NetworkTableEntry yErrorEntry = table.getEntry("yError");
+    private final NetworkTableEntry angleErrorEntry = table.getEntry("angleError");
+
+    private final NetworkTableEntry linearEntry = table.getEntry("linear");
+    private final NetworkTableEntry angularEntry = table.getEntry("angular");
 
     public DriveTrajectoryCommand(TimedPath2d path) {
         Objects.requireNonNull(path, "path cannot be null");
@@ -106,12 +112,18 @@ public class DriveTrajectoryCommand extends CommandBase {
         driveTrain.setChassisVelocity(correctedVelocity.getLinear(), correctedVelocity.getAngular());
 
         // Write logs
-        e_t.setDouble(trajectoryTime);
-        e_x.setDouble(robotState.getTranslation().getX());
-        e_y.setDouble(robotState.getTranslation().getY());
-        e_theta.setDouble(robotState.getRotation().getDegrees());
-        e_linear.setDouble(correctedVelocity.getLinear());
-        e_angular.setDouble(correctedVelocity.getAngular());
+        tEntry.setDouble(trajectoryTime);
+
+        xEntry.setDouble(robotState.getTranslation().getX());
+        yEntry.setDouble(robotState.getTranslation().getY());
+        angleEntry.setDouble(robotState.getRotation().getDegrees());
+
+        xErrorEntry.setDouble(error.getTranslation().getX());
+        yErrorEntry.setDouble(error.getTranslation().getY());
+        angleErrorEntry.setDouble(error.getRotation().getDegrees());
+
+        linearEntry.setDouble(correctedVelocity.getLinear());
+        angularEntry.setDouble(correctedVelocity.getAngular());
     }
 
     private void tryStartTrajectory() {
@@ -120,7 +132,6 @@ public class DriveTrajectoryCommand extends CommandBase {
             // trajectories is not done yet
             generationLoopCount++;
         } else {
-
             // get the calculated trajectories
             try {
                 trajectories = trajectoryGenerator.get();

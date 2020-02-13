@@ -140,4 +140,22 @@ public final class FalconDriveTrainVariant implements DriveTrainVariant {
         driveLeftMasterFalcon.set(ControlMode.PercentOutput, leftPercent);
         driveRightMasterFalcon.set(ControlMode.PercentOutput, rightPercent);
     }
+
+    @Override
+    public double getLeftPIDErrorRotations() {
+        var error = driveLeftMasterFalcon.getClosedLoopError() / kTicksPerRotation;
+        if (driveLeftMasterFalcon.getControlMode() == ControlMode.Velocity) {
+            return error / kVelocityMeasurementPeriod;
+        }
+        return error;
+    }
+
+    @Override
+    public double getRightPIDErrorRotations() {
+        var error = driveRightMasterFalcon.getClosedLoopError() / kTicksPerRotation;
+        if (driveRightMasterFalcon.getControlMode() == ControlMode.Velocity) {
+            return error / kVelocityMeasurementPeriod;
+        }
+        return error;
+    }
 }

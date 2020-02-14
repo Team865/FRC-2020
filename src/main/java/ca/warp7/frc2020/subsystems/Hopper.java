@@ -24,10 +24,10 @@ public final class Hopper implements Subsystem {
             .createMasterSparkMAX(Constants.kHopperID);
 
     private Hopper() {
-        hopperMiniNeo.setInverted(true);
+
     }
 
     public void setSpeed(double speed) {
-        hopperMiniNeo.set(speed);
+        hopperMiniNeo.set(-speed);
     }
 }

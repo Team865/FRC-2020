@@ -17,12 +17,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 /**
  * This command is used with the FRC Characterization tools
  * from https://github.com/wpilibsuite/frc-characterization
- *
- * We need a custom command because FRC Characterization does
- * not support encoders from the Falcons.
- *
- * The command uses NetworkTables to interact with the FRC-
- * characterization GUI
  */
 public class DriveCharacterizationCommand extends CommandBase {
     private DriveTrain driveTrain = DriveTrain.getInstance();
@@ -33,7 +27,6 @@ public class DriveCharacterizationCommand extends CommandBase {
     NetworkTableEntry telemetryEntry = ntInstance.getEntry("/robot/telemetry");
     NetworkTableEntry rotateEntry = ntInstance.getEntry("/robot/rotate");
 
-    double priorSpeed = 0;
     Number[] numberArray = new Number[10];
 
     public DriveCharacterizationCommand() {
@@ -65,11 +58,14 @@ public class DriveCharacterizationCommand extends CommandBase {
         double rightVelocity = driveTrain.getRightVelocity();
 
         double batteryVoltage = RobotController.getBatteryVoltage();
-        double motorVoltage = batteryVoltage * Math.abs(priorSpeed);
+
+        double leftVoltage = driveTrain.getLeftVoltage();
+        double rightVoltage = driveTrain.getRightVoltage();
+
+        double angle = driveTrain.getContinousAngleRadians();
 
         // Retrieve the commanded speed from NetworkTables
         double autospeed = autoSpeedEntry.getDouble(0);
-        priorSpeed = autospeed;
 
         // command motors to do things
         double leftSpeed = (rotateEntry.getBoolean(false) ? -1 : 1) * autospeed;
@@ -80,13 +76,13 @@ public class DriveCharacterizationCommand extends CommandBase {
         numberArray[0] = now;
         numberArray[1] = batteryVoltage;
         numberArray[2] = autospeed;
-        numberArray[3] = motorVoltage;
-        numberArray[4] = motorVoltage;
+        numberArray[3] = leftVoltage;
+        numberArray[4] = rightVoltage;
         numberArray[5] = leftPosition;
         numberArray[6] = rightPosition;
         numberArray[7] = leftVelocity;
         numberArray[8] = rightVelocity;
-        numberArray[9] = driveTrain.getYaw().getRadians();
+        numberArray[9] = angle;
 
         telemetryEntry.setNumberArray(numberArray);
     }

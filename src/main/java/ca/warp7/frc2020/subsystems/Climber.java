@@ -10,6 +10,7 @@ package ca.warp7.frc2020.subsystems;
 import ca.warp7.frc2020.Constants;
 import ca.warp7.frc2020.lib.motor.MotorControlHelper;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -28,15 +29,15 @@ public final class Climber implements Subsystem {
     private Solenoid climberPancakeCylinder = new Solenoid(Constants.kClimberLockActuatorID);
 
     public Climber() {
-        MotorControlHelper.assignFollowerVictorSPX(climberMaster775, Constants.kClimberFollowerID);
+        MotorControlHelper.assignFollowerVictorSPX(
+                climberMaster775,
+                Constants.kClimberFollowerID,
+                InvertType.OpposeMaster
+        );
     }
 
     public void setSpeed(double speed) {
         climberMaster775.set(ControlMode.PercentOutput, speed);
-    }
-
-    public void lock() {
-        climberPancakeCylinder.set(true);
     }
 
     public boolean isLocked() {

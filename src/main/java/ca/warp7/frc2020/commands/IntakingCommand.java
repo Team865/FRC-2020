@@ -17,7 +17,7 @@ import java.util.function.DoubleSupplier;
 public class IntakingCommand extends CommandBase {
     private DoubleSupplier intakingSupplier;
     private Intake intake = Intake.getInstance();
-    private double pTime = 0.0;
+    private double pTime = -1.0;
 
     public IntakingCommand(DoubleSupplier intakingSupplier) {
         this.intakingSupplier = intakingSupplier;
@@ -26,7 +26,7 @@ public class IntakingCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        pTime = Double.POSITIVE_INFINITY;
+        pTime = -1.0;
     }
 
     @Override
@@ -35,10 +35,12 @@ public class IntakingCommand extends CommandBase {
         double intakeSpeed = intakingSupplier.getAsDouble();
         boolean intaking = intakeSpeed != 0.0;
         intake.setExtended(intaking);
-        if (intakeSpeed != 0) {
+        if (intaking) {
             intake.setSpeed(0.75 * intakeSpeed);
             pTime = time;
-        } else if (time - pTime < 1)
+        } else if (time - pTime < 0.75 && pTime >= 0)
             intake.setSpeed(0.55);
+        else
+            intake.setSpeed(0.0);
     }
 }

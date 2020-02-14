@@ -25,7 +25,7 @@ public class FeedAutoCommand extends CommandBase {
     @Override
     public void execute() {
         
-        double currentFlywheelSpeed = flywheel.getRotationsPerSecond();
+        double currentFlywheelSpeed = flywheel.getRPS();
         double error = Constants.flywheelDefaultCloseRPS - currentFlywheelSpeed;
         SmartDashboard.putNumber("Velocity", currentFlywheelSpeed);
         SmartDashboard.putNumber("Error", error);

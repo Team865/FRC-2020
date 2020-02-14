@@ -29,7 +29,7 @@ public final class Intake implements Subsystem {
     private Solenoid intakeExtensionPiston = new Solenoid(kIntakeExtensionID);
 
     public void setSpeed(double speed) {
-        intakeBagMotor.set(ControlMode.PercentOutput, -speed);
+        intakeBagMotor.set(ControlMode.PercentOutput, speed);
     }
 
     public void setExtended(boolean extended) {

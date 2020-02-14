@@ -1,7 +1,10 @@
 package ca.warp7.frc2020.auton;
 
+import ca.warp7.frc2020.Constants;
 import ca.warp7.frc2020.auton.commands.DriveCharacterizationCommand;
 import ca.warp7.frc2020.auton.commands.QuickTurnCommand;
+import ca.warp7.frc2020.auton.commands.FeedAutoCommand;
+import ca.warp7.frc2020.commands.FlywheelSpeedCommand;
 import ca.warp7.frc2020.commands.SingleFunctionCommand;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
@@ -12,7 +15,6 @@ public class AutonomousMode {
     public static Command testMode() {
         return new SequentialCommandGroup(
                 SingleFunctionCommand.getRobotStateEstimation(),
-                SingleFunctionCommand.getSetDriveNativeVelocityPID(),
                 SingleFunctionCommand.getSetDriveAutonomousLowGear(),
                 SingleFunctionCommand.getIntakeExtensionToggle(),
                 AutonomousPath.getInitLineShootingToTrench()
@@ -21,16 +23,25 @@ public class AutonomousMode {
 
     public static Command driveCharacterizationMode() {
         return new SequentialCommandGroup(
-                SingleFunctionCommand.getSetDriveLowGear(),
+                SingleFunctionCommand.getSetDriveAutonomousLowGear(),
+                SingleFunctionCommand.getZeroYaw(),
                 new DriveCharacterizationCommand()
         );
     }
 
-    public static Command highGearCharacterizationMode() {
+    public static Command simplePathMode() {
         return new SequentialCommandGroup(
-                SingleFunctionCommand.getSetDriveHighGear(),
-                new DriveCharacterizationCommand()
+                SingleFunctionCommand.getSetDriveAutonomousLowGear(),
+                SingleFunctionCommand.getZeroYaw(),
+                SingleFunctionCommand.getResetRobotState(),
+                AutonomousPath.getSimplePath()
         );
+    }
+    
+    public static Command shooterTest(){
+        return new ParallelCommandGroup(
+                new FlywheelSpeedCommand(() -> Constants.flywheelDefaultCloseRPS), 
+                new FeedAutoCommand());
     }
 
     private static Command directShootThenTrenchIntakeMode() {
@@ -39,7 +50,6 @@ public class AutonomousMode {
                         SingleFunctionCommand.getRobotStateEstimation()
                 ),
                 new ParallelCommandGroup(
-                        SingleFunctionCommand.getSetDriveNativeVelocityPID(),
                         SingleFunctionCommand.getSetDriveAutonomousLowGear(),
                         SingleFunctionCommand.getIntakeExtensionToggle()
                 ),

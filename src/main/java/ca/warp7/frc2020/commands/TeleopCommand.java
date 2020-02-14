@@ -30,9 +30,12 @@ public class TeleopCommand extends CommandBase {
     private Command flywheelSpeedCommand = new FlywheelSpeedCommand(this::getWantedFlywheelRPS);
 //    private Command climbSpeedCommand = new ClimbSpeedCommand(this::getClimbSpeed);
 
-    //    private Command robotStateEstimationCommand = SingleFunctionCommand.getRobotStateEstimation();
+    private Command resetRobotStateCommand = SingleFunctionCommand.getResetRobotState();
+    private Command robotStateEstimationCommand = SingleFunctionCommand.getRobotStateEstimation();
+    private Command reportStateCommand = SingleFunctionCommand.getReportRobotState();
     private Command setLowGearDriveCommand = SingleFunctionCommand.getSetDriveLowGear();
     private Command setHighGearDriveCommand = SingleFunctionCommand.getSetDriveHighGear();
+    private Command zeroYawCommand = SingleFunctionCommand.getZeroYaw();
 //
 //     private Command lockHangingClimberCommand = SingleFunctionCommand.getClimbLockToggle();
 //     private Command flywheelHoodToggleCommand = SingleFunctionCommand.getFlywheelHoodToggle();
@@ -104,7 +107,9 @@ public class TeleopCommand extends CommandBase {
         // controlPanelDisplay.schedule();
         // climbSpeedCommand.schedule();
         intakingCommand.schedule();
-        // robotStateEstimationCommand.schedule();
+        resetRobotStateCommand.schedule();
+        robotStateEstimationCommand.schedule();
+        zeroYawCommand.schedule();
     }
 
     @Override
@@ -127,7 +132,7 @@ public class TeleopCommand extends CommandBase {
         isReversed = driver.yButton.isHeldDown();
 
 //         if (driver.aButton.isPressed())
-//             visionAlignCommand.schedule(); 
+//             visionAlignCommand.schedule();
 //         else if (driver.aButton.isReleased())
 //             visionAlignCommand.cancel();
 

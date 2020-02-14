@@ -64,6 +64,9 @@ public class QuickTurnCommand extends CommandBase {
         driveTrain.neutralOutput();
     }
 
+    /**
+     * Move to an absolute angle
+     */
     public static Command ofFieldOrientedAngle(Rotation2d target) {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new QuickTurnCommand(
@@ -72,6 +75,9 @@ public class QuickTurnCommand extends CommandBase {
         );
     }
 
+    /**
+     * Move by a certain relative angle
+     */
     public static Command ofRelativeAngle(Rotation2d delta) {
         DriveTrain driveTrain = DriveTrain.getInstance();
         var targetState = new Object() { Rotation2d value; };
@@ -82,6 +88,9 @@ public class QuickTurnCommand extends CommandBase {
         );
     }
 
+    /**
+     * Align with Limelight by driving the error towards 0
+     */
     public static Command ofLimelight() {
         DriveTrain driveTrain = DriveTrain.getInstance();
         Limelight limelight = Limelight.getInstance();

@@ -57,6 +57,9 @@ public class Limelight {
     // the relative height between the camera and the target
     private static final double kCameraToTargetHeight = kTargetCentreHeight - kCameraHeight;
 
+    public double getCameraToTarget() {
+        return kCameraToTargetHeight / Math.tan(getVerticalOffset() + kCameraMountingAngle);
+    }
 
     /**
      * Create an estimated robot-to-target pose transform, based on
@@ -73,8 +76,7 @@ public class Limelight {
         }
 
         double x = getHorizontalOffset();
-        double y = getVerticalOffset();
-        double camera_to_target_dist = kCameraToTargetHeight / Math.tan(y + kCameraMountingAngle);
+        double camera_to_target_dist = getCameraToTarget();
 
         Pose2d camera_to_field_estimation = kTargetToField
                 .relativeTo(robotToFieldEstimation.plus(kCameraToRobot));

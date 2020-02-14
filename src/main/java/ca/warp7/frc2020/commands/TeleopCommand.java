@@ -10,7 +10,6 @@ package ca.warp7.frc2020.commands;
 import ca.warp7.frc2020.Constants;
 import ca.warp7.frc2020.lib.Util;
 import ca.warp7.frc2020.lib.XboxController;
-import ca.warp7.frc2020.subsystems.Flywheel;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -23,7 +22,7 @@ public class TeleopCommand extends CommandBase {
             new KinematicsDriveCommand(this::getXSpeed, this::getZRotation, this::isQuickTurn) :
             new PercentDriveCommand(this::getXSpeed, this::getZRotation, this::isQuickTurn);
 
-    //    private Command visionAlignCommand = new VisionAlignCommand(this::getVisionAlignSpeed);
+//    private Command visionAlignCommand = new VisionAlignCommand(this::getVisionAlignSpeed);
 //
 //    private Command controlPanelDisplay = new ControlPanelCommand(this::getControlPanelSpinnerSpeed);
     private Command feedCommand = new FeedCommand(this::getFeedSpeed);
@@ -49,12 +48,12 @@ public class TeleopCommand extends CommandBase {
     private boolean isClose = false;
     private boolean isPriming = false;
 
-//    private int getWantedFlywheelRPM() {
-//        if (isPriming)
-//            return isClose ? Constants.flywheelDefaultCloseRPM + closeShotAdjustment
-//                    : Constants.flywheelFarRPM + farShotAdjustment;
-//        return 0;
-//    }
+    private double getWantedFlywheelRPS() {
+        if (isPriming)
+            return isClose ? Constants.flywheelDefaultCloseRPS + closeShotAdjustment
+                    : Constants.flywheelFarRPS + farShotAdjustment;
+        return 0;
+    }
 
 
 //    public double getControlPanelSpinnerSpeed() {
@@ -67,11 +66,9 @@ public class TeleopCommand extends CommandBase {
         return 0.0;
     }
 
-    double speed = Constants.flywheelFarRPS;
-
-    private double getWantedFlywheelRPS() {
-        return speed + farShotAdjustment;
-    }
+//    private double getWantedFlywheelRPS() {
+//        return Constants.flywheelDefaultCloseRPS + closeShotAdjustment;
+//    }
 
     private double getXSpeed() {
         return Util.applyDeadband(-driver.leftY, 0.2);
@@ -117,20 +114,20 @@ public class TeleopCommand extends CommandBase {
 
         // Driver
 
-//        if (driver.rightBumper.isPressed())
-//             setHighGearDriveCommand.schedule();
-//         else if (driver.rightBumper.isReleased())
-//             setLowGearDriveCommand.schedule();
+        if (driver.rightBumper.isPressed())
+             setHighGearDriveCommand.schedule();
+         else if (driver.rightBumper.isReleased())
+             setLowGearDriveCommand.schedule();
 
         if (isIntaking)
             isIntaking = driver.leftTrigger > 0.2;
         else
             isIntaking = driver.leftTrigger > 0.25;
 
-        isReversed = driver.yButton.isPressed();
+        isReversed = driver.yButton.isHeldDown();
 
 //         if (driver.aButton.isPressed())
-//             visionAlignCommand.schedule();
+//             visionAlignCommand.schedule(); 
 //         else if (driver.aButton.isReleased())
 //             visionAlignCommand.cancel();
 

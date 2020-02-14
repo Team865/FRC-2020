@@ -43,7 +43,7 @@ public final class Constants {
     public static final int kFlywheelShooterFollowerID = 20;
 
     public static final int kHopperID = 24;
-    public static final int kIntakeID = -1;
+    public static final int kIntakeID = 4;
 
     public static final int kClimberMasterID = 1;
     public static final int kClimberFollowerID = 2;
@@ -56,11 +56,10 @@ public final class Constants {
 
     // PCM IDs
 
-    //    public static final int kDriveShifterID = 0;
-    public static final int kFlywheelHoodActuatorID = 1;
-    public static final int kClimberLockActuatorID = 2;
-    public static final int kIntakeExtensionLeftID = 6;
-    public static final int kIntakeExtensionRightID = 7;
+    public static final int kFlywheelHoodActuatorID = 4;
+    public static final int kIntakeExtensionID = 5;
+    public static final int kClimberLockActuatorID = 6;
+    public static final int kDriveShifterID = 7;
 
     // DIO IDs
 
@@ -79,18 +78,25 @@ public final class Constants {
 
     // Flywheel Tuning
 
-    public static final double flywheelDefaultCloseRPS = 54.0;
+    public static final double flywheelDefaultCloseRPS = 52.0;
     public static final double flywheelFarRPS = 80.0;
-    public static final double kFlywheelKp = 0.0;//2.2;
-    public static final double kFlywheelKs = 0.0767;
-    public static final double kFlywheelKv = 0.0648;
-    public static final double kFlywheelKa = 0.0447;
+    public static final double kFlywheelKp = 2.14;
+    public static final double kFlywheelKs = 0.0713;
+    public static final double kFlywheelKv = (0.067 + 0.0662) / 2;
+    public static final double kFlywheelKa = (0.0432 + 0.0433) / 2;
     public static final double kFlywheelGearRatio = 1.0 / 2.0; // 0.5
 
     // Intake Constants
 
-    public static final double intakingSpeed = 0.3; // percent
+    public static final double kIntakingSpeed = 0.3; // percent
 
+    //Feeder Constants
+
+    public static final double kFeedingSpeed = 0.6; //percent
+
+    //Hopper constants
+
+    public static final double kHopperSpeed = 0.6; //percent
     // Drive Train Constants
 
     public static final double kWheelBaseRadius = 0.15; // metres

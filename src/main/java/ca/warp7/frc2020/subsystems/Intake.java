@@ -9,6 +9,7 @@ package ca.warp7.frc2020.subsystems;
 
 import ca.warp7.frc2020.Constants;
 import ca.warp7.frc2020.lib.motor.MotorControlHelper;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -25,23 +26,21 @@ public final class Intake implements Subsystem {
 
     private VictorSPX intakeBagMotor = MotorControlHelper
             .createMasterVictorSPX(Constants.kIntakeID);
-    private Solenoid intakeExtensionPiston1 = new Solenoid(kIntakeExtensionLeftID);
-    private Solenoid intakeExtensionPiston2 = new Solenoid(kIntakeExtensionRightID);
+    private Solenoid intakeExtensionPiston = new Solenoid(kIntakeExtensionID);
 
     public void setSpeed(double speed) {
-//        intakeBagMotor.set(ControlMode.PercentOutput, speed);
+        intakeBagMotor.set(ControlMode.PercentOutput, speed);
     }
 
     public void setExtended(boolean extended) {
-        intakeExtensionPiston1.set(extended);
-        intakeExtensionPiston2.set(extended);
+        intakeExtensionPiston.set(extended);
     }
 
     public boolean isExtended() {
-        return intakeExtensionPiston1.get();
+        return intakeExtensionPiston.get();
     }
 
     public void toggle() {
-        setExtended(!intakeExtensionPiston1.get());
+        setExtended(!intakeExtensionPiston.get());
     }
 }

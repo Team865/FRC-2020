@@ -18,6 +18,7 @@ import static ca.warp7.frc2020.Constants.*;
 
 public final class Flywheel implements Subsystem {
     private static Flywheel instance;
+    private double targetRPS;
 
     public static Flywheel getInstance() {
         if (instance == null) instance = new Flywheel();
@@ -34,8 +35,21 @@ public final class Flywheel implements Subsystem {
         MotorControlHelper.assignFollowerSparkMAX(flywheelMasterNeo, kFlywheelShooterFollowerID, true);
     }
 
-    public double getRotationsPerSecond() {
+    public double getRPS() {
         return flywheelMasterNeo.getEncoder().getVelocity() / kFlywheelGearRatio / 60;
+    }
+
+    public void setTargetRPS(double target) {
+        this.targetRPS = target;
+    }
+
+
+    public double getError() {
+        return targetRPS - getRPS();
+    }
+
+    public void calcOutput() {
+        this.setVoltage((targetRPS + getError() * kFlywheelKp) * kFlywheelKv + kFlywheelKs);
     }
 
     public void setVoltage(double voltage) {
@@ -47,11 +61,11 @@ public final class Flywheel implements Subsystem {
     }
 
     public boolean isHoodCloseShot() {
-        return false;
+        return true;
 //        return flywheelHoodPiston.get();
     }
 
     public void toggleHood() {
-//        setHood(!getHood());
+//        setHoodCloseShot(!isHoodCloseShot());
     }
 }

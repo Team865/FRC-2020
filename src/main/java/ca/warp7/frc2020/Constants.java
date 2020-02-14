@@ -79,17 +79,19 @@ public final class Constants {
     // Flywheel Tuning
 
 
-    public static final double flywheelDefaultCloseRPS = 54.0;
+    public static final double flywheelDefaultCloseRPS = 52.0;
     public static final double flywheelFarRPS = 80.0;
-    public static final double kFlywheelKp = 0.0;//2.24;
-    public static final double kFlywheelKs = 0.0938;
-    public static final double kFlywheelKv = 0.0666;
-    public static final double kFlywheelKa = 0.0455;
+    public static final double kFlywheelKp = 2.14;
+    public static final double kFlywheelKs = 0.0713;
+    public static final double kFlywheelKv = (0.067 + 0.0662) / 2;
+    public static final double kFlywheelKa = (0.0432 + 0.0433) / 2;
     public static final double kFlywheelGearRatio = 1.0 / 2.0; // 0.5
 
     // Intake Constants
 
-    public static final double intakingSpeed = 0.3; // percent
+    public static final double kIntakingSpeed = 0.3; // percent
+
+    //Feeder Constants
 
     //Feeder Constants
 

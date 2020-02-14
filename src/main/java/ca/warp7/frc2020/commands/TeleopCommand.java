@@ -51,12 +51,12 @@ public class TeleopCommand extends CommandBase {
     private boolean isClose = false;
     private boolean isPriming = false;
 
-//    private int getWantedFlywheelRPM() {
-//        if (isPriming)
-//            return isClose ? Constants.flywheelDefaultCloseRPM + closeShotAdjustment
-//                    : Constants.flywheelFarRPM + farShotAdjustment;
-//        return 0;
-//    }
+    private double getWantedFlywheelRPS() {
+        if (isPriming)
+            return isClose ? Constants.flywheelDefaultCloseRPS + closeShotAdjustment
+                    : Constants.flywheelFarRPS + farShotAdjustment;
+        return 0;
+    }
 
 
 //    public double getControlPanelSpinnerSpeed() {
@@ -69,11 +69,9 @@ public class TeleopCommand extends CommandBase {
         return 0.0;
     }
 
-    double speed = 50.0;
-
-    private double getWantedFlywheelRPS() {
-        return speed + farShotAdjustment;
-    }
+//    private double getWantedFlywheelRPS() {
+//        return Constants.flywheelDefaultCloseRPS + closeShotAdjustment;
+//    }
 
     private double getXSpeed() {
         return Util.applyDeadband(-driver.leftY, 0.2);
@@ -92,7 +90,6 @@ public class TeleopCommand extends CommandBase {
 //    }
 
     private double getFeedSpeed() {
-
         return Util.applyDeadband(driver.rightTrigger, 0.2) * (isReversed ? -1 : 1);
     }
 
@@ -135,7 +132,7 @@ public class TeleopCommand extends CommandBase {
         isReversed = driver.yButton.isHeldDown();
 
 //         if (driver.aButton.isPressed())
-//             visionAlignCommand.schedule(); 
+//             visionAlignCommand.schedule();
 //         else if (driver.aButton.isReleased())
 //             visionAlignCommand.cancel();
 

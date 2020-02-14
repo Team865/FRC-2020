@@ -59,8 +59,8 @@ public final class Robot extends TimedRobot {
                 DriveTrain.getInstance(),
                 Flywheel.getInstance(),
                 Feeder.getInstance(),
-                Hopper.getInstance()
-                // Intake.getInstance(),
+                Hopper.getInstance(),
+                Intake.getInstance()
                 // Climber.getInstance(),
                 // ControlPanelSpinner.getInstance()
         );

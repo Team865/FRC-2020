@@ -5,6 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
+
 package ca.warp7.frc2020.subsystems;
 
 import ca.warp7.frc2020.lib.motor.MotorControlHelper;
@@ -22,10 +23,6 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import static ca.warp7.frc2020.Constants.kControlPanelManipulatorID;
 
 public final class ControlPanelSpinner implements Subsystem {
-    
-    public ControlPanelSpinner(){
-        testRgbToHue();
-    }
 
     private int count = 0;
 
@@ -37,68 +34,36 @@ public final class ControlPanelSpinner implements Subsystem {
     }
 
     @Override
-    public void periodic() {
+    public void periodic(){
+        System.out.println("Testy");
         if(count % 5 == 0){
-            //System.out.println("Going...going..going...");
+            System.out.println(getCurrentColor());
         }
         count++;
     }
 
     /*
-        Converts a 0-1 R G and B value to it's HSL hue value.
-        Depending on what value is the highest, we use a difrent formula.
+        Gets the current SpinnerColour that the
+        ControlPanelSpinner's colour sensor is looking
+        at.
     */
-    public static int rgbToHue(final double R, final double G, final double B){
-        //stores max and min values
-        double max = Math.max(R, Math.max(G, B));
-        double min = Math.min(R, Math.min(G, B));;
-        //ult return value
-        double hue;
-        boolean hasHue; //is true if the colour is not white black or gray
+    private SpinnerColour getCurrentSpinnerColor(){
+        final Color SENCED_COLOR = getCurrentColor();
+        final int R = (int)(255 * SENCED_COLOR.red);
+        final int G = (int)(255 * SENCED_COLOR.green);
+        final int B = (int)(255 * SENCED_COLOR.blue);
+        final float[] HSB = new float[3];
+        java.awt.Color.RGBtoHSB(R, G, B, HSB);
+        return (convertHueToColour(HSB[0]));
+    }
 
-        //gets hue value
-        double maxMinDiff = max - min;
-
-        if(maxMinDiff == 0){
-            hue = 0; //white or gray or black
-            hasHue = false;
-        }
-        else if(max == R){
-            hue = (G - B) / maxMinDiff;
-            hasHue = true;
-        }
-        else if(max == G){
-            hue = 2.0 + (B - R) / maxMinDiff;
-            hasHue = true;
-        }
-        else if(max == B){
-            hue = 4.0 + (B - R) / maxMinDiff;
-            hasHue = true;
-        }
-        else{
-            hue = 0.0;
-            hasHue = false;
-        }
-
-        //The hue is a number from 0-6.
-        if(hue < 0){
-            hue += 6;
-        }
-
-        hue *= 60; //convert to angle
-
-        int theCoolerHue = (int)hue;
-
-        //-1 will be our value for no hue.
-        if(hasHue == false){
-            hue = -1;
-        }
-
-        return (theCoolerHue);
+    //needs to be filled in
+    public SpinnerColour convertHueToColour(final float HUE){
+        return (SpinnerColour.UNKNOWN);
     }
 
     //Acsess the RGB precentages inside the returned Color with .red .green and .blue
-    public Color getCurrentColor(){
+    private Color getCurrentColor(){
         return colorSensor.getColor();
     }
 
@@ -113,24 +78,16 @@ public final class ControlPanelSpinner implements Subsystem {
     public ColorSensorV3 getColorSensor() {
         return colorSensor;
     }
+}
 
-
-    //===TEST FUNCTIONS===
-
-    private void testRgbToHue(){
-        System.out.println("Testing rgbToHue in ControlPanelSpinner");
-        //red
-        System.out.println(rgbToHue(1.0, 0.0, 0.0));
-        //orange
-        System.out.println(rgbToHue(1.0, 0.5, 0.0));
-        //yellow
-        System.out.println(rgbToHue(1.0, 1.0, 0.0));
-        //grean
-        System.out.println(rgbToHue(0.0, 1.0, 0.0));
-        //blue
-        System.out.println(rgbToHue(0.0, 0.0, 1.0));
-        //purple
-        System.out.println(rgbToHue(0.0, 1.0, 1.0));
-    }
-
+/*
+    Enum to be used to represent one of the 4 colours on
+    the control panel
+*/
+enum SpinnerColour {
+    RED,
+    YELLOW,
+    GREEN,
+    BLUE,
+    UNKNOWN
 }

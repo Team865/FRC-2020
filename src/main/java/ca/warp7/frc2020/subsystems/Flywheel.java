@@ -31,7 +31,7 @@ public final class Flywheel implements Subsystem {
     private Flywheel() {
         flywheelMasterNeo.setIdleMode(IdleMode.kCoast);
         flywheelMasterNeo.setOpenLoopRampRate(3.0);
-        flywheelMasterNeo.enableVoltageCompensation(12);
+        flywheelMasterNeo.enableVoltageCompensation(12.0);
         MotorControlHelper.assignFollowerSparkMAX(flywheelMasterNeo, kFlywheelShooterFollowerID, true);
     }
 
@@ -53,7 +53,7 @@ public final class Flywheel implements Subsystem {
     }
 
     public void setVoltage(double voltage) {
-        flywheelMasterNeo.setVoltage(voltage);
+        flywheelMasterNeo.set(voltage/12);
     }
 
     public void setHoodCloseShot(boolean hoodCloseShot) {

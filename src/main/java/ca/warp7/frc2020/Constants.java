@@ -78,7 +78,6 @@ public final class Constants {
 
     // Flywheel Tuning
 
-
     public static final double flywheelDefaultCloseRPS = 52.0;
     public static final double flywheelFarRPS = 80.0;
     public static final double kFlywheelKp = 2.14;

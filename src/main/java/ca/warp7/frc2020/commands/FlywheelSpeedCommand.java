@@ -44,7 +44,9 @@ public class FlywheelSpeedCommand extends CommandBase {
         flywheel.calcOutput();
         double currentRPS = flywheel.getRPS();
         double t = Timer.getFPGATimestamp();
+        SmartDashboard.putNumber("RPS", currentRPS);
         SmartDashboard.putNumber("Acceleration", (currentRPS - prev) / (t - pt));
+        SmartDashboard.putNumber("errrorre", flywheel.getError());
         prev = currentRPS;
         pt = t;
     }

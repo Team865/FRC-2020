@@ -43,7 +43,7 @@ public final class DriveTrain implements Subsystem {
     }
 
     private final Solenoid shifterSolenoid = new Solenoid(kDriveShifterID);
-    private final AHRS navx = new AHRS(I2C.Port.kMXP, (byte) 100);
+    private final AHRS navx = new AHRS(I2C.Port.kMXP);
 
     // the robot is wired so that high gear is the default (off) state
     private boolean isHighGear = true;
@@ -213,11 +213,16 @@ public final class DriveTrain implements Subsystem {
             if (previousYaw != null) {
                 angleDelta = currentYaw.minus(previousYaw);
             } else {
+                System.out.println("WARNING the gyro has reconnected");
                 angleDelta = new Rotation2d();
             }
             previousYaw = currentYaw;
         } else {
-            System.out.println("WARNING the gyro is not connected");
+            // Only report the warning if the gyro was connected in the
+            // last loop, or if the loop runs for the first time
+            if (previousYaw != null) {
+                System.out.println("WARNING the gyro has diconnected");
+            }
             // Calculate the angle delta from wheel deltas
             angleDelta = new Rotation2d((rightDelta - leftDelta) / (2 * kWheelBaseRadius));
             previousYaw = null;

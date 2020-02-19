@@ -28,7 +28,7 @@ public class TeleopCommand extends CommandBase {
     private Command feedCommand = new FeedCommand(this::getFeedSpeed);
     private Command intakingCommand = new IntakingCommand(this::getIntakeSpeed);
     private Command flywheelSpeedCommand = new FlywheelSpeedCommand(this::getWantedFlywheelRPS);
-//    private Command climbSpeedCommand = new ClimbSpeedCommand(this::getClimbSpeed);
+    private Command climbSpeedCommand = new ClimbSpeedCommand(this::getClimbSpeed);
 
     private Command resetRobotStateCommand = SingleFunctionCommand.getResetRobotState();
     private Command robotStateEstimationCommand = SingleFunctionCommand.getRobotStateEstimation();
@@ -94,9 +94,9 @@ public class TeleopCommand extends CommandBase {
     }
 
 
-//    private double getClimbSpeed() {
-//        return Util.applyDeadband(operator.rightY, 0.5);
-//    }
+    private double getClimbSpeed() {
+        return Util.applyDeadband(operator.rightY, 0.5);
+    }
 
     @Override
     public void initialize() {
@@ -105,7 +105,7 @@ public class TeleopCommand extends CommandBase {
         flywheelSpeedCommand.schedule();
         feedCommand.schedule();
         // controlPanelDisplay.schedule();
-        // climbSpeedCommand.schedule();
+         climbSpeedCommand.schedule();
         intakingCommand.schedule();
         resetRobotStateCommand.schedule();
         robotStateEstimationCommand.schedule();

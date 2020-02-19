@@ -29,6 +29,7 @@ public final class Climber implements Subsystem {
     private Solenoid climberPancakeCylinder = new Solenoid(Constants.kClimberLockActuatorID);
 
     public Climber() {
+        climberMaster775.setInverted(true);
         MotorControlHelper.assignFollowerVictorSPX(
                 climberMaster775,
                 Constants.kClimberFollowerID,

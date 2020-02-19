@@ -7,12 +7,12 @@
 
 package ca.warp7.frc2020;
 
+import ca.warp7.frc2020.lib.NetworkUtil;
 import ca.warp7.frc2020.lib.control.PID;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveKinematicsConstraint;
-import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.trajectory.constraint.TrajectoryConstraint;
 
 /**
@@ -45,8 +45,8 @@ public final class Constants {
     public static final int kHopperID = 24;
     public static final int kIntakeID = 4;
 
-    public static final int kClimberMasterID = 1;
-    public static final int kClimberFollowerID = 2;
+    public static final int kClimberMasterID = 6;
+    public static final int kClimberFollowerID = 7;
 
     public static final int kFeederOuterID = 1;
     public static final int kFeederInnerID = 2;
@@ -132,11 +132,17 @@ public final class Constants {
     public static final TrajectoryConstraint kKinematicsConstraint =
             new DifferentialDriveKinematicsConstraint(kKinematics, 10.0);
 
-    public static final TrajectoryConstraint kVoltageConstraint =
-            new DifferentialDriveVoltageConstraint(LowGear.kTransmission, kKinematics, kMaxVoltage);
-
     public static final TrajectoryConfig kTrajectoryConfig =
             new TrajectoryConfig(2.2, 1.0)
-                    .addConstraint(kKinematicsConstraint)
-                    .addConstraint(kVoltageConstraint);
+                    .addConstraint(kKinematicsConstraint);
+
+    private static class PracticeRobotDetector {
+        private static final String kPracticeRobotAddress ="00-80-2F-27-06-8F";
+        private static final boolean kIsPracticeRobot = NetworkUtil
+                .getMACAddress().equals(kPracticeRobotAddress);
+    }
+
+    public static boolean isPracticeRobot() {
+        return PracticeRobotDetector.kIsPracticeRobot;
+    }
 }

@@ -48,6 +48,6 @@ public final class Climber implements Subsystem {
     }
 
     public void toggleLock() {
-        climberPancakeCylinder.set(!isLocked());
+        climberPancakeCylinder.toggle();
     }
 }

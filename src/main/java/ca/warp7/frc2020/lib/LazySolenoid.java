@@ -1,6 +1,5 @@
 package ca.warp7.frc2020.lib;
 
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class LazySolenoid {

@@ -7,13 +7,14 @@
 
 package ca.warp7.frc2020.subsystems;
 
-import ca.warp7.frc2020.Constants;
+import ca.warp7.frc2020.lib.LazySolenoid;
 import ca.warp7.frc2020.lib.motor.MotorControlHelper;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+
+import static ca.warp7.frc2020.Constants.*;
 
 public final class Climber implements Subsystem {
     private static Climber instance;
@@ -24,15 +25,16 @@ public final class Climber implements Subsystem {
     }
 
     private VictorSPX climberMaster775 = MotorControlHelper
-            .createMasterVictorSPX(Constants.kClimberMasterID);
+            .createMasterVictorSPX(kClimberMasterID);
 
-    private Solenoid climberPancakeCylinder = new Solenoid(Constants.kClimberLockActuatorID);
+    private LazySolenoid climberPancakeCylinder =
+            new LazySolenoid(kClimberLockActuatorID, kEnableSolenoids);
 
     public Climber() {
         climberMaster775.setInverted(true);
         MotorControlHelper.assignFollowerVictorSPX(
                 climberMaster775,
-                Constants.kClimberFollowerID,
+                kClimberFollowerID,
                 InvertType.OpposeMaster
         );
     }
@@ -44,7 +46,7 @@ public final class Climber implements Subsystem {
     public boolean isLocked() {
         return climberPancakeCylinder.get();
     }
-    
+
     public void toggleLock() {
         climberPancakeCylinder.set(!isLocked());
     }

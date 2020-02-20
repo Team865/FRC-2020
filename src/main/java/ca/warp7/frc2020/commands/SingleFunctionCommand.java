@@ -4,6 +4,7 @@ import ca.warp7.frc2020.subsystems.Climber;
 import ca.warp7.frc2020.subsystems.DriveTrain;
 import ca.warp7.frc2020.subsystems.Flywheel;
 import ca.warp7.frc2020.subsystems.Intake;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -71,5 +72,25 @@ public class SingleFunctionCommand {
     public static Command getFlywheelHoodToggle() {
         Flywheel flywheel = Flywheel.getInstance();
         return new InstantCommand(flywheel::toggleHood);
+    }
+
+    public static Command getStartCompressor() {
+        return new InstantCommand(CompressorSingleton.getInstance()::start);
+    }
+
+    public static Command getStopCompressor() {
+        return new InstantCommand(CompressorSingleton.getInstance()::stop);
+    }
+
+    /**
+     * Holds a single compressor object, to be used by start and stop
+     * compressor commands.
+     */
+    private static class CompressorSingleton {
+        private static final Compressor instance = new Compressor();
+
+        public static Compressor getInstance() {
+            return instance;
+        }
     }
 }

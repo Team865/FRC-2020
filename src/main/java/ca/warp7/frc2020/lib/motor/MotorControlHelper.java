@@ -65,7 +65,7 @@ public class MotorControlHelper {
      * @param deviceID   the CAN id
      * @param invertType the invert type
      */
-    public static void assignFollowerTalonFX(
+    public static TalonFX assignFollowerTalonFX(
             BaseMotorController master,
             int deviceID,
             InvertType invertType
@@ -75,6 +75,7 @@ public class MotorControlHelper {
         follower.setNeutralMode(NeutralMode.Brake);
         follower.setInverted(invertType);
         follower.follow(master);
+        return follower;
     }
 
     /**

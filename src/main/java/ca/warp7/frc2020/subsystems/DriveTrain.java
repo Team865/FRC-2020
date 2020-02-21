@@ -102,7 +102,7 @@ public final class DriveTrain implements Subsystem {
     }
 
     /**
-     * @return the accumulative angle for the gyro, used for characterization
+     * @return the accumulative angle for the gyro
      */
     public double getContinousAngleRadians() {
         return Math.toRadians(-1 * navx.getAngle());
@@ -135,32 +135,28 @@ public final class DriveTrain implements Subsystem {
      * @return the encoder position of the left motors in m
      */
     public double getLeftPosition() {
-        return driveTrainVariant.getLeftPositionRotations() *
-                getMetresPerRotation();
+        return driveTrainVariant.getLeftPositionRotations() * getMetresPerRotation();
     }
 
     /**
      * @return the encoder position of the right motors in m
      */
     public double getRightPosition() {
-        return driveTrainVariant.getRightPositionRotations() *
-                getMetresPerRotation();
+        return driveTrainVariant.getRightPositionRotations() * getMetresPerRotation();
     }
 
     /**
      * @return the encoder velocity of the left motors in m/s, used for characterization
      */
     public double getLeftVelocity() {
-        return driveTrainVariant.getLeftVelocityRotationsPerSecond() *
-                getMetresPerRotation();
+        return driveTrainVariant.getLeftVelocityRPS() * getMetresPerRotation();
     }
 
     /**
      * @return the encoder velocity of the right motors in m/s, used for characterization
      */
     public double getRightVelocity() {
-        return driveTrainVariant.getRightVelocityRotationsPerSecond() *
-                getMetresPerRotation();
+        return driveTrainVariant.getRightVelocityRPS() * getMetresPerRotation();
     }
 
     /**

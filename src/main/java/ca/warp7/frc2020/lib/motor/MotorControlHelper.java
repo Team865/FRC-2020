@@ -64,6 +64,7 @@ public class MotorControlHelper {
      * @param master     the master motor controller to follow
      * @param deviceID   the CAN id
      * @param invertType the invert type
+     * @return the follower TalonFX object
      */
     public static TalonFX assignFollowerTalonFX(
             BaseMotorController master,

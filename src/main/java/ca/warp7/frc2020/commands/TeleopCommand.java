@@ -23,22 +23,26 @@ public class TeleopCommand extends CommandBase {
             new KinematicsDriveCommand(this::getXSpeed, this::getZRotation, this::isQuickTurn) :
             new PercentDriveCommand(this::getXSpeed, this::getZRotation, this::isQuickTurn);
 
-    //    private Command visionAlignCommand = new VisionAlignCommand(this::getVisionAlignSpeed);
-//
-//    private Command controlPanelDisplay = new ControlPanelCommand(this::getControlPanelSpinnerSpeed);
-    private Command feedCommand = new FeedCommand(this::getFeedSpeed);
-    private Command intakingCommand = new IntakingCommand(this::getIntakeSpeed);
-    private Command flywheelSpeedCommand = new FlywheelSpeedCommand(this::getWantedFlywheelRPS);
-
     private Command climbSpeedOptionalCommand = Constants.isPracticeRobot() ?
             new InstantCommand() :
             new ClimbSpeedCommand(this::getClimbSpeed);
 
+//  private Command visionAlignCommand = new VisionAlignCommand(this::getVisionAlignSpeed);
+//  private Command controlPanelDisplay = new ControlPanelCommand(this::getControlPanelSpinnerSpeed);
+
+    private Command feedCommand = new FeedCommand(this::getFeedSpeed);
+    private Command intakingCommand = new IntakingCommand(this::getIntakeSpeed);
+    private Command flywheelSpeedCommand = new FlywheelSpeedCommand(this::getWantedFlywheelRPS);
+
+    private Command resetRobotStateCommand = SingleFunctionCommand.getResetRobotState();
+    private Command robotStateEstimationCommand = SingleFunctionCommand.getRobotStateEstimation();
     private Command setLowGearDriveCommand = SingleFunctionCommand.getSetDriveLowGear();
     private Command setHighGearDriveCommand = SingleFunctionCommand.getSetDriveHighGear();
-//
-//     private Command lockHangingClimberCommand = SingleFunctionCommand.getClimbLockToggle();
-//     private Command flywheelHoodToggleCommand = SingleFunctionCommand.getFlywheelHoodToggle();
+    private Command zeroYawCommand = SingleFunctionCommand.getZeroYaw();
+    private Command brakeCommand = SingleFunctionCommand.getSetDriveBrakeMode();
+
+//  private Command lockHangingClimberCommand = SingleFunctionCommand.getClimbLockToggle();
+//  private Command flywheelHoodToggleCommand = SingleFunctionCommand.getFlywheelHoodToggle();
 
     private XboxController driver = new XboxController(0);
     private XboxController operator = new XboxController(1);
@@ -107,10 +111,10 @@ public class TeleopCommand extends CommandBase {
         // controlPanelDisplay.schedule();
         climbSpeedOptionalCommand.schedule();
         intakingCommand.schedule();
-        SingleFunctionCommand.getResetRobotState().schedule();
-        SingleFunctionCommand.getRobotStateEstimation().schedule();
-        SingleFunctionCommand.getZeroYaw().schedule();
-        SingleFunctionCommand.getSetDriveBrakeMode().schedule();
+        resetRobotStateCommand.schedule();
+        robotStateEstimationCommand.schedule();
+        zeroYawCommand.schedule();
+        brakeCommand.schedule();
     }
 
     @Override

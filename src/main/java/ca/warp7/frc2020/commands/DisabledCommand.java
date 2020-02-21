@@ -18,5 +18,6 @@ public class DisabledCommand extends CommandBase {
     
     @Override
     public void initialize() {
+        SingleFunctionCommand.getSetDriveCoastMode().schedule();
     }
 }

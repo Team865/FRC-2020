@@ -16,7 +16,7 @@ public class SingleFunctionCommand {
     public static Command getSetDriveHighGear() {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new InstantCommand(() -> {
-            driveTrain.configureRampRate(0.3);
+            driveTrain.configureRampRate(kHighGearRampRate);
             driveTrain.configurePID(kTeleopHighGearVelocityPID);
             driveTrain.setHighGear(true);
         });
@@ -25,7 +25,7 @@ public class SingleFunctionCommand {
     public static Command  getSetDriveLowGear() {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new InstantCommand(() -> {
-            driveTrain.configureRampRate(0.15);
+            driveTrain.configureRampRate(kLowGearRampRate);
             driveTrain.configurePID(kTeleopLowGearVelocityPID);
             driveTrain.setHighGear(false);
         });
@@ -37,6 +37,16 @@ public class SingleFunctionCommand {
             driveTrain.configurePID(kAutonLowGearVelocityPID);
             driveTrain.setHighGear(false);
         });
+    }
+
+    public static Command getSetDriveBrakeMode() {
+        DriveTrain driveTrain = DriveTrain.getInstance();
+        return new InstantCommand(driveTrain::setBrake);
+    }
+
+    public static Command getSetDriveCoastMode() {
+        DriveTrain driveTrain = DriveTrain.getInstance();
+        return new InstantCommand(driveTrain::setCoast);
     }
 
     public static Command getClimbLockToggle() {
@@ -75,11 +85,13 @@ public class SingleFunctionCommand {
     }
 
     public static Command getStartCompressor() {
-        return new InstantCommand(CompressorSingleton.getInstance()::start);
+        Compressor compressor = CompressorSingleton.getInstance();
+        return new InstantCommand(compressor::start);
     }
 
     public static Command getStopCompressor() {
-        return new InstantCommand(CompressorSingleton.getInstance()::stop);
+        Compressor compressor = CompressorSingleton.getInstance();
+        return new InstantCommand(compressor::stop);
     }
 
     /**

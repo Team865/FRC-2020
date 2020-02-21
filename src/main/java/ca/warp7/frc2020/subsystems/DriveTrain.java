@@ -289,6 +289,20 @@ public final class DriveTrain implements Subsystem {
     }
 
     /**
+     * Set the drive train's neutral mode to coast
+     */
+    public void setCoast() {
+        driveTrainVariant.setCoast();
+    }
+
+    /**
+     * Set the drive train's neutral mode to brake
+     */
+    public void setBrake() {
+        driveTrainVariant.setBrake();
+    }
+
+    /**
      * Disables the drive motors
      */
     public void neutralOutput() {

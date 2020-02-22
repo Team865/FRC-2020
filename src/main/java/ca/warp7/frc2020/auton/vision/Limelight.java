@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Transform2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 @SuppressWarnings("unused")
 public class Limelight {
@@ -17,6 +18,7 @@ public class Limelight {
     private NetworkTableEntry tv = table.getEntry("tv");
     private NetworkTableEntry tx = table.getEntry("tx");
     private NetworkTableEntry ty = table.getEntry("ty");
+    private NetworkTableEntry tl = table.getEntry("tl");
 
     public static Limelight getInstance() {
         if (instance == null) instance = new Limelight();
@@ -35,6 +37,9 @@ public class Limelight {
         return ty.getDouble(Double.NaN);
     }
 
+    public double getLatencySeconds() {
+        return tl.getDouble(0.0)/1000;
+    }
 
     // the center location of the power ports on the field
     private static final Pose2d kTargetToField = new Pose2d(0.0, 1.7, Rotation2d.fromDegrees(-180));
@@ -44,7 +49,7 @@ public class Limelight {
     private static final double kTargetCentreHeight = 2.27965;
 
     // the height of the camera relative to the carpet in metres todo
-    private static final double kCameraHeight = 0.0;
+    private static final double kCameraHeight = 32.0 * 0.0254;
 
     // the transform from the camera lens to the centre of rotation of the robot todo
     private static final Transform2d kCameraToRobot =
@@ -52,13 +57,13 @@ public class Limelight {
 
     // the angle that the camera is mounted relative to the horizontal in degrees.
     // up is positive todo
-    private static final double kCameraMountingAngle = 0.0;
+    private static final double kCameraMountingAngle = 25.5;
 
     // the relative height between the camera and the target
     private static final double kCameraToTargetHeight = kTargetCentreHeight - kCameraHeight;
 
     public double getCameraToTarget() {
-        return kCameraToTargetHeight / Math.tan(getVerticalOffset() + kCameraMountingAngle);
+        return kCameraToTargetHeight / Math.tan(Math.toRadians(getVerticalOffset() + kCameraMountingAngle));
     }
 
     /**
@@ -86,8 +91,15 @@ public class Limelight {
         Rotation2d angle = camera_to_target_angle.plus(Rotation2d.fromDegrees(x));
         double relative_x = camera_to_target_dist * angle.getCos();
         double relative_y = camera_to_target_dist * angle.getSin();
-
+        SmartDashboard.putNumber("lim_X", relative_x);
+        SmartDashboard.putNumber("lim_Y", relative_y);
+        SmartDashboard.putNumber("lim_theta", angle.getDegrees());
+        SmartDashboard.putNumber("lim_mag", camera_to_target_dist);
         return new Pose2d(new Translation2d(relative_x, relative_y), angle)
                 .relativeTo(new Pose2d().plus(kCameraToRobot));
+    }
+
+    public Pose2d getRobotToTarget() {
+        return getRobotToTarget(new Pose2d());
     }
 }

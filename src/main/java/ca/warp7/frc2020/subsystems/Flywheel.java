@@ -26,7 +26,7 @@ public final class Flywheel implements Subsystem {
     }
 
     private CANSparkMax flywheelMasterNeo = MotorControlHelper.createMasterSparkMAX(kFlywheelShooterMasterID);
-//    private Solenoid flywheelHoodPiston = new Solenoid(kFlywheelHoodActuatorID);
+    private Solenoid flywheelHoodPiston = new Solenoid(kFlywheelHoodActuatorID);
 
     private Flywheel() {
         flywheelMasterNeo.setIdleMode(IdleMode.kCoast);
@@ -47,6 +47,9 @@ public final class Flywheel implements Subsystem {
     public double getError() {
         return targetRPS - getRPS();
     }
+    public double getPercentError() {
+        return getError()/targetRPS;
+    }
 
     public void calcOutput() {
         this.setVoltage((targetRPS + getError() * kFlywheelKp) * kFlywheelKv + kFlywheelKs);
@@ -57,15 +60,14 @@ public final class Flywheel implements Subsystem {
     }
 
     public void setHoodCloseShot(boolean hoodCloseShot) {
-//        flywheelHoodPiston.set(up);
+        flywheelHoodPiston.set(hoodCloseShot);
     }
 
     public boolean isHoodCloseShot() {
-        return true;
-//        return flywheelHoodPiston.get();
+        return flywheelHoodPiston.get();
     }
 
     public void toggleHood() {
-//        setHoodCloseShot(!isHoodCloseShot());
+        setHoodCloseShot(!isHoodCloseShot());
     }
 }

@@ -74,7 +74,7 @@ public final class Constants {
     public static final PID kTeleopHighGearVelocityPID =
             new PID(0.0, 0.0, 0.0, 0.0);
     public static final PID kVisionAlignmentYawPID =
-            new PID(0.1, 0.0, 0.2, 0.0);
+            new PID(0.02, 0.0, 10, 0.0);
 
     // Flywheel Tuning
 
@@ -99,6 +99,7 @@ public final class Constants {
     //Hopper constants
 
     public static final double kHopperSpeed = 0.6; //percent
+
     // Drive Train Constants
 
     public static final double kWheelBaseRadius = 0.35; // metres

@@ -27,7 +27,7 @@ def getLatestGitCommitHash = { ->
 }
 
 buildConfig {
-    packageName("ca.warp7.frc2020.lib")
+    packageName("ca.warp7.frc2020")
 
     buildConfigField("String", "kDeployUser", "\"${System.getProperty("user.name")}\"")
     buildConfigField("String", "kDeployTime", "\"${DATE_FORMAT.format(new Date())}\"")

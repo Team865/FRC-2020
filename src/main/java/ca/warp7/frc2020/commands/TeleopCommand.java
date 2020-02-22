@@ -14,6 +14,7 @@ import ca.warp7.frc2020.lib.XboxController;
 import ca.warp7.frc2020.subsystems.Flywheel;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 /**
  * This class is responsible for scheduling the proper commands while operator
@@ -24,13 +25,16 @@ public class TeleopCommand extends CommandBase {
             new KinematicsDriveCommand(this::getXSpeed, this::getZRotation, this::isQuickTurn) :
             new PercentDriveCommand(this::getXSpeed, this::getZRotation, this::isQuickTurn);
 
-    private Command visionAlignCommand = new VisionAlignCommand(this::getVisionAlignSpeed);
+        private Command visionAlignCommand = new VisionAlignCommand(this::getVisionAlignSpeed);
 
     //    private Command controlPanelDisplay = new ControlPanelCommand(this::getControlPanelSpinnerSpeed);
     private Command feedCommand = new FeedCommand(this::getFeedSpeed);
     private Command intakingCommand = new IntakingCommand(this::getIntakeSpeed);
     private Command flywheelSpeedCommand = new FlywheelSpeedCommand(this::getWantedFlywheelRPS);
-    private Command climbSpeedCommand = new ClimbSpeedCommand(this::getClimbSpeed);
+
+    private Command climbSpeedOptionalCommand = Constants.isPracticeRobot() ?
+            new InstantCommand() :
+            new ClimbSpeedCommand(this::getClimbSpeed);
 
     private Command resetRobotStateCommand = SingleFunctionCommand.getResetRobotState();
     private Command robotStateEstimationCommand = SingleFunctionCommand.getRobotStateEstimation();
@@ -111,11 +115,11 @@ public class TeleopCommand extends CommandBase {
         flywheelSpeedCommand.schedule();
         feedCommand.schedule();
         // controlPanelDisplay.schedule();
-        climbSpeedCommand.schedule();
+        climbSpeedOptionalCommand.schedule();
         intakingCommand.schedule();
         resetRobotStateCommand.schedule();
-        zeroYawCommand.schedule();
         robotStateEstimationCommand.schedule();
+        zeroYawCommand.schedule();
         limelightGetPoseCommand.schedule();
     }
 

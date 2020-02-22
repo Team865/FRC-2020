@@ -12,7 +12,6 @@ import ca.warp7.frc2020.subsystems.*;
 import ca.warp7.frc2020.subsystems.drivetrain.FalconDriveTrainVariant;
 import ca.warp7.frc2020.commands.DisabledCommand;
 import ca.warp7.frc2020.commands.TeleopCommand;
-import ca.warp7.frc2020.lib.BuildConfig;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;

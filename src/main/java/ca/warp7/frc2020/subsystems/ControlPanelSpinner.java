@@ -84,10 +84,6 @@ public final class ControlPanelSpinner implements Subsystem {
         return returnColour;
     }
     
-    //Acsess the RGB precentages inside the returned Color with .red .green and .blue
-    private Color getCurrentColor(){
-        return colorSensor.getColor();
-    }
     
     private CANSparkMax controlPanelMiniNeo = MotorControlHelper.createMasterSparkMAX(kControlPanelManipulatorID);
     private ColorSensorV3 colorSensor = new ColorSensorV3(I2C.Port.kOnboard);

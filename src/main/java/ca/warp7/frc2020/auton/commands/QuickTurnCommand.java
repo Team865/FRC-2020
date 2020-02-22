@@ -95,7 +95,7 @@ public class QuickTurnCommand extends CommandBase {
         DriveTrain driveTrain = DriveTrain.getInstance();
         Limelight limelight = Limelight.getInstance();
         return new QuickTurnCommand(
-                () -> Rotation2d.fromDegrees(-limelight.getHorizontalOffset()),
+                () -> Rotation2d.fromDegrees(-limelight.getHorizontalAngle()),
                 new PIDController(new PID(0.0, 0.0, 0.0, 0.0))
         );
     }

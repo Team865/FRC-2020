@@ -8,8 +8,10 @@
 package ca.warp7.frc2020.commands;
 
 import ca.warp7.frc2020.Constants;
+import ca.warp7.frc2020.auton.commands.VisionAlignCommand;
 import ca.warp7.frc2020.lib.Util;
 import ca.warp7.frc2020.lib.XboxController;
+import ca.warp7.frc2020.subsystems.Flywheel;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -23,9 +25,9 @@ public class TeleopCommand extends CommandBase {
             new KinematicsDriveCommand(this::getXSpeed, this::getZRotation, this::isQuickTurn) :
             new PercentDriveCommand(this::getXSpeed, this::getZRotation, this::isQuickTurn);
 
-    //    private Command visionAlignCommand = new VisionAlignCommand(this::getVisionAlignSpeed);
-//
-//    private Command controlPanelDisplay = new ControlPanelCommand(this::getControlPanelSpinnerSpeed);
+        private Command visionAlignCommand = new VisionAlignCommand(this::getVisionAlignSpeed);
+
+    //    private Command controlPanelDisplay = new ControlPanelCommand(this::getControlPanelSpinnerSpeed);
     private Command feedCommand = new FeedCommand(this::getFeedSpeed);
     private Command intakingCommand = new IntakingCommand(this::getIntakeSpeed);
     private Command flywheelSpeedCommand = new FlywheelSpeedCommand(this::getWantedFlywheelRPS);
@@ -40,9 +42,13 @@ public class TeleopCommand extends CommandBase {
     private Command setLowGearDriveCommand = SingleFunctionCommand.getSetDriveLowGear();
     private Command setHighGearDriveCommand = SingleFunctionCommand.getSetDriveHighGear();
     private Command zeroYawCommand = SingleFunctionCommand.getZeroYaw();
-//
-//     private Command lockHangingClimberCommand = SingleFunctionCommand.getClimbLockToggle();
-//     private Command flywheelHoodToggleCommand = SingleFunctionCommand.getFlywheelHoodToggle();
+    private Command limelightGetPoseCommand = SingleFunctionCommand.getLimelightGetPoseCommand();
+
+
+    private Command climbLockToggleOptionalCommand = Constants.isPracticeRobot() ?
+            new InstantCommand() :
+            SingleFunctionCommand.getClimbLockToggle();
+    private Command flywheelHoodToggleCommand = SingleFunctionCommand.getFlywheelHoodToggle();
 
     private XboxController driver = new XboxController(0);
     private XboxController operator = new XboxController(1);
@@ -89,9 +95,9 @@ public class TeleopCommand extends CommandBase {
         return driver.leftBumper.isHeldDown();
     }
 
-//    private double getVisionAlignSpeed() {
-//        return getXSpeed() / 2.0;
-//    }
+    private double getVisionAlignSpeed() {
+        return getXSpeed() / 2.0;
+    }
 
     private double getFeedSpeed() {
         return Util.applyDeadband(driver.rightTrigger, 0.2) * (isReversed ? -1 : 1);
@@ -99,21 +105,24 @@ public class TeleopCommand extends CommandBase {
 
 
     private double getClimbSpeed() {
-        return Util.applyDeadband(operator.rightY, 0.5);
+        return Util.applyDeadband(operator.rightY, 0.3);
     }
 
     @Override
     public void initialize() {
+        farShotAdjustment = 0.0;
+        closeShotAdjustment = 0.0;
+
         setLowGearDriveCommand.schedule();
         curvatureDriveCommand.schedule();
         flywheelSpeedCommand.schedule();
         feedCommand.schedule();
         // controlPanelDisplay.schedule();
-        climbSpeedOptionalCommand.schedule();
         intakingCommand.schedule();
         resetRobotStateCommand.schedule();
         robotStateEstimationCommand.schedule();
         zeroYawCommand.schedule();
+        limelightGetPoseCommand.schedule();
     }
 
     @Override
@@ -135,22 +144,22 @@ public class TeleopCommand extends CommandBase {
 
         isReversed = driver.yButton.isHeldDown();
 
-//         if (driver.aButton.isPressed())
-//             visionAlignCommand.schedule();
-//         else if (driver.aButton.isReleased())
-//             visionAlignCommand.cancel();
+        if (driver.aButton.isPressed())
+            visionAlignCommand.schedule();
+        else if (driver.aButton.isReleased())
+            visionAlignCommand.cancel();
 
         // Operator
         if (operator.rightBumper.isDown()) {
             isPriming = true;
             isClose = false;
-//            if (operator.rightBumper.isPressed() && Flywheel.getInstance().getHood())
-//                flywheelHoodToggleCommand.schedule();
+            if (operator.rightBumper.isPressed() && Flywheel.getInstance().isHoodCloseShot())
+                flywheelHoodToggleCommand.schedule();
         } else if (operator.leftBumper.isDown()) {
             isPriming = true;
             isClose = true;
-//            if (operator.leftBumper.isPressed() && !Flywheel.getInstance().getHood())
-//                flywheelHoodToggleCommand.schedule();
+            if (operator.leftBumper.isPressed() && !Flywheel.getInstance().isHoodCloseShot())
+                flywheelHoodToggleCommand.schedule();
         } else
             isPriming = false;
 
@@ -166,8 +175,8 @@ public class TeleopCommand extends CommandBase {
         if (operator.yButton.isPressed()) {
             closeShotAdjustment -= 0.5;
         }
-//
-//         if (operator.backButton.isPressed())
-//             lockHangingClimberCommand.schedule();
+
+        if (operator.backButton.isPressed())
+            climbLockToggleOptionalCommand.schedule();
     }
 }

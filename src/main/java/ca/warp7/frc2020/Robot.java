@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public final class Robot extends TimedRobot {
 
     private CommandScheduler scheduler;
-    
+
     private Command disabledCommand;
     private Command teleopCommand;
     private Command autonomousCommand;

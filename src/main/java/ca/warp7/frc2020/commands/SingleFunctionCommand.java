@@ -1,5 +1,6 @@
 package ca.warp7.frc2020.commands;
 
+import ca.warp7.frc2020.auton.vision.Limelight;
 import ca.warp7.frc2020.subsystems.Climber;
 import ca.warp7.frc2020.subsystems.DriveTrain;
 import ca.warp7.frc2020.subsystems.Flywheel;
@@ -82,6 +83,11 @@ public class SingleFunctionCommand {
     public static Command getFlywheelHoodToggle() {
         Flywheel flywheel = Flywheel.getInstance();
         return new InstantCommand(flywheel::toggleHood);
+    }
+
+    public static Command getLimelightGetPoseCommand() {
+        Limelight limelight = Limelight.getInstance();
+        return new RunCommand(limelight::getRobotToTarget);
     }
 
     public static Command getStartCompressor() {

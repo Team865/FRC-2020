@@ -20,4 +20,8 @@ public class Util {
             return 0.0;
         }
     }
+
+    public static boolean epsilonEquals(double a, double b, double epsilon) {
+        return Math.abs(a - b) <= epsilon;
+    }
 }

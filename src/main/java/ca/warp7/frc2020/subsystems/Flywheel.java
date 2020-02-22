@@ -7,6 +7,7 @@
 
 package ca.warp7.frc2020.subsystems;
 
+import ca.warp7.frc2020.lib.LazySolenoid;
 import ca.warp7.frc2020.lib.motor.MotorControlHelper;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -25,13 +26,13 @@ public final class Flywheel implements Subsystem {
 
     private CANSparkMax flywheelMasterNeo = MotorControlHelper.createMasterSparkMAX(kFlywheelShooterMasterID);
 
-//    private LazySolenoid flywheelHoodPiston =
-//            new LazySolenoid(kFlywheelHoodActuatorID, kEnableSolenoids);
+    private LazySolenoid flywheelHoodPiston =
+            new LazySolenoid(kFlywheelHoodActuatorID, kEnableSolenoids);
 
     private Flywheel() {
         flywheelMasterNeo.setIdleMode(IdleMode.kCoast);
         flywheelMasterNeo.setOpenLoopRampRate(3.0);
-        flywheelMasterNeo.enableVoltageCompensation(12);
+        flywheelMasterNeo.enableVoltageCompensation(12.0);
         MotorControlHelper.assignFollowerSparkMAX(flywheelMasterNeo, kFlywheelShooterFollowerID, true);
     }
 
@@ -47,25 +48,27 @@ public final class Flywheel implements Subsystem {
     public double getError() {
         return targetRPS - getRPS();
     }
+    public double getPercentError() {
+        return getError()/targetRPS;
+    }
 
     public void calcOutput() {
         this.setVoltage((targetRPS + getError() * kFlywheelKp) * kFlywheelKv + kFlywheelKs);
     }
 
     public void setVoltage(double voltage) {
-        flywheelMasterNeo.setVoltage(voltage);
+        flywheelMasterNeo.set(voltage/12);
     }
 
     public void setHoodCloseShot(boolean hoodCloseShot) {
-//        flywheelHoodPiston.set(up);
+        flywheelHoodPiston.set(hoodCloseShot);
     }
 
     public boolean isHoodCloseShot() {
-        return true;
-//        return flywheelHoodPiston.get();
+        return flywheelHoodPiston.get();
     }
 
     public void toggleHood() {
-//        setHoodCloseShot(!isHoodCloseShot());
+        setHoodCloseShot(!isHoodCloseShot());
     }
 }

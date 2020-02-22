@@ -8,13 +8,13 @@
 package ca.warp7.frc2020;
 
 import ca.warp7.frc2020.auton.AutonomousCommand;
-import ca.warp7.frc2020.lib.VersionControl;
 import ca.warp7.frc2020.subsystems.*;
 import ca.warp7.frc2020.subsystems.drivetrain.FalconDriveTrainVariant;
 import ca.warp7.frc2020.commands.DisabledCommand;
 import ca.warp7.frc2020.commands.TeleopCommand;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public final class Robot extends TimedRobot {
 
     private CommandScheduler scheduler;
-    
+
     private Command disabledCommand;
     private Command teleopCommand;
     private Command autonomousCommand;
@@ -42,7 +42,9 @@ public final class Robot extends TimedRobot {
         System.out.println("Hello me is robit!");
 
         // Print out software version
-        VersionControl.printVersionInfo();
+        SmartDashboard.putString("Build Data", BuildConfig.kDeployTime);
+        SmartDashboard.putString("Deploy User", BuildConfig.kDeployUser);
+        SmartDashboard.putString("Git Revision", BuildConfig.kGitRevision);
 
         DriveTrain.setVariant(new FalconDriveTrainVariant());
 
@@ -61,9 +63,11 @@ public final class Robot extends TimedRobot {
                 Feeder.getInstance(),
                 Hopper.getInstance(),
                 Intake.getInstance()
-                // Climber.getInstance(),
-                // ControlPanelSpinner.getInstance()
         );
+
+        if (!Constants.isPracticeRobot()) {
+            scheduler.registerSubsystem(Climber.getInstance());
+        }
 
         // Create commands
         disabledCommand = new DisabledCommand();

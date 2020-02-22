@@ -21,8 +21,6 @@ import static ca.warp7.frc2020.Constants.*;
 public class FlywheelSpeedCommand extends CommandBase {
     private DoubleSupplier wantedRPS;
     private Flywheel flywheel = Flywheel.getInstance();
-    public double prev = 0.0;
-    public double pt = 0.0;
 
     public FlywheelSpeedCommand(DoubleSupplier wantedRPS) {
         this.wantedRPS = wantedRPS;
@@ -30,23 +28,14 @@ public class FlywheelSpeedCommand extends CommandBase {
     }
 
     @Override
-    public void initialize() {
-        pt = Timer.getFPGATimestamp();
-    }
-
-    @Override
     public void execute() {
-
         double targetRPS;
-
         targetRPS = wantedRPS.getAsDouble();
         flywheel.setTargetRPS(targetRPS);
         flywheel.calcOutput();
         double currentRPS = flywheel.getRPS();
-        double t = Timer.getFPGATimestamp();
-        SmartDashboard.putNumber("Acceleration", (currentRPS - prev) / (t - pt));
-        prev = currentRPS;
-        pt = t;
+        SmartDashboard.putNumber("rps", currentRPS);
+        SmartDashboard.putNumber("err", targetRPS-currentRPS);
     }
 
     @Override

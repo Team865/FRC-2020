@@ -29,11 +29,11 @@ public class Limelight {
         return tv.getDouble(0.0) != 0;
     }
 
-    public double getHorizontalOffset() {
+    public double getHorizontalAngle() {
         return tx.getDouble(Double.NaN);
     }
 
-    public double getVerticalOffset() {
+    public double getVerticalAngle() {
         return ty.getDouble(Double.NaN);
     }
 
@@ -63,7 +63,7 @@ public class Limelight {
     private static final double kCameraToTargetHeight = kTargetCentreHeight - kCameraHeight;
 
     public double getCameraToTarget() {
-        return kCameraToTargetHeight / Math.tan(Math.toRadians(getVerticalOffset() + kCameraMountingAngle));
+        return kCameraToTargetHeight / Math.tan(Math.toRadians(getVerticalAngle() + kCameraMountingAngle));
     }
 
     /**
@@ -80,7 +80,7 @@ public class Limelight {
             return kTargetToField.relativeTo(robotToFieldEstimation);
         }
 
-        double x = getHorizontalOffset();
+        double x = getHorizontalAngle();
         double camera_to_target_dist = getCameraToTarget();
 
         Pose2d camera_to_field_estimation = kTargetToField

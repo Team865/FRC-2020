@@ -44,7 +44,10 @@ public class TeleopCommand extends CommandBase {
     private Command zeroYawCommand = SingleFunctionCommand.getZeroYaw();
     private Command limelightGetPoseCommand = SingleFunctionCommand.getLimelightGetPoseCommand();
 
-    private Command lockHangingClimberCommand = SingleFunctionCommand.getClimbLockToggle();
+
+    private Command climbLockToggleOptionalCommand = Constants.isPracticeRobot() ?
+            new InstantCommand() :
+            SingleFunctionCommand.getClimbLockToggle();
     private Command flywheelHoodToggleCommand = SingleFunctionCommand.getFlywheelHoodToggle();
 
     private XboxController driver = new XboxController(0);
@@ -115,7 +118,6 @@ public class TeleopCommand extends CommandBase {
         flywheelSpeedCommand.schedule();
         feedCommand.schedule();
         // controlPanelDisplay.schedule();
-        climbSpeedOptionalCommand.schedule();
         intakingCommand.schedule();
         resetRobotStateCommand.schedule();
         robotStateEstimationCommand.schedule();
@@ -173,7 +175,8 @@ public class TeleopCommand extends CommandBase {
         if (operator.yButton.isPressed()) {
             closeShotAdjustment -= 0.5;
         }
+
         if (operator.backButton.isPressed())
-            lockHangingClimberCommand.schedule();
+            climbLockToggleOptionalCommand.schedule();
     }
 }

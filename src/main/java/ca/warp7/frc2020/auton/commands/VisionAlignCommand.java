@@ -50,10 +50,10 @@ public class VisionAlignCommand extends CommandBase {
             double angularVelocity = (prevAngle - angle) / (prevT - t);
             double latency = limelight.getLatencySeconds();
 
-            double tx = limelight.getHorizontalOffset() - angularVelocity * latency;
+            double adjustedHorizontalAngle = limelight.getHorizontalAngle() + -1 * angularVelocity * latency;
             double ff = driveTrain.getTransmission().ks / kMaxVoltage;
 
-            double correction = pidController.calculate(0, tx);
+            double correction = pidController.calculate(0, adjustedHorizontalAngle);
             double left = speed - correction;
             double right = speed + correction;
 

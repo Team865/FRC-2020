@@ -7,17 +7,17 @@
 
 package ca.warp7.frc2020.subsystems;
 
+import ca.warp7.frc2020.lib.LazySolenoid;
 import ca.warp7.frc2020.lib.motor.MotorControlHelper;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
-
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 import static ca.warp7.frc2020.Constants.*;
 
 public final class Flywheel implements Subsystem {
     private static Flywheel instance;
+    private double targetRPS;
 
     public static Flywheel getInstance() {
         if (instance == null) instance = new Flywheel();
@@ -25,32 +25,50 @@ public final class Flywheel implements Subsystem {
     }
 
     private CANSparkMax flywheelMasterNeo = MotorControlHelper.createMasterSparkMAX(kFlywheelShooterMasterID);
-//    private Solenoid flywheelHoodPiston = new Solenoid(kFlywheelHoodActuatorID);
+
+    private LazySolenoid flywheelHoodPiston =
+            new LazySolenoid(kFlywheelHoodActuatorID, kEnableSolenoids);
 
     private Flywheel() {
         flywheelMasterNeo.setIdleMode(IdleMode.kCoast);
         flywheelMasterNeo.setOpenLoopRampRate(3.0);
+        flywheelMasterNeo.enableVoltageCompensation(12.0);
         MotorControlHelper.assignFollowerSparkMAX(flywheelMasterNeo, kFlywheelShooterFollowerID, true);
     }
 
-    public double getRotationsPerSecond() {
+    public double getRPS() {
         return flywheelMasterNeo.getEncoder().getVelocity() / kFlywheelGearRatio / 60;
     }
 
+    public void setTargetRPS(double target) {
+        this.targetRPS = target;
+    }
+
+
+    public double getError() {
+        return targetRPS - getRPS();
+    }
+    public double getPercentError() {
+        return getError()/targetRPS;
+    }
+
+    public void calcOutput() {
+        this.setVoltage((targetRPS + getError() * kFlywheelKp) * kFlywheelKv + kFlywheelKs);
+    }
+
     public void setVoltage(double voltage) {
-        flywheelMasterNeo.setVoltage(voltage);
+        flywheelMasterNeo.set(voltage/12);
     }
 
     public void setHoodCloseShot(boolean hoodCloseShot) {
-//        flywheelHoodPiston.set(up);
+        flywheelHoodPiston.set(hoodCloseShot);
     }
 
     public boolean isHoodCloseShot() {
-        return false;
-//        return flywheelHoodPiston.get();
+        return flywheelHoodPiston.get();
     }
 
     public void toggleHood() {
-//        setHood(!getHood());
+        setHoodCloseShot(!isHoodCloseShot());
     }
 }

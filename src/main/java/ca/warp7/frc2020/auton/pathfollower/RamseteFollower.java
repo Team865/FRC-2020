@@ -30,7 +30,7 @@ public class RamseteFollower implements PathFollower {
 
         double angularError = error.getRotation().getRadians();
 
-        double sinRatio = Math.abs(angularError) < 1E9 ?
+        double sinRatio = Math.abs(angularError) < 1E-9 ?
                 1.0 - 1.0 / 6.0 * angularError * angularError
                 : error.getRotation().getSin() / angularError;
 

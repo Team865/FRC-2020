@@ -15,7 +15,6 @@ Colour sensor documentation link
 http://www.revrobotics.com/content/sw/color-sensor-v3/sdk/docs/javadoc/com/revrobotics/ColorSensorV3.html
 */
 import com.revrobotics.ColorSensorV3;
-
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -23,8 +22,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static ca.warp7.frc2020.Constants.kControlPanelManipulatorID;
 
+/*
+Colour sensor documentation link
+http://www.revrobotics.com/content/sw/color-sensor-v3/sdk/docs/javadoc/com/revrobotics/ColorSensorV3.html
+*/
+
 public final class ControlPanelSpinner implements Subsystem {
-    
+
     private static ControlPanelSpinner instance;
 
     //These are calibration vars, if you're getting too high or
@@ -86,17 +90,16 @@ public final class ControlPanelSpinner implements Subsystem {
     }
     
     private CANSparkMax controlPanelMiniNeo = MotorControlHelper.createMasterSparkMAX(kControlPanelManipulatorID);
-    
     private ColorSensorV3 colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
-    
+
+    //Acsess the RGB precentages inside the returned Color with .red .green and .blue
+    private Color getCurrentColor() {
+        return colorSensor.getColor();
+    }
+
     public void setSpeed(double speed) {
         controlPanelMiniNeo.set(speed);
     }
-    
-    public ColorSensorV3 getColorSensor() {
-        return colorSensor;
-    }
-    
     
     /*
     Enum to be used to represent one of the 4 colours on

@@ -4,6 +4,7 @@ import ca.warp7.frc2020.lib.control.PID;
 import ca.warp7.frc2020.lib.motor.MotorControlHelper;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
@@ -26,10 +27,20 @@ public final class FalconDriveTrainVariant implements DriveTrainVariant {
 
     public FalconDriveTrainVariant() {
         driveRightMasterFalcon.setInverted(true);
+
         driveLeftMasterFalcon.configStatorCurrentLimit(kDriveStatorCurrentLimit, 50);
         driveRightMasterFalcon.configStatorCurrentLimit(kDriveStatorCurrentLimit, 50);
-        MotorControlHelper.assignFollowerTalonFX(driveLeftMasterFalcon, kDriveLeftFollowerID, false);
-        MotorControlHelper.assignFollowerTalonFX(driveRightMasterFalcon, kDriveRightFollowerID, true);
+
+        MotorControlHelper.assignFollowerTalonFX(
+                driveLeftMasterFalcon,
+                kDriveLeftFollowerID,
+                InvertType.FollowMaster
+        );
+        MotorControlHelper.assignFollowerTalonFX(
+                driveRightMasterFalcon,
+                kDriveRightFollowerID,
+                InvertType.FollowMaster
+        );
     }
 
     @Override
@@ -109,6 +120,16 @@ public final class FalconDriveTrainVariant implements DriveTrainVariant {
     }
 
     @Override
+    public double getLeftVoltage() {
+        return driveLeftMasterFalcon.getMotorOutputVoltage();
+    }
+
+    @Override
+    public double getRightVoltage() {
+        return driveRightMasterFalcon.getMotorOutputVoltage();
+    }
+
+    @Override
     public void neutralOutput() {
         driveLeftMasterFalcon.neutralOutput();
         driveRightMasterFalcon.neutralOutput();
@@ -121,7 +142,20 @@ public final class FalconDriveTrainVariant implements DriveTrainVariant {
     }
 
     @Override
-    public void setVoltage(double leftVoltage, double rightVoltage) {
-        setPercentOutput(leftVoltage / kMaxVoltage, rightVoltage / kMaxVoltage);
+    public double getLeftPIDErrorRotations() {
+        var error = driveLeftMasterFalcon.getClosedLoopError() / kTicksPerRotation;
+        if (driveLeftMasterFalcon.getControlMode() == ControlMode.Velocity) {
+            return error / kVelocityMeasurementPeriod;
+        }
+        return error;
+    }
+
+    @Override
+    public double getRightPIDErrorRotations() {
+        var error = driveRightMasterFalcon.getClosedLoopError() / kTicksPerRotation;
+        if (driveRightMasterFalcon.getControlMode() == ControlMode.Velocity) {
+            return error / kVelocityMeasurementPeriod;
+        }
+        return error;
     }
 }

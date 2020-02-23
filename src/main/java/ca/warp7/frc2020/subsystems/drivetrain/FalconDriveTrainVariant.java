@@ -175,7 +175,7 @@ public final class FalconDriveTrainVariant implements DriveTrainVariant {
             case Velocity:
                 return error / kVelocityMeasurementPeriod;
             default:
-                throw new UnsupportedOperationException();
+                throw new IllegalStateException();
         }
     }
 
@@ -188,7 +188,7 @@ public final class FalconDriveTrainVariant implements DriveTrainVariant {
             case Velocity:
                 return error / kVelocityMeasurementPeriod;
             default:
-                throw new UnsupportedOperationException();
+                throw new IllegalStateException();
         }
     }
 }

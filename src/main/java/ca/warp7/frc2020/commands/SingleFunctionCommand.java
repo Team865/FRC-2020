@@ -1,11 +1,7 @@
 package ca.warp7.frc2020.commands;
 
 import ca.warp7.frc2020.auton.vision.Limelight;
-import ca.warp7.frc2020.subsystems.Climber;
-import ca.warp7.frc2020.subsystems.DriveTrain;
-import ca.warp7.frc2020.subsystems.Flywheel;
-import ca.warp7.frc2020.subsystems.Intake;
-import edu.wpi.first.wpilibj.Compressor;
+import ca.warp7.frc2020.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -23,7 +19,7 @@ public class SingleFunctionCommand {
         });
     }
 
-    public static Command  getSetDriveLowGear() {
+    public static Command getSetDriveLowGear() {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new InstantCommand(() -> {
             driveTrain.configureRampRate(kLowGearRampRate);
@@ -54,7 +50,7 @@ public class SingleFunctionCommand {
         Climber climber = Climber.getInstance();
         return new InstantCommand(climber::toggleLock);
     }
-    
+
     public static Command getZeroYaw() {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new InstantCommand(driveTrain::zeroYaw);
@@ -91,24 +87,12 @@ public class SingleFunctionCommand {
     }
 
     public static Command getStartCompressor() {
-        Compressor compressor = CompressorSingleton.getInstance();
-        return new InstantCommand(compressor::start);
+        Infrastructure infrastructure = Infrastructure.getInstance();
+        return new InstantCommand(infrastructure::startCompressor);
     }
 
     public static Command getStopCompressor() {
-        Compressor compressor = CompressorSingleton.getInstance();
-        return new InstantCommand(compressor::stop);
-    }
-
-    /**
-     * Holds a single compressor object, to be used by start and stop
-     * compressor commands.
-     */
-    private static class CompressorSingleton {
-        private static final Compressor instance = new Compressor();
-
-        public static Compressor getInstance() {
-            return instance;
-        }
+        Infrastructure infrastructure = Infrastructure.getInstance();
+        return new InstantCommand(infrastructure::stopCompressor);
     }
 }

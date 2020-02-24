@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.geometry.Twist2d;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
@@ -132,6 +131,13 @@ public final class DriveTrain implements Subsystem {
     }
 
     /**
+     * Set the current robot state on the field, in m
+     */
+    public void setRobotState(Pose2d robotState) {
+        this.robotState = robotState;
+    }
+
+    /**
      * @return the encoder position of the left motors in m
      */
     public double getLeftPosition() {
@@ -233,22 +239,6 @@ public final class DriveTrain implements Subsystem {
     }
 
     /**
-     * Reset the robot state to the origin
-     */
-    public void resetRobotState() {
-        if (navx.isConnected() && !navx.isCalibrating()) {
-            previousYaw = getYaw();
-            robotState = new Pose2d(new Translation2d(), previousYaw);
-        } else {
-            System.out.println("WARNING the gyro is not connected");
-            previousYaw = null;
-            robotState = new Pose2d();
-        }
-        resetEncoderPosition();
-    }
-
-
-    /**
      * Configured the on-board PID values for the Talons
      *
      * @param pid the PID values
@@ -279,13 +269,8 @@ public final class DriveTrain implements Subsystem {
                 left / metresPerRotation,
                 right / metresPerRotation
         );
-    }
-
-    /**
-     * Reset the encoder position to 0
-     */
-    public void resetEncoderPosition() {
-        setEncoderPosition(0, 0);
+        previousLeftPosition = left;
+        previousRightPosition = right;
     }
 
     /**
@@ -327,7 +312,6 @@ public final class DriveTrain implements Subsystem {
      * @param left  the left position target, in metres
      * @param right the right position target, in metres
      */
-    @SuppressWarnings("unused")
     public void setWheelPositionPID(double left, double right) {
         double metresPerRotation = getMetresPerRotation();
         driveTrainVariant.setPositionPID(

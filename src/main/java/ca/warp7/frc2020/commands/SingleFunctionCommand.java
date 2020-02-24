@@ -3,6 +3,7 @@ package ca.warp7.frc2020.commands;
 import ca.warp7.frc2020.auton.vision.Limelight;
 import ca.warp7.frc2020.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
@@ -46,19 +47,20 @@ public class SingleFunctionCommand {
         return new InstantCommand(driveTrain::setCoast);
     }
 
-    public static Command getClimbLockToggle() {
-        Climber climber = Climber.getInstance();
-        return new InstantCommand(climber::toggleLock);
+    public static Command getDriveServo() {
+        DriveTrain driveTrain = DriveTrain.getInstance();
+        return new FunctionalCommand(
+                () -> driveTrain.setEncoderPosition(0, 0),
+                () -> driveTrain.setWheelPositionPID(0, 0),
+                (interrupted) -> driveTrain.neutralOutput(),
+                () -> false,
+                driveTrain
+        );
     }
 
     public static Command getZeroYaw() {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new InstantCommand(driveTrain::zeroYaw);
-    }
-
-    public static Command getResetRobotState() {
-        DriveTrain driveTrain = DriveTrain.getInstance();
-        return new InstantCommand(driveTrain::resetRobotState);
     }
 
     public static Command getRobotStateEstimation() {
@@ -69,6 +71,11 @@ public class SingleFunctionCommand {
     public static Command getReportRobotState() {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new RunCommand(() -> System.out.println("Robot State: " + driveTrain.getRobotState()));
+    }
+
+    public static Command getClimbLockToggle() {
+        Climber climber = Climber.getInstance();
+        return new InstantCommand(climber::toggleLock);
     }
 
     public static Command getIntakeExtensionToggle() {

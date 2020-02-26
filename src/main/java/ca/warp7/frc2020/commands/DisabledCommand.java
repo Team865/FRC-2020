@@ -7,15 +7,20 @@
 
 package ca.warp7.frc2020.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import ca.warp7.frc2020.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class DisabledCommand extends CommandBase {
 
-    private Command coastCommand = SingleFunctionCommand.getSetDriveCoastMode();
+    private DriveTrain driveTrain = DriveTrain.getInstance();
     
     @Override
     public void initialize() {
-        coastCommand.schedule();
+        driveTrain.setCoast();
+    }
+
+    @Override
+    public boolean runsWhenDisabled() {
+        return true;
     }
 }

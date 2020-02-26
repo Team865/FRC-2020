@@ -25,7 +25,7 @@ public class TeleopCommand extends CommandBase {
             new KinematicsDriveCommand(this::getXSpeed, this::getZRotation, this::isQuickTurn) :
             new PercentDriveCommand(this::getXSpeed, this::getZRotation, this::isQuickTurn);
 
-        private Command visionAlignCommand = new VisionAlignCommand(this::getVisionAlignSpeed);
+    private Command visionAlignCommand = new VisionAlignCommand(this::getVisionAlignSpeed);
 
     //    private Command controlPanelDisplay = new ControlPanelCommand(this::getControlPanelSpinnerSpeed);
     private Command feedCommand = new FeedCommand(this::getFeedSpeed);
@@ -79,10 +79,6 @@ public class TeleopCommand extends CommandBase {
         return 0.0;
     }
 
-//    private double getWantedFlywheelRPS() {
-//        return Constants.flywheelDefaultCloseRPS + closeShotAdjustment;
-//    }
-
     private double getXSpeed() {
         return Util.applyDeadband(-driver.leftY, 0.2);
     }
@@ -100,7 +96,7 @@ public class TeleopCommand extends CommandBase {
     }
 
     private double getFeedSpeed() {
-        return Util.applyDeadband(driver.rightTrigger, 0.2) * (isReversed ? -1 : 1);
+        return 0.7 * Util.applyDeadband(driver.rightTrigger, 0.2) * (isReversed ? -1 : 1);
     }
 
 
@@ -144,10 +140,12 @@ public class TeleopCommand extends CommandBase {
 
         isReversed = driver.yButton.isHeldDown();
 
-        if (driver.aButton.isPressed())
+        if (driver.aButton.isPressed()) {
             visionAlignCommand.schedule();
-        else if (driver.aButton.isReleased())
+        } else if (driver.aButton.isReleased()) {
             visionAlignCommand.cancel();
+            curvatureDriveCommand.schedule();
+        }
 
         // Operator
         if (operator.rightBumper.isDown()) {

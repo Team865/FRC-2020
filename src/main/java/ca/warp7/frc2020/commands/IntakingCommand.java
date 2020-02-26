@@ -8,8 +8,10 @@
 package ca.warp7.frc2020.commands;
 
 import ca.warp7.frc2020.Constants;
+import ca.warp7.frc2020.subsystems.Hopper;
 import ca.warp7.frc2020.subsystems.Intake;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import java.util.function.DoubleSupplier;
@@ -36,10 +38,10 @@ public class IntakingCommand extends CommandBase {
         boolean intaking = intakeSpeed != 0.0;
         intake.setExtended(intaking);
         if (intaking) {
-            intake.setSpeed(0.75 * intakeSpeed);
+            intake.setSpeed(0.5 * intakeSpeed);
             pTime = time;
         } else if (time - pTime < 0.75 && pTime >= 0)
-            intake.setSpeed(0.55);
+            intake.setSpeed(0.4);
         else
             intake.setSpeed(0.0);
     }

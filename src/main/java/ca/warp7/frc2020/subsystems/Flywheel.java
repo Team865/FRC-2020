@@ -48,16 +48,25 @@ public final class Flywheel implements Subsystem {
     public double getError() {
         return targetRPS - getRPS();
     }
+
     public double getPercentError() {
-        return getError()/targetRPS;
+        if (targetRPS != 0)
+            return getError() / targetRPS;
+        else
+            return 0;
     }
 
     public void calcOutput() {
-        this.setVoltage((targetRPS + getError() * kFlywheelKp) * kFlywheelKv + kFlywheelKs);
+        if (targetRPS == 0.0)
+            this.setVoltage(0.0);
+        else
+            this.setVoltage(
+                    (targetRPS + getError() * kFlywheelKp) * kFlywheelKv + kFlywheelKs * Math.signum(targetRPS)
+            );
     }
 
     public void setVoltage(double voltage) {
-        flywheelMasterNeo.set(voltage/12);
+        flywheelMasterNeo.set(voltage / 12);
     }
 
     public void setHoodCloseShot(boolean hoodCloseShot) {

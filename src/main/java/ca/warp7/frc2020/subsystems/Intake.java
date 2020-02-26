@@ -9,8 +9,8 @@ package ca.warp7.frc2020.subsystems;
 
 import ca.warp7.frc2020.lib.LazySolenoid;
 import ca.warp7.frc2020.lib.motor.MotorControlHelper;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.revrobotics.CANSparkMax;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 import static ca.warp7.frc2020.Constants.*;
@@ -23,14 +23,18 @@ public final class Intake implements Subsystem {
         return instance;
     }
 
-    private VictorSPX intakeBagMotor = MotorControlHelper
-            .createMasterVictorSPX(kIntakeID);
+    private CANSparkMax intakeNeo550 = MotorControlHelper
+            .createMasterSparkMAX(kIntakeID);
 
     private LazySolenoid intakeExtensionPiston =
             new LazySolenoid(kIntakeExtensionID, kEnableSolenoids);
 
+    private Intake() {
+        intakeNeo550.setInverted(true);
+    }
+
     public void setSpeed(double speed) {
-        intakeBagMotor.set(ControlMode.PercentOutput, speed);
+        intakeNeo550.set(speed);
     }
 
     public void setExtended(boolean extended) {

@@ -23,6 +23,7 @@ public class VisionAlignCommand extends CommandBase {
     private Limelight limelight = Limelight.getInstance();
     private double prevT;
     private double prevAngle;
+    private Double smoothTargetAngle;
 
     private DoubleSupplier forwardSpeedSupplier;
     private PIDController pidController = new PIDController(Constants.kVisionAlignmentYawPID);
@@ -35,7 +36,8 @@ public class VisionAlignCommand extends CommandBase {
     @Override
     public void initialize() {
         prevT = Timer.getFPGATimestamp();
-        prevAngle = driveTrain.getContinousAngleRadians();
+        prevAngle = driveTrain.getContinousAngleRadians() * 180 / Math.PI;
+        smoothTargetAngle = null;
     }
 
     @Override
@@ -46,14 +48,25 @@ public class VisionAlignCommand extends CommandBase {
 
         if (!limelight.hasValidTarget()) {
             driveTrain.setPercentOutput(speed, speed);
+            smoothTargetAngle = null;
         } else {
-            double angularVelocity = (prevAngle - angle) / (prevT - t);
+            double angleChange = -1 * (prevAngle - angle);
+            double angularVelocity = angleChange / (prevT - t);
             double latency = limelight.getLatencySeconds();
 
-            double adjustedHorizontalAngle = limelight.getHorizontalAngle() + -1 * angularVelocity * latency;
-            double ff = driveTrain.getTransmission().ks / kMaxVoltage;
+            double targetAngle = limelight.getHorizontalAngle() + angularVelocity * latency;
+            if (smoothTargetAngle != null) {
 
-            double correction = pidController.calculate(0, adjustedHorizontalAngle);
+                smoothTargetAngle += angleChange;
+
+                double smoothing = 0.9;
+                smoothTargetAngle = smoothTargetAngle * smoothing + targetAngle * (1 - smoothing);
+            } else
+                smoothTargetAngle = targetAngle;
+
+            double ff = driveTrain.getTransmission().ks / ( kMaxVoltage);
+
+            double correction = pidController.calculate(0, smoothTargetAngle);
             double left = speed - correction;
             double right = speed + correction;
 
@@ -64,5 +77,6 @@ public class VisionAlignCommand extends CommandBase {
         }
 
         prevT = t;
+        prevAngle = angle;
     }
 }

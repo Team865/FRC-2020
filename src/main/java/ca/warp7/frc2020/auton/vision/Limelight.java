@@ -49,7 +49,7 @@ public class Limelight {
     private static final double kTargetCentreHeight = 2.27965;
 
     // the height of the camera relative to the carpet in metres todo
-    private static final double kCameraHeight = 32.0 * 0.0254;
+    private static final double kCameraHeight = 37.0 * 0.0254;
 
     // the transform from the camera lens to the centre of rotation of the robot todo
     private static final Transform2d kCameraToRobot =
@@ -57,7 +57,7 @@ public class Limelight {
 
     // the angle that the camera is mounted relative to the horizontal in degrees.
     // up is positive todo
-    private static final double kCameraMountingAngle = 25.5;
+    private static final double kCameraMountingAngle = 23.7;
 
     // the relative height between the camera and the target
     private static final double kCameraToTargetHeight = kTargetCentreHeight - kCameraHeight;

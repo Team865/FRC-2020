@@ -40,11 +40,11 @@ public final class Constants {
     public static final int kDriveRightMasterID = 34;
     public static final int kDriveRightFollowerID = 33;
 
-    public static final int kFlywheelShooterMasterID = 22;
-    public static final int kFlywheelShooterFollowerID = 20;
+    public static final int kFlywheelShooterMasterID = 20;
+    public static final int kFlywheelShooterFollowerID = 22;
 
     public static final int kHopperID = 24;
-    public static final int kIntakeID = 4;
+    public static final int kIntakeID = 26;
 
     public static final int kClimberMasterID = 6;
     public static final int kClimberFollowerID = 7;
@@ -75,16 +75,16 @@ public final class Constants {
     public static final PID kTeleopHighGearVelocityPID =
             new PID(0.0, 0.0, 0.0, 0.0);
     public static final PID kVisionAlignmentYawPID =
-            new PID(0.02, 0.0, 10, 0.0);
+            new PID(0.025, 0.0, 0.002, 0.0);
 
     // Flywheel Tuning
 
     public static final double flywheelDefaultCloseRPS = 52.0;
     public static final double flywheelFarRPS = 80.0;
-    public static final double kFlywheelKp = 2.14;
-    public static final double kFlywheelKs = 0.0713;
-    public static final double kFlywheelKv = (0.067 + 0.0662) / 2;
-    public static final double kFlywheelKa = (0.0432 + 0.0433) / 2;
+    public static final double kFlywheelKp = 1.94;
+    public static final double kFlywheelKs = 0.0911;
+    public static final double kFlywheelKv = (0.0644 + 0.063) / 2;
+    public static final double kFlywheelKa = (0.0401 + 0.0483) / 2;
     public static final double kFlywheelGearRatio = 1.0 / 2.0; // 0.5
 
     // Intake Constants

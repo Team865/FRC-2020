@@ -49,6 +49,8 @@ public class TeleopCommand extends CommandBase {
             new InstantCommand() :
             SingleFunctionCommand.getClimbLockToggle();
     private Command flywheelHoodToggleCommand = SingleFunctionCommand.getFlywheelHoodToggle();
+    private Command flywheelSetHoodCloseCommand = SingleFunctionCommand.getFlywheelSetHoodCloseCommand();
+    private Command flywheelSetHoodFarCommand = SingleFunctionCommand.getFlywheelSetHoodFarCommand();
 
     private XboxController driver = new XboxController(0);
     private XboxController operator = new XboxController(1);
@@ -70,7 +72,7 @@ public class TeleopCommand extends CommandBase {
 
 
 //    public double getControlPanelSpinnerSpeed() {
-//        return operator.leftTrigger;
+//        return operator.rightX;
 //    }
 
     public double getIntakeSpeed() {
@@ -101,7 +103,7 @@ public class TeleopCommand extends CommandBase {
 
 
     private double getClimbSpeed() {
-        return Util.applyDeadband(operator.rightY, 0.3);
+        return Util.applyDeadband(operator.leftY, 0.3);
     }
 
     @Override
@@ -133,10 +135,11 @@ public class TeleopCommand extends CommandBase {
         else if (driver.rightBumper.isReleased())
             setLowGearDriveCommand.schedule();
 
-        if (isIntaking)
+        if (!isIntaking) {
+            isIntaking = driver.leftTrigger > 0.22;
+        } else {
             isIntaking = driver.leftTrigger > 0.2;
-        else
-            isIntaking = driver.leftTrigger > 0.25;
+        }
 
         isReversed = driver.yButton.isHeldDown();
 
@@ -148,30 +151,25 @@ public class TeleopCommand extends CommandBase {
         }
 
         // Operator
-        if (operator.rightBumper.isDown()) {
+
+        if (operator.leftTrigger > 0.2) {
             isPriming = true;
             isClose = false;
-            if (operator.rightBumper.isPressed() && Flywheel.getInstance().isHoodCloseShot())
-                flywheelHoodToggleCommand.schedule();
-        } else if (operator.leftBumper.isDown()) {
+            flywheelSetHoodCloseCommand.schedule();
+        } else if (operator.rightTrigger > 0.2) {
             isPriming = true;
             isClose = true;
-            if (operator.leftBumper.isPressed() && !Flywheel.getInstance().isHoodCloseShot())
-                flywheelHoodToggleCommand.schedule();
+            flywheelSetHoodFarCommand.schedule();
         } else
             isPriming = false;
 
-        if (operator.aButton.isPressed()) {
-            farShotAdjustment += 0.5;
+        if (operator.leftBumper.isPressed()) {
+            if (isClose) closeShotAdjustment -= 0.5;
+            else farShotAdjustment -= 0.5;
         }
-        if (operator.bButton.isPressed()) {
-            farShotAdjustment -= 0.5;
-        }
-        if (operator.xButton.isPressed()) {
-            closeShotAdjustment += 0.5;
-        }
-        if (operator.yButton.isPressed()) {
-            closeShotAdjustment -= 0.5;
+        if (operator.rightBumper.isPressed()) {
+            if (isClose) closeShotAdjustment += 0.5;
+            else farShotAdjustment += 0.5;
         }
 
         if (operator.backButton.isPressed())

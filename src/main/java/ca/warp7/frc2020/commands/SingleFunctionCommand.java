@@ -23,7 +23,7 @@ public class SingleFunctionCommand {
         });
     }
 
-    public static Command  getSetDriveLowGear() {
+    public static Command getSetDriveLowGear() {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new InstantCommand(() -> {
             driveTrain.configureRampRate(0.15);
@@ -44,7 +44,7 @@ public class SingleFunctionCommand {
         Climber climber = Climber.getInstance();
         return new InstantCommand(climber::toggleLock);
     }
-    
+
     public static Command getZeroYaw() {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new InstantCommand(driveTrain::zeroYaw);
@@ -73,6 +73,16 @@ public class SingleFunctionCommand {
     public static Command getFlywheelHoodToggle() {
         Flywheel flywheel = Flywheel.getInstance();
         return new InstantCommand(flywheel::toggleHood);
+    }
+
+    public static Command getFlywheelSetHoodCloseCommand() {
+        Flywheel flywheel = Flywheel.getInstance();
+        return new InstantCommand(() -> flywheel.setHoodCloseShot(true));
+    }
+
+    public static Command getFlywheelSetHoodFarCommand() {
+        Flywheel flywheel = Flywheel.getInstance();
+        return new InstantCommand(() -> flywheel.setHoodCloseShot(false));
     }
 
     public static Command getLimelightGetPoseCommand() {

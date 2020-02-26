@@ -24,13 +24,17 @@ public interface DriveTrainVariant {
 
     void setEncoderPosition(double leftRotations, double rightRotations);
 
+    void setBrake();
+
+    void setCoast();
+
     double getLeftPositionRotations();
 
     double getRightPositionRotations();
 
-    double getLeftVelocityRotationsPerSecond();
+    double getLeftVelocityRPS();
 
-    double getRightVelocityRotationsPerSecond();
+    double getRightVelocityRPS();
 
     double getLeftVoltage();
 

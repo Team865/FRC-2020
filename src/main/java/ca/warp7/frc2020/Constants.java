@@ -68,6 +68,9 @@ public final class Constants {
 
     // Drive Train Tuning
 
+    public static final double kLowGearRampRate = 0.15;
+    public static final double kHighGearRampRate = 0.3;
+
     public static final PID kAutonLowGearVelocityPID =
             new PID(1.0, 0.0, 5.0, 0.0);
     public static final PID kTeleopLowGearVelocityPID =

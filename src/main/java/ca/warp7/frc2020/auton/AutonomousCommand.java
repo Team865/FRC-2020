@@ -7,14 +7,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class AutonomousCommand extends CommandBase {
 
     private Command zeroYawCommand = SingleFunctionCommand.getZeroYaw();
-    private Command resetRobotStateCommand = SingleFunctionCommand.getResetRobotState();
 
     private AutonomousSelector selector = AutonomousSelector.getInstance();
 
     @Override
     public void initialize() {
         zeroYawCommand.schedule();
-        resetRobotStateCommand.schedule();
 
         Command mode = AutonomousMode.simplePathMode();//selector.getSelectedMode().create();
         if (mode != null) {

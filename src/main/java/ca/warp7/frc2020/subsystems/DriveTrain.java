@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.geometry.Twist2d;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
@@ -45,7 +44,7 @@ public final class DriveTrain implements Subsystem {
     private final LazySolenoid shifterSolenoid =
             new LazySolenoid(kDriveShifterID, kEnableSolenoids);
 
-    private final AHRS navx = new AHRS(I2C.Port.kMXP, (byte) 100);
+    private final AHRS navx = new AHRS(I2C.Port.kMXP);
 
     // the robot is wired so that high gear is the default (off) state
     private boolean isHighGear = true;
@@ -102,7 +101,7 @@ public final class DriveTrain implements Subsystem {
     }
 
     /**
-     * @return the accumulative angle for the gyro, used for characterization
+     * @return the accumulative angle for the gyro
      */
     public double getContinousAngleRadians() {
         return Math.toRadians(-1 * navx.getAngle());
@@ -132,35 +131,38 @@ public final class DriveTrain implements Subsystem {
     }
 
     /**
+     * Set the current robot state on the field, in m
+     */
+    public void setRobotState(Pose2d robotState) {
+        this.robotState = robotState;
+    }
+
+    /**
      * @return the encoder position of the left motors in m
      */
     public double getLeftPosition() {
-        return driveTrainVariant.getLeftPositionRotations() *
-                getMetresPerRotation();
+        return driveTrainVariant.getLeftPositionRotations() * getMetresPerRotation();
     }
 
     /**
      * @return the encoder position of the right motors in m
      */
     public double getRightPosition() {
-        return driveTrainVariant.getRightPositionRotations() *
-                getMetresPerRotation();
+        return driveTrainVariant.getRightPositionRotations() * getMetresPerRotation();
     }
 
     /**
      * @return the encoder velocity of the left motors in m/s, used for characterization
      */
     public double getLeftVelocity() {
-        return driveTrainVariant.getLeftVelocityRotationsPerSecond() *
-                getMetresPerRotation();
+        return driveTrainVariant.getLeftVelocityRPS() * getMetresPerRotation();
     }
 
     /**
      * @return the encoder velocity of the right motors in m/s, used for characterization
      */
     public double getRightVelocity() {
-        return driveTrainVariant.getRightVelocityRotationsPerSecond() *
-                getMetresPerRotation();
+        return driveTrainVariant.getRightVelocityRPS() * getMetresPerRotation();
     }
 
     /**
@@ -215,11 +217,16 @@ public final class DriveTrain implements Subsystem {
             if (previousYaw != null) {
                 angleDelta = currentYaw.minus(previousYaw);
             } else {
+                System.out.println("WARNING the gyro has reconnected");
                 angleDelta = new Rotation2d();
             }
             previousYaw = currentYaw;
         } else {
-            System.out.println("WARNING the gyro is not connected");
+            // Only report the warning if the gyro was connected in the
+            // last loop, or if the loop runs for the first time
+            if (previousYaw != null) {
+                System.out.println("WARNING the gyro has diconnected");
+            }
             // Calculate the angle delta from wheel deltas
             angleDelta = new Rotation2d((rightDelta - leftDelta) / (2 * kWheelBaseRadius));
             previousYaw = null;
@@ -230,22 +237,6 @@ public final class DriveTrain implements Subsystem {
         Twist2d twist = new Twist2d(distanceDelta, 0.0, angleDelta.getRadians());
         robotState = robotState.exp(twist);
     }
-
-    /**
-     * Reset the robot state to the origin
-     */
-    public void resetRobotState() {
-        if (navx.isConnected() && !navx.isCalibrating()) {
-            previousYaw = getYaw();
-            robotState = new Pose2d(new Translation2d(), previousYaw);
-        } else {
-            System.out.println("WARNING the gyro is not connected");
-            previousYaw = null;
-            robotState = new Pose2d();
-        }
-        resetEncoderPosition();
-    }
-
 
     /**
      * Configured the on-board PID values for the Talons
@@ -278,13 +269,22 @@ public final class DriveTrain implements Subsystem {
                 left / metresPerRotation,
                 right / metresPerRotation
         );
+        previousLeftPosition = left;
+        previousRightPosition = right;
     }
 
     /**
-     * Reset the encoder position to 0
+     * Set the drive train's neutral mode to coast
      */
-    public void resetEncoderPosition() {
-        setEncoderPosition(0, 0);
+    public void setCoast() {
+        driveTrainVariant.setCoast();
+    }
+
+    /**
+     * Set the drive train's neutral mode to brake
+     */
+    public void setBrake() {
+        driveTrainVariant.setBrake();
     }
 
     /**
@@ -312,7 +312,6 @@ public final class DriveTrain implements Subsystem {
      * @param left  the left position target, in metres
      * @param right the right position target, in metres
      */
-    @SuppressWarnings("unused")
     public void setWheelPositionPID(double left, double right) {
         double metresPerRotation = getMetresPerRotation();
         driveTrainVariant.setPositionPID(

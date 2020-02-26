@@ -92,7 +92,15 @@ public class DriveTrajectoryCommand extends CommandBase {
         driveTrain.setChassisVelocity(correctedVelocity.getLinear(), correctedVelocity.getAngular());
 
         // Write logs
+
+        double v = sample.velocityMetersPerSecond;
+        double w = v * sample.curvatureRadPerMeter;
+
         putNumber("Trajectory Time", trajectoryTime);
+
+        putNumber("Target X (m)", targetPose.getTranslation().getX());
+        putNumber("Target Y (m)", targetPose.getTranslation().getY());
+        putNumber("Target Angle (deg)", targetPose.getRotation().getDegrees());
 
         putNumber("Robot X (m)", robotState.getTranslation().getX());
         putNumber("Robot Y (m)", robotState.getTranslation().getY());
@@ -102,11 +110,14 @@ public class DriveTrajectoryCommand extends CommandBase {
         putNumber("Error Y (m)", error.getTranslation().getY());
         putNumber("Error Angle (deg)", error.getRotation().getDegrees());
 
+        putNumber("Target Linear (m/s)", v);
+        putNumber("Target Angular (deg/s)", Math.toDegrees(w));
+
         putNumber("Corrected Linear (m/s)", correctedVelocity.getLinear());
         putNumber("Corrected Angular (deg/s)", Math.toDegrees(correctedVelocity.getAngular()));
 
         putNumber("Left PID Error (m/s)", driveTrain.getLeftPIDError());
-        putNumber("Right PID Error (m/s)", driveTrain.getLeftPIDError());
+        putNumber("Right PID Error (m/s)", driveTrain.getRightPIDError());
     }
 
     private void tryStartTrajectory() {

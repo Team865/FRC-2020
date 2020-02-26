@@ -8,6 +8,7 @@
 package ca.warp7.frc2020.commands;
 
 import ca.warp7.frc2020.Constants;
+import ca.warp7.frc2020.auton.commands.ResetRobotStateCommand;
 import ca.warp7.frc2020.auton.commands.VisionAlignCommand;
 import ca.warp7.frc2020.lib.Util;
 import ca.warp7.frc2020.lib.XboxController;
@@ -36,12 +37,16 @@ public class TeleopCommand extends CommandBase {
             new InstantCommand() :
             new ClimbSpeedCommand(this::getClimbSpeed);
 
-    private Command resetRobotStateCommand = SingleFunctionCommand.getResetRobotState();
+    private Command resetRobotStateCommand = new ResetRobotStateCommand();
+
     private Command robotStateEstimationCommand = SingleFunctionCommand.getRobotStateEstimation();
-    private Command reportStateCommand = SingleFunctionCommand.getReportRobotState();
     private Command setLowGearDriveCommand = SingleFunctionCommand.getSetDriveLowGear();
     private Command setHighGearDriveCommand = SingleFunctionCommand.getSetDriveHighGear();
     private Command zeroYawCommand = SingleFunctionCommand.getZeroYaw();
+    private Command brakeCommand = SingleFunctionCommand.getSetDriveBrakeMode();
+
+//  private Command lockHangingClimberCommand = SingleFunctionCommand.getClimbLockToggle();
+//  private Command flywheelHoodToggleCommand = SingleFunctionCommand.getFlywheelHoodToggle();
     private Command limelightGetPoseCommand = SingleFunctionCommand.getLimelightGetPoseCommand();
 
 
@@ -116,11 +121,13 @@ public class TeleopCommand extends CommandBase {
         flywheelSpeedCommand.schedule();
         feedCommand.schedule();
         // controlPanelDisplay.schedule();
+        climbSpeedOptionalCommand.schedule();
         intakingCommand.schedule();
         resetRobotStateCommand.schedule();
         robotStateEstimationCommand.schedule();
         zeroYawCommand.schedule();
         limelightGetPoseCommand.schedule();
+        brakeCommand.schedule();
     }
 
     @Override

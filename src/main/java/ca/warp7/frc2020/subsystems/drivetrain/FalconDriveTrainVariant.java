@@ -2,10 +2,7 @@ package ca.warp7.frc2020.subsystems.drivetrain;
 
 import ca.warp7.frc2020.lib.control.PID;
 import ca.warp7.frc2020.lib.motor.MotorControlHelper;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
-import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import static ca.warp7.frc2020.Constants.*;
@@ -22,25 +19,28 @@ public final class FalconDriveTrainVariant implements DriveTrainVariant {
             new StatorCurrentLimitConfiguration(true, kCurrentLimitAfterActivation,
                     kCurrentLimitTriggerThreshold, kCurrentLimitTriggerTime);
 
-    private final TalonFX driveLeftMasterFalcon = MotorControlHelper.createMasterTalonFX(kDriveLeftMasterID);
-    private final TalonFX driveRightMasterFalcon = MotorControlHelper.createMasterTalonFX(kDriveRightMasterID);
+    private final TalonFX driveLeftMasterFalcon =
+            MotorControlHelper.createMasterTalonFX(kDriveLeftMasterID);
+    private final TalonFX driveLeftFollowerFalcon =
+            MotorControlHelper.assignFollowerTalonFX(
+                    driveLeftMasterFalcon,
+                    kDriveLeftFollowerID,
+                    InvertType.FollowMaster
+            );
+
+    private final TalonFX driveRightMasterFalcon =
+            MotorControlHelper.createMasterTalonFX(kDriveRightMasterID);
+    private final TalonFX driveRightFollowerFalcon =
+            MotorControlHelper.assignFollowerTalonFX(
+                    driveRightMasterFalcon,
+                    kDriveRightFollowerID,
+                    InvertType.FollowMaster
+            );
 
     public FalconDriveTrainVariant() {
         driveRightMasterFalcon.setInverted(true);
-
-        driveLeftMasterFalcon.configStatorCurrentLimit(kDriveStatorCurrentLimit, 50);
-        driveRightMasterFalcon.configStatorCurrentLimit(kDriveStatorCurrentLimit, 50);
-
-        MotorControlHelper.assignFollowerTalonFX(
-                driveLeftMasterFalcon,
-                kDriveLeftFollowerID,
-                InvertType.FollowMaster
-        );
-        MotorControlHelper.assignFollowerTalonFX(
-                driveRightMasterFalcon,
-                kDriveRightFollowerID,
-                InvertType.FollowMaster
-        );
+        driveLeftMasterFalcon.configStatorCurrentLimit(kDriveStatorCurrentLimit);
+        driveRightMasterFalcon.configStatorCurrentLimit(kDriveStatorCurrentLimit);
     }
 
     @Override
@@ -97,6 +97,31 @@ public final class FalconDriveTrainVariant implements DriveTrainVariant {
                 .setSelectedSensorPosition((int) (rightRotations * kTicksPerRotation));
     }
 
+    /*
+    https://phoenix-documentation.readthedocs.io/en/latest/ch13_MC.html#neutral-mode
+
+    Follower motor controllers have separate neutral modes than their masters,
+    so you must choose both. Additionally, you may want to mix your neutral modes
+    to achieve a partial electric brake when using multiple motors.
+     */
+    private void setNeutralMode(NeutralMode mode) {
+        driveLeftMasterFalcon.setNeutralMode(mode);
+        driveLeftFollowerFalcon.setNeutralMode(mode);
+
+        driveRightMasterFalcon.setNeutralMode(mode);
+        driveRightFollowerFalcon.setNeutralMode(mode);
+    }
+
+    @Override
+    public void setBrake() {
+        setNeutralMode(NeutralMode.Brake);
+    }
+
+    @Override
+    public void setCoast() {
+        setNeutralMode(NeutralMode.Coast);
+    }
+
     @Override
     public double getLeftPositionRotations() {
         return driveLeftMasterFalcon.getSelectedSensorPosition() / kTicksPerRotation;
@@ -108,13 +133,13 @@ public final class FalconDriveTrainVariant implements DriveTrainVariant {
     }
 
     @Override
-    public double getLeftVelocityRotationsPerSecond() {
+    public double getLeftVelocityRPS() {
         return driveLeftMasterFalcon.getSelectedSensorVelocity() /
                 kTicksPerRotation / kVelocityMeasurementPeriod;
     }
 
     @Override
-    public double getRightVelocityRotationsPerSecond() {
+    public double getRightVelocityRPS() {
         return driveRightMasterFalcon.getSelectedSensorVelocity() /
                 kTicksPerRotation / kVelocityMeasurementPeriod;
     }
@@ -144,18 +169,26 @@ public final class FalconDriveTrainVariant implements DriveTrainVariant {
     @Override
     public double getLeftPIDErrorRotations() {
         var error = driveLeftMasterFalcon.getClosedLoopError() / kTicksPerRotation;
-        if (driveLeftMasterFalcon.getControlMode() == ControlMode.Velocity) {
-            return error / kVelocityMeasurementPeriod;
+        switch (driveLeftMasterFalcon.getControlMode()) {
+            case Position:
+                return error;
+            case Velocity:
+                return error / kVelocityMeasurementPeriod;
+            default:
+                throw new IllegalStateException();
         }
-        return error;
     }
 
     @Override
     public double getRightPIDErrorRotations() {
         var error = driveRightMasterFalcon.getClosedLoopError() / kTicksPerRotation;
-        if (driveRightMasterFalcon.getControlMode() == ControlMode.Velocity) {
-            return error / kVelocityMeasurementPeriod;
+        switch (driveRightMasterFalcon.getControlMode()) {
+            case Position:
+                return error;
+            case Velocity:
+                return error / kVelocityMeasurementPeriod;
+            default:
+                throw new IllegalStateException();
         }
-        return error;
     }
 }

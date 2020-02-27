@@ -1,12 +1,9 @@
 package ca.warp7.frc2020.commands;
 
 import ca.warp7.frc2020.auton.vision.Limelight;
-import ca.warp7.frc2020.subsystems.Climber;
-import ca.warp7.frc2020.subsystems.DriveTrain;
-import ca.warp7.frc2020.subsystems.Flywheel;
-import ca.warp7.frc2020.subsystems.Intake;
-import edu.wpi.first.wpilibj.Compressor;
+import ca.warp7.frc2020.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
@@ -17,16 +14,16 @@ public class SingleFunctionCommand {
     public static Command getSetDriveHighGear() {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new InstantCommand(() -> {
-            driveTrain.configureRampRate(0.3);
+            driveTrain.configureRampRate(kHighGearRampRate);
             driveTrain.configurePID(kTeleopHighGearVelocityPID);
             driveTrain.setHighGear(true);
         });
     }
 
-    public static Command  getSetDriveLowGear() {
+    public static Command getSetDriveLowGear() {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new InstantCommand(() -> {
-            driveTrain.configureRampRate(0.15);
+            driveTrain.configureRampRate(kLowGearRampRate);
             driveTrain.configurePID(kTeleopLowGearVelocityPID);
             driveTrain.setHighGear(false);
         });
@@ -40,19 +37,30 @@ public class SingleFunctionCommand {
         });
     }
 
-    public static Command getClimbLockToggle() {
-        Climber climber = Climber.getInstance();
-        return new InstantCommand(climber::toggleLock);
+    public static Command getSetDriveBrakeMode() {
+        DriveTrain driveTrain = DriveTrain.getInstance();
+        return new InstantCommand(driveTrain::setBrake);
     }
-    
+
+    public static Command getSetDriveCoastMode() {
+        DriveTrain driveTrain = DriveTrain.getInstance();
+        return new InstantCommand(driveTrain::setCoast);
+    }
+
+    public static Command getDriveServo() {
+        DriveTrain driveTrain = DriveTrain.getInstance();
+        return new FunctionalCommand(
+                () -> driveTrain.setEncoderPosition(0, 0),
+                () -> driveTrain.setWheelPositionPID(0, 0),
+                (interrupted) -> driveTrain.neutralOutput(),
+                () -> false,
+                driveTrain
+        );
+    }
+
     public static Command getZeroYaw() {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new InstantCommand(driveTrain::zeroYaw);
-    }
-
-    public static Command getResetRobotState() {
-        DriveTrain driveTrain = DriveTrain.getInstance();
-        return new InstantCommand(driveTrain::resetRobotState);
     }
 
     public static Command getRobotStateEstimation() {
@@ -63,6 +71,11 @@ public class SingleFunctionCommand {
     public static Command getReportRobotState() {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new RunCommand(() -> System.out.println("Robot State: " + driveTrain.getRobotState()));
+    }
+
+    public static Command getClimbLockToggle() {
+        Climber climber = Climber.getInstance();
+        return new InstantCommand(climber::toggleLock);
     }
 
     public static Command getIntakeExtensionToggle() {
@@ -81,22 +94,12 @@ public class SingleFunctionCommand {
     }
 
     public static Command getStartCompressor() {
-        return new InstantCommand(CompressorSingleton.getInstance()::start);
+        Infrastructure infrastructure = Infrastructure.getInstance();
+        return new InstantCommand(infrastructure::startCompressor);
     }
 
     public static Command getStopCompressor() {
-        return new InstantCommand(CompressorSingleton.getInstance()::stop);
-    }
-
-    /**
-     * Holds a single compressor object, to be used by start and stop
-     * compressor commands.
-     */
-    private static class CompressorSingleton {
-        private static final Compressor instance = new Compressor();
-
-        public static Compressor getInstance() {
-            return instance;
-        }
+        Infrastructure infrastructure = Infrastructure.getInstance();
+        return new InstantCommand(infrastructure::stopCompressor);
     }
 }

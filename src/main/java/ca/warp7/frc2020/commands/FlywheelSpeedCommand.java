@@ -35,6 +35,7 @@ public class FlywheelSpeedCommand extends CommandBase {
         flywheel.calcOutput();
         double currentRPS = flywheel.getRPS();
         SmartDashboard.putNumber("rps", currentRPS);
+        SmartDashboard.putNumber("target", targetRPS);
         SmartDashboard.putNumber("err", targetRPS-currentRPS);
     }
 

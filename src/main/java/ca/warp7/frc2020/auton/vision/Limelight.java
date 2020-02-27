@@ -20,9 +20,19 @@ public class Limelight {
     private NetworkTableEntry ty = table.getEntry("ty");
     private NetworkTableEntry tl = table.getEntry("tl");
 
+    private Double smoothHorizontalAngle = null;
+
     public static Limelight getInstance() {
         if (instance == null) instance = new Limelight();
         return instance;
+    }
+
+    public void setSmoothHorizontalAngle(Double smoothHorizontalAngle) {
+        this.smoothHorizontalAngle = smoothHorizontalAngle;
+    }
+
+    public Double getSmoothHorizontalAngle() {
+        return this.smoothHorizontalAngle;
     }
 
     public boolean hasValidTarget() {
@@ -38,7 +48,7 @@ public class Limelight {
     }
 
     public double getLatencySeconds() {
-        return tl.getDouble(0.0)/1000;
+        return tl.getDouble(0.0) / 1000;
     }
 
     // the center location of the power ports on the field
@@ -46,10 +56,10 @@ public class Limelight {
 
     // the centre height of the target
     // 81.25 in (bottom) and 17 in (height) -> 89.75in = 2.27965 m
-    private static final double kTargetCentreHeight = 2.27965;
+    private static final double kTargetCentreHeight = 2.26;
 
     // the height of the camera relative to the carpet in metres todo
-    private static final double kCameraHeight = 32.0 * 0.0254;
+    private static final double kCameraHeight = 34.0 * 0.0254;
 
     // the transform from the camera lens to the centre of rotation of the robot todo
     private static final Transform2d kCameraToRobot =
@@ -57,7 +67,7 @@ public class Limelight {
 
     // the angle that the camera is mounted relative to the horizontal in degrees.
     // up is positive todo
-    private static final double kCameraMountingAngle = 25.5;
+    private static final double kCameraMountingAngle = 23.0;
 
     // the relative height between the camera and the target
     private static final double kCameraToTargetHeight = kTargetCentreHeight - kCameraHeight;

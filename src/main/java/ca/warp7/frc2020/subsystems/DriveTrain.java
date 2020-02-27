@@ -372,7 +372,7 @@ public final class DriveTrain implements Subsystem {
     }
 
     /**
-     * Set the chess velocity setpoint for the entire robot
+     * Set the chassis velocity setpoint for the entire robot
      * This method uses a previously stored value of velocity setpoint
      * to calculate acceleration
      *

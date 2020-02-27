@@ -7,10 +7,13 @@
 
 package ca.warp7.frc2020.subsystems;
 
+import ca.warp7.frc2020.Constants;
+import ca.warp7.frc2020.auton.vision.Limelight;
 import ca.warp7.frc2020.lib.LazySolenoid;
 import ca.warp7.frc2020.lib.motor.MotorControlHelper;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 import static ca.warp7.frc2020.Constants.*;
@@ -31,7 +34,7 @@ public final class Flywheel implements Subsystem {
 
     private Flywheel() {
         flywheelMasterNeo.setIdleMode(IdleMode.kCoast);
-        flywheelMasterNeo.setOpenLoopRampRate(3.0);
+        flywheelMasterNeo.setOpenLoopRampRate(2.0);
         flywheelMasterNeo.enableVoltageCompensation(12.0);
         MotorControlHelper.assignFollowerSparkMAX(flywheelMasterNeo, kFlywheelShooterFollowerID, true);
     }
@@ -48,16 +51,33 @@ public final class Flywheel implements Subsystem {
     public double getError() {
         return targetRPS - getRPS();
     }
+
     public double getPercentError() {
-        return getError()/targetRPS;
+        if (targetRPS != 0)
+            return getError() / targetRPS;
+        else
+            return 0;
+    }
+
+    public double getOptimalCloseShotRPS(){
+        Limelight limelight = Limelight.getInstance();
+        if (limelight.hasValidTarget()) {
+            double d = limelight.getCameraToTarget();
+            return Constants.metersFromGoalToRPS(d);
+        } else return Constants.flywheelDefaultCloseRPS;
     }
 
     public void calcOutput() {
-        this.setVoltage((targetRPS + getError() * kFlywheelKp) * kFlywheelKv + kFlywheelKs);
+        if (targetRPS == 0.0)
+            this.setVoltage(0.0);
+        else
+            this.setVoltage(
+                    (targetRPS + getError() * kFlywheelKp) * kFlywheelKv + kFlywheelKs * Math.signum(targetRPS)
+            );
     }
 
     public void setVoltage(double voltage) {
-        flywheelMasterNeo.set(voltage/12);
+        flywheelMasterNeo.set(voltage / 12);
     }
 
     public void setHoodCloseShot(boolean hoodCloseShot) {

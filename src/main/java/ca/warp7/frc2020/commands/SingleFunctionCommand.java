@@ -2,12 +2,12 @@ package ca.warp7.frc2020.commands;
 
 import ca.warp7.frc2020.auton.vision.Limelight;
 import ca.warp7.frc2020.subsystems.*;
+import static ca.warp7.frc2020.Constants.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
-import static ca.warp7.frc2020.Constants.*;
 
 @SuppressWarnings("unused")
 public class SingleFunctionCommand {
@@ -86,6 +86,16 @@ public class SingleFunctionCommand {
     public static Command getFlywheelHoodToggle() {
         Flywheel flywheel = Flywheel.getInstance();
         return new InstantCommand(flywheel::toggleHood);
+    }
+
+    public static Command getFlywheelSetHoodCloseCommand() {
+        Flywheel flywheel = Flywheel.getInstance();
+        return new InstantCommand(() -> flywheel.setHoodCloseShot(true));
+    }
+
+    public static Command getFlywheelSetHoodFarCommand() {
+        Flywheel flywheel = Flywheel.getInstance();
+        return new InstantCommand(() -> flywheel.setHoodCloseShot(false));
     }
 
     public static Command getLimelightGetPoseCommand() {

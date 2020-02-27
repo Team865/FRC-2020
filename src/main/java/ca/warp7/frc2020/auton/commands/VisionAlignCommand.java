@@ -11,7 +11,6 @@ import ca.warp7.frc2020.Constants;
 import ca.warp7.frc2020.auton.vision.Limelight;
 import ca.warp7.frc2020.lib.control.PIDController;
 import ca.warp7.frc2020.subsystems.DriveTrain;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import java.util.function.DoubleSupplier;
@@ -21,8 +20,6 @@ import static ca.warp7.frc2020.Constants.kMaxVoltage;
 public class VisionAlignCommand extends CommandBase {
     private DriveTrain driveTrain = DriveTrain.getInstance();
     private Limelight limelight = Limelight.getInstance();
-    private double prevT;
-    private double prevAngle;
 
     private DoubleSupplier forwardSpeedSupplier;
     private PIDController pidController = new PIDController(Constants.kVisionAlignmentYawPID);
@@ -33,27 +30,14 @@ public class VisionAlignCommand extends CommandBase {
     }
 
     @Override
-    public void initialize() {
-        prevT = Timer.getFPGATimestamp();
-        prevAngle = driveTrain.getContinousAngleRadians();
-    }
-
-    @Override
     public void execute() {
         double speed = forwardSpeedSupplier.getAsDouble();
-        double t = Timer.getFPGATimestamp();
-        double angle = driveTrain.getContinousAngleRadians() * 180 / Math.PI;
 
-        if (!limelight.hasValidTarget()) {
-            driveTrain.setPercentOutput(speed, speed);
-        } else {
-            double angularVelocity = (prevAngle - angle) / (prevT - t);
-            double latency = limelight.getLatencySeconds();
+        Double smoothTargetAngle = limelight.getSmoothHorizontalAngle();
+        if (smoothTargetAngle != null) {
+            double ff = driveTrain.getTransmission().ks / (kMaxVoltage);
 
-            double adjustedHorizontalAngle = limelight.getHorizontalAngle() + -1 * angularVelocity * latency;
-            double ff = driveTrain.getTransmission().ks / kMaxVoltage;
-
-            double correction = pidController.calculate(0, adjustedHorizontalAngle);
+            double correction = pidController.calculate(0, smoothTargetAngle);
             double left = speed - correction;
             double right = speed + correction;
 
@@ -61,8 +45,7 @@ public class VisionAlignCommand extends CommandBase {
                     Math.copySign(ff, left) + left,
                     Math.copySign(ff, right) + right
             );
-        }
-
-        prevT = t;
+        } else
+            driveTrain.setPercentOutput(speed, speed);
     }
 }

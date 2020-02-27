@@ -7,10 +7,13 @@
 
 package ca.warp7.frc2020.subsystems;
 
+import ca.warp7.frc2020.Constants;
+import ca.warp7.frc2020.auton.vision.Limelight;
 import ca.warp7.frc2020.lib.LazySolenoid;
 import ca.warp7.frc2020.lib.motor.MotorControlHelper;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 import static ca.warp7.frc2020.Constants.*;
@@ -31,7 +34,7 @@ public final class Flywheel implements Subsystem {
 
     private Flywheel() {
         flywheelMasterNeo.setIdleMode(IdleMode.kCoast);
-        flywheelMasterNeo.setOpenLoopRampRate(3.0);
+        flywheelMasterNeo.setOpenLoopRampRate(2.0);
         flywheelMasterNeo.enableVoltageCompensation(12.0);
         MotorControlHelper.assignFollowerSparkMAX(flywheelMasterNeo, kFlywheelShooterFollowerID, true);
     }
@@ -54,6 +57,17 @@ public final class Flywheel implements Subsystem {
             return getError() / targetRPS;
         else
             return 0;
+    }
+
+    public double getOptimalCloseShotRPS(){
+        Limelight limelight = Limelight.getInstance();
+        if (limelight.hasValidTarget()) {
+            double d = limelight.getCameraToTarget();
+            SmartDashboard.putNumber("d", d);
+            double o = 3.05*d*d -25.2*d + 107;
+            SmartDashboard.putNumber("o", o);
+            return o;
+        } else return Constants.flywheelDefaultCloseRPS;
     }
 
     public void calcOutput() {

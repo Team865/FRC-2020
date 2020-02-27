@@ -8,7 +8,6 @@
 package ca.warp7.frc2020;
 
 import ca.warp7.frc2020.auton.AutonomousCommand;
-import ca.warp7.frc2020.commands.TeleopClimbCommand;
 import ca.warp7.frc2020.subsystems.*;
 import ca.warp7.frc2020.subsystems.drivetrain.FalconDriveTrainVariant;
 import ca.warp7.frc2020.commands.DisabledCommand;

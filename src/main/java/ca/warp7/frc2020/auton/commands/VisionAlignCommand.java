@@ -11,7 +11,6 @@ import ca.warp7.frc2020.Constants;
 import ca.warp7.frc2020.auton.vision.Limelight;
 import ca.warp7.frc2020.lib.control.PIDController;
 import ca.warp7.frc2020.subsystems.DriveTrain;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import java.util.function.DoubleSupplier;
@@ -21,9 +20,6 @@ import static ca.warp7.frc2020.Constants.kMaxVoltage;
 public class VisionAlignCommand extends CommandBase {
     private DriveTrain driveTrain = DriveTrain.getInstance();
     private Limelight limelight = Limelight.getInstance();
-    private double prevT;
-    private double prevAngle;
-    private Double smoothTargetAngle;
 
     private DoubleSupplier forwardSpeedSupplier;
     private PIDController pidController = new PIDController(Constants.kVisionAlignmentYawPID);
@@ -34,37 +30,12 @@ public class VisionAlignCommand extends CommandBase {
     }
 
     @Override
-    public void initialize() {
-        prevT = Timer.getFPGATimestamp();
-        prevAngle = driveTrain.getContinousAngleRadians() * 180 / Math.PI;
-        smoothTargetAngle = null;
-    }
-
-    @Override
     public void execute() {
         double speed = forwardSpeedSupplier.getAsDouble();
-        double t = Timer.getFPGATimestamp();
-        double angle = driveTrain.getContinousAngleRadians() * 180 / Math.PI;
 
-        if (!limelight.hasValidTarget()) {
-            driveTrain.setPercentOutput(speed, speed);
-            smoothTargetAngle = null;
-        } else {
-            double angleChange = -1 * (prevAngle - angle);
-            double angularVelocity = angleChange / (prevT - t);
-            double latency = limelight.getLatencySeconds();
-
-            double targetAngle = limelight.getHorizontalAngle() + angularVelocity * latency;
-            if (smoothTargetAngle != null) {
-
-                smoothTargetAngle += angleChange;
-
-                double smoothing = 0.9;
-                smoothTargetAngle = smoothTargetAngle * smoothing + targetAngle * (1 - smoothing);
-            } else
-                smoothTargetAngle = targetAngle;
-
-            double ff = driveTrain.getTransmission().ks / ( kMaxVoltage);
+        Double smoothTargetAngle = limelight.getSmoothHorizontalAngle();
+        if (smoothTargetAngle != null) {
+            double ff = driveTrain.getTransmission().ks / (kMaxVoltage);
 
             double correction = pidController.calculate(0, smoothTargetAngle);
             double left = speed - correction;
@@ -74,9 +45,7 @@ public class VisionAlignCommand extends CommandBase {
                     Math.copySign(ff, left) + left,
                     Math.copySign(ff, right) + right
             );
-        }
-
-        prevT = t;
-        prevAngle = angle;
+        } else
+            driveTrain.setPercentOutput(speed, speed);
     }
 }

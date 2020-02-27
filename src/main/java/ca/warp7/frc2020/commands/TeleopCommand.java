@@ -8,6 +8,7 @@
 package ca.warp7.frc2020.commands;
 
 import ca.warp7.frc2020.Constants;
+import ca.warp7.frc2020.auton.commands.LimelightCalculationCommand;
 import ca.warp7.frc2020.auton.commands.ResetRobotStateCommand;
 import ca.warp7.frc2020.auton.commands.VisionAlignCommand;
 import ca.warp7.frc2020.lib.Util;
@@ -26,6 +27,7 @@ public class TeleopCommand extends CommandBase {
             new KinematicsDriveCommand(this::getXSpeed, this::getZRotation, this::isQuickTurn) :
             new PercentDriveCommand(this::getXSpeed, this::getZRotation, this::isQuickTurn);
 
+    private Command limelightCalculationCommand = new LimelightCalculationCommand();
     private Command visionAlignCommand = new VisionAlignCommand(this::getVisionAlignSpeed);
 
     //    private Command controlPanelDisplay = new ControlPanelCommand(this::getControlPanelSpinnerSpeed);
@@ -45,7 +47,7 @@ public class TeleopCommand extends CommandBase {
     private Command zeroYawCommand = SingleFunctionCommand.getZeroYaw();
     private Command brakeCommand = SingleFunctionCommand.getSetDriveBrakeMode();
 
-//  private Command lockHangingClimberCommand = SingleFunctionCommand.getClimbLockToggle();
+    //  private Command lockHangingClimberCommand = SingleFunctionCommand.getClimbLockToggle();
 //  private Command flywheelHoodToggleCommand = SingleFunctionCommand.getFlywheelHoodToggle();
     private Command limelightGetPoseCommand = SingleFunctionCommand.getLimelightGetPoseCommand();
 
@@ -70,8 +72,8 @@ public class TeleopCommand extends CommandBase {
 
     private double getWantedFlywheelRPS() {
         if (isPriming)
-            return isClose ? Constants.flywheelDefaultCloseRPS + closeShotAdjustment
-                    : Constants.flywheelFarRPS + farShotAdjustment;
+            if (!isClose) return Constants.flywheelFarRPS + farShotAdjustment;
+            else return Flywheel.getInstance().getOptimalCloseShotRPS()+closeShotAdjustment;
         return 0;
     }
 
@@ -116,6 +118,13 @@ public class TeleopCommand extends CommandBase {
         farShotAdjustment = 0.0;
         closeShotAdjustment = 0.0;
 
+        zeroYawCommand.schedule();
+        resetRobotStateCommand.schedule();
+        robotStateEstimationCommand.schedule();
+
+        limelightGetPoseCommand.schedule();
+        limelightCalculationCommand.schedule();
+
         setLowGearDriveCommand.schedule();
         curvatureDriveCommand.schedule();
         flywheelSpeedCommand.schedule();
@@ -123,10 +132,6 @@ public class TeleopCommand extends CommandBase {
         // controlPanelDisplay.schedule();
         climbSpeedOptionalCommand.schedule();
         intakingCommand.schedule();
-        resetRobotStateCommand.schedule();
-        robotStateEstimationCommand.schedule();
-        zeroYawCommand.schedule();
-        limelightGetPoseCommand.schedule();
         brakeCommand.schedule();
     }
 
@@ -161,11 +166,11 @@ public class TeleopCommand extends CommandBase {
 
         if (operator.leftTrigger > 0.2) {
             isPriming = true;
-            isClose = false;
+            isClose = true;
             flywheelSetHoodCloseCommand.schedule();
         } else if (operator.rightTrigger > 0.2) {
             isPriming = true;
-            isClose = true;
+            isClose = false;
             flywheelSetHoodFarCommand.schedule();
         } else
             isPriming = false;
@@ -177,6 +182,14 @@ public class TeleopCommand extends CommandBase {
         if (operator.rightBumper.isPressed()) {
             if (isClose) closeShotAdjustment += 0.5;
             else farShotAdjustment += 0.5;
+        }
+        if (operator.xButton.isPressed()) {
+            if (isClose) closeShotAdjustment -= 5;
+            else farShotAdjustment -= 5;
+        }
+        if (operator.yButton.isPressed()) {
+            if (isClose) closeShotAdjustment += 5;
+            else farShotAdjustment += 5;
         }
 
         if (operator.backButton.isPressed())

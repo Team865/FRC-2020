@@ -96,8 +96,6 @@ public final class Constants {
 
     //Feeder Constants
 
-    //Feeder Constants
-
     public static final double kFeedingSpeed = 0.6; //percent
 
     //Hopper constants

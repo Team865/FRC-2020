@@ -2,12 +2,12 @@ package ca.warp7.frc2020.commands;
 
 import ca.warp7.frc2020.auton.vision.Limelight;
 import ca.warp7.frc2020.subsystems.*;
+import static ca.warp7.frc2020.Constants.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
-import static ca.warp7.frc2020.Constants.*;
 
 @SuppressWarnings("unused")
 public class SingleFunctionCommand {
@@ -72,9 +72,11 @@ public class SingleFunctionCommand {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new RunCommand(() -> System.out.println("Robot State: " + driveTrain.getRobotState()));
     }
+
     public static Command getClimbLockToggle() {
         Climber climber = Climber.getInstance();
         return new InstantCommand(climber::toggleLock);
+    }
 
     public static Command getIntakeExtensionToggle() {
         Intake intake = Intake.getInstance();

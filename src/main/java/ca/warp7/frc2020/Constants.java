@@ -90,6 +90,10 @@ public final class Constants {
     public static final double kFlywheelKa = (0.0401 + 0.0483) / 2;
     public static final double kFlywheelGearRatio = 1.0 / 2.0; // 0.5
 
+    public static double metersFromGoalToRPS(double d) {
+        return 3.05 * d * d - 25.2 * d + 107;
+    }
+
     // Intake Constants
 
     public static final double kIntakingSpeed = 0.3; // percent
@@ -139,7 +143,7 @@ public final class Constants {
                     .addConstraint(kKinematicsConstraint);
 
     private static class PracticeRobotDetector {
-        private static final String kPracticeRobotAddress ="00-80-2F-27-06-8F";
+        private static final String kPracticeRobotAddress = "00-80-2F-27-06-8F";
         private static final boolean kIsPracticeRobot = NetworkUtil
                 .getMACAddress().equals(kPracticeRobotAddress);
     }

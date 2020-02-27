@@ -63,10 +63,7 @@ public final class Flywheel implements Subsystem {
         Limelight limelight = Limelight.getInstance();
         if (limelight.hasValidTarget()) {
             double d = limelight.getCameraToTarget();
-            SmartDashboard.putNumber("d", d);
-            double o = 3.05*d*d -25.2*d + 107;
-            SmartDashboard.putNumber("o", o);
-            return o;
+            return Constants.metersFromGoalToRPS(d);
         } else return Constants.flywheelDefaultCloseRPS;
     }
 

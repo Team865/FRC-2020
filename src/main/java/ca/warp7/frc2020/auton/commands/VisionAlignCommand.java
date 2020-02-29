@@ -8,7 +8,7 @@
 package ca.warp7.frc2020.auton.commands;
 
 import ca.warp7.frc2020.Constants;
-import ca.warp7.frc2020.auton.vision.Limelight;
+import ca.warp7.frc2020.subsystems.Limelight;
 import ca.warp7.frc2020.lib.control.PIDController;
 import ca.warp7.frc2020.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -33,11 +33,11 @@ public class VisionAlignCommand extends CommandBase {
     public void execute() {
         double speed = forwardSpeedSupplier.getAsDouble();
 
-        Double smoothTargetAngle = limelight.getSmoothHorizontalAngle();
-        if (smoothTargetAngle != null) {
+        Double smoothHorizontalAngle = limelight.getSmoothHorizontalAngle();
+        if (smoothHorizontalAngle != null) {
             double ff = driveTrain.getTransmission().ks / (kMaxVoltage);
 
-            double correction = pidController.calculate(0, smoothTargetAngle);
+            double correction = pidController.calculate(0, smoothHorizontalAngle);
             double left = speed - correction;
             double right = speed + correction;
 

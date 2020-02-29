@@ -54,6 +54,7 @@ public class AutonomousPath {
     public static Command getTrenchThreeBallsReversed() {
         return new TimedPath2d("one ball reversed", kTrench3)
                 .addPoint(kTrench1)
+                .addPoint(kRightSideFacingOuterGoal)
                 .setConfig(createTrajectoryConfig())
                 .setReversed(true)
                 .setFollower(new RamseteFollower())

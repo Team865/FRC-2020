@@ -105,7 +105,7 @@ public final class Constants {
     // Drive Train Constants
 
     public static final double kWheelBaseRadius = 0.35; // metres
-    public static final double kDriveWheelRadius = 3.0 * 0.0254; // 0.1524 meters
+    public static final double kDriveWheelRadius = 0.0760858711932102; // metres
     public static final double kMaxVoltage = 12.0; // volts
 
     public static class LowGear {

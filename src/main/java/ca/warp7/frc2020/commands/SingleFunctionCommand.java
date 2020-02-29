@@ -2,11 +2,13 @@ package ca.warp7.frc2020.commands;
 
 import ca.warp7.frc2020.auton.vision.Limelight;
 import ca.warp7.frc2020.subsystems.*;
-import static ca.warp7.frc2020.Constants.*;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+
+import static ca.warp7.frc2020.Constants.*;
 
 
 @SuppressWarnings("unused")
@@ -29,22 +31,27 @@ public class SingleFunctionCommand {
         });
     }
 
-    public static Command getSetDriveAutonomousLowGear() {
+    /**
+     * Resets the drive train for auto driving. Make sure to call
+     * at the start of all routines!
+     */
+    public static Command getResetAutonomousDrive() {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new InstantCommand(() -> {
+            driveTrain.neutralOutput();
+            driveTrain.configureRampRate(kLowGearRampRate);
             driveTrain.configurePID(kAutonLowGearVelocityPID);
             driveTrain.setHighGear(false);
+            driveTrain.setBrake();
+            driveTrain.setEncoderPosition(0, 0);
+            driveTrain.setRobotState(new Pose2d());
+            driveTrain.zeroYaw();
         });
     }
 
     public static Command getSetDriveBrakeMode() {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new InstantCommand(driveTrain::setBrake);
-    }
-
-    public static Command getSetDriveCoastMode() {
-        DriveTrain driveTrain = DriveTrain.getInstance();
-        return new InstantCommand(driveTrain::setCoast);
     }
 
     public static Command getDriveServo() {
@@ -61,16 +68,6 @@ public class SingleFunctionCommand {
     public static Command getZeroYaw() {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new InstantCommand(driveTrain::zeroYaw);
-    }
-
-    public static Command getRobotStateEstimation() {
-        DriveTrain driveTrain = DriveTrain.getInstance();
-        return new RunCommand(driveTrain::updateRobotStateEstimation);
-    }
-
-    public static Command getReportRobotState() {
-        DriveTrain driveTrain = DriveTrain.getInstance();
-        return new RunCommand(() -> System.out.println("Robot State: " + driveTrain.getRobotState()));
     }
 
     public static Command getClimbLockToggle() {

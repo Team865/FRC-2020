@@ -41,7 +41,6 @@ public class TeleopCommand extends CommandBase {
 
     private Command resetRobotStateCommand = new ResetRobotStateCommand();
 
-    private Command robotStateEstimationCommand = SingleFunctionCommand.getRobotStateEstimation();
     private Command setLowGearDriveCommand = SingleFunctionCommand.getSetDriveLowGear();
     private Command setHighGearDriveCommand = SingleFunctionCommand.getSetDriveHighGear();
     private Command zeroYawCommand = SingleFunctionCommand.getZeroYaw();
@@ -89,11 +88,16 @@ public class TeleopCommand extends CommandBase {
     }
 
     private double getXSpeed() {
-        return Util.applyDeadband(-driver.leftY, 0.2);
+        return Util.applyDeadband(driver.leftY, 0.2);
     }
 
     private double getZRotation() {
-        return Util.applyDeadband(driver.rightX, 0.15);
+        double zRotation = Util.applyDeadband(driver.rightX, 0.15);
+        if (isQuickTurn() || driver.leftY < 0) {
+            return  zRotation;
+        } else {
+            return -1 * zRotation;
+        }
     }
 
     private boolean isQuickTurn() {
@@ -120,7 +124,6 @@ public class TeleopCommand extends CommandBase {
 
         zeroYawCommand.schedule();
         resetRobotStateCommand.schedule();
-        robotStateEstimationCommand.schedule();
 
         limelightGetPoseCommand.schedule();
         limelightCalculationCommand.schedule();

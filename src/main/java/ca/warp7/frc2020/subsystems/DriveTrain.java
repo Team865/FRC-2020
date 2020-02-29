@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Twist2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 import static ca.warp7.frc2020.Constants.*;
@@ -46,21 +47,29 @@ public final class DriveTrain implements Subsystem {
 
     private final AHRS navx = new AHRS(I2C.Port.kMXP);
 
-    // the robot is wired so that high gear is the default (off) state
-    private boolean isHighGear = true;
+    private boolean isHighGear = false;
 
     // Used to calculate expected acceleration
-    private double previousLinear = 0.0;
-    private double previousAngular = 0.0;
+    private double previousLinear = 0.0; // m/s
+    private double previousAngular = 0.0; // rad/s
     private double previousTime = 0.0;
 
     // Used to calculate robot state estimation
-    private Pose2d robotState = new Pose2d(); // metres
+    private Pose2d robotState = new Pose2d(); // m
     private Rotation2d previousYaw = new Rotation2d();
-    private double previousLeftPosition = 0.0; // metres
-    private double previousRightPosition = 0.0; // metres
+    private double previousLeftPosition = 0.0; // m
+    private double previousRightPosition = 0.0; // m
 
     private DriveTrain() {
+    }
+
+    @Override
+    public void periodic() {
+        updateRobotStateEstimation();
+
+        SmartDashboard.putNumber("Robot X (m)", robotState.getTranslation().getX());
+        SmartDashboard.putNumber("Robot Y (m)", robotState.getTranslation().getY());
+        SmartDashboard.putNumber("Robot Angle (deg)", robotState.getRotation().getDegrees());
     }
 
     /**
@@ -79,8 +88,7 @@ public final class DriveTrain implements Subsystem {
     public void setHighGear(boolean highGear) {
         if (highGear != isHighGear) {
             isHighGear = highGear;
-            // shifter solenoid is inverted. On is low gear
-            shifterSolenoid.set(!highGear);
+            shifterSolenoid.set(highGear);
         }
     }
 

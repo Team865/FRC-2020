@@ -72,7 +72,7 @@ public final class Constants {
     public static final double kHighGearRampRate = 0.3;
 
     public static final PID kAutonLowGearVelocityPID =
-            new PID(1.0, 0.0, 5.0, 0.0);
+            new PID(0.0, 0.0, 0.0, 0.0);
     public static final PID kTeleopLowGearVelocityPID =
             new PID(0.0, 0.0, 0.0, 0.0);
     public static final PID kTeleopHighGearVelocityPID =
@@ -111,8 +111,6 @@ public final class Constants {
     public static final double kWheelBaseRadius = 0.35; // metres
     public static final double kDriveWheelRadius = 3.0 * 0.0254; // 0.1524 meters
     public static final double kMaxVoltage = 12.0; // volts
-    public static final DifferentialDriveKinematics kKinematics =
-            new DifferentialDriveKinematics(kWheelBaseRadius * 2);
 
     public static class LowGear {
         public static final double kGearRatio = 42.0 / 10.0 * 60.0 / 14.0; // 18.0
@@ -135,15 +133,8 @@ public final class Constants {
                 new SimpleMotorFeedforward(1.0, 12.0, 0.4);
     }
 
-    public static final TrajectoryConstraint kKinematicsConstraint =
-            new DifferentialDriveKinematicsConstraint(kKinematics, 10.0);
-
-    public static final TrajectoryConfig kTrajectoryConfig =
-            new TrajectoryConfig(2.2, 1.0)
-                    .addConstraint(kKinematicsConstraint);
-
     private static class PracticeRobotDetector {
-        private static final String kPracticeRobotAddress = "00-80-2F-27-06-8F";
+        private static final String kPracticeRobotAddress = "00-80-2F-27-06-8E";
         private static final boolean kIsPracticeRobot = NetworkUtil
                 .getMACAddress().equals(kPracticeRobotAddress);
     }

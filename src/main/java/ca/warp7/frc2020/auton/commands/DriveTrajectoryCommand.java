@@ -34,17 +34,19 @@ public class DriveTrajectoryCommand extends CommandBase {
     private double totalTrajectoryTime;
     private boolean trajectoryStarted;
     private double generationTimeMs;
-    private int generationLoopCount;
+    private int generationLoopCount = 1;
 
     private Pose2d offset;
     private List<Trajectory> trajectories;
     private FutureTask<List<Trajectory>> trajectoryGenerator;
 
     public DriveTrajectoryCommand(TimedPath2d path) {
-        Objects.requireNonNull(path, "path cannot be null");
-        this.follower = path.getFollower();
-        this.name = path.getName() + "+" + follower.getClass().getSimpleName();
         this.path = path;
+        Objects.requireNonNull(this.path, "path cannot be null");
+        this.follower = path.getFollower();
+        Objects.requireNonNull(this.follower, "follwer cannot be null");
+
+        this.name = path.getName() + "+" + follower.getClass().getSimpleName();
         addRequirements(driveTrain);
     }
 
@@ -54,7 +56,6 @@ public class DriveTrajectoryCommand extends CommandBase {
         rioTime = newTime;
 
         // First make sure that we know where we are
-        driveTrain.updateRobotStateEstimation();
         var robotState = driveTrain.getRobotState();
 
         var robotRelativeToTrajectory = robotState.relativeTo(offset);
@@ -66,13 +67,13 @@ public class DriveTrajectoryCommand extends CommandBase {
         var trajectoryFinishedTime = 0;
         var currentTrajectory = trajectories.get(0);
 
-        for (var trajectory : trajectories) {
-            if ((trajectoryFinishedTime + trajectory.getTotalTimeSeconds()) > trajectoryTime) {
-                currentTrajectory = trajectory;
-                break;
-            }
-            trajectoryFinishedTime += trajectory.getTotalTimeSeconds();
-        }
+//        for (var trajectory : trajectories) {
+//            if ((trajectoryFinishedTime + trajectory.getTotalTimeSeconds()) >= trajectoryTime) {
+//                currentTrajectory = trajectory;
+//                break;
+//            }
+//            trajectoryFinishedTime += trajectory.getTotalTimeSeconds();
+//        }
 
         // Calculate the relative time to the current trajectory
         var relativeTime = trajectoryTime - trajectoryFinishedTime;
@@ -96,15 +97,14 @@ public class DriveTrajectoryCommand extends CommandBase {
         double v = sample.velocityMetersPerSecond;
         double w = v * sample.curvatureRadPerMeter;
 
+        double linearCorrection = correctedVelocity.getLinear() - v;
+        double angularCorrection = correctedVelocity.getAngular() - w;
+
         putNumber("Trajectory Time", trajectoryTime);
 
         putNumber("Target X (m)", targetPose.getTranslation().getX());
         putNumber("Target Y (m)", targetPose.getTranslation().getY());
         putNumber("Target Angle (deg)", targetPose.getRotation().getDegrees());
-
-        putNumber("Robot X (m)", robotState.getTranslation().getX());
-        putNumber("Robot Y (m)", robotState.getTranslation().getY());
-        putNumber("Robot Angle (deg)", robotState.getRotation().getDegrees());
 
         putNumber("Error X (m)", error.getTranslation().getX());
         putNumber("Error Y (m)", error.getTranslation().getY());
@@ -113,8 +113,8 @@ public class DriveTrajectoryCommand extends CommandBase {
         putNumber("Target Linear (m/s)", v);
         putNumber("Target Angular (deg/s)", Math.toDegrees(w));
 
-        putNumber("Corrected Linear (m/s)", correctedVelocity.getLinear());
-        putNumber("Corrected Angular (deg/s)", Math.toDegrees(correctedVelocity.getAngular()));
+        putNumber("Linear Correction(m/s)", linearCorrection);
+        putNumber("Angular Correction (deg/s)", Math.toDegrees(angularCorrection));
 
         putNumber("Left PID Error (m/s)", driveTrain.getLeftPIDError());
         putNumber("Right PID Error (m/s)", driveTrain.getRightPIDError());

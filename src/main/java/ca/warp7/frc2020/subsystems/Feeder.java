@@ -14,7 +14,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
-import static ca.warp7.frc2020.Constants.kPhotoSensorID;
+import static ca.warp7.frc2020.Constants.kBeamBreakerID;
 
 public final class Feeder implements Subsystem {
     private static Feeder instance;
@@ -24,7 +24,7 @@ public final class Feeder implements Subsystem {
         return instance;
     }
 
-    private DigitalInput photoSensor = new DigitalInput(kPhotoSensorID);
+    private DigitalInput beamBreaker = new DigitalInput(kBeamBreakerID);
 
     private VictorSPX feederOuter775 = MotorControlHelper.createMasterVictorSPX(Constants.kFeederOuterID);
     private VictorSPX feederInner775 = MotorControlHelper.createMasterVictorSPX(Constants.kFeederInnerID);
@@ -43,7 +43,11 @@ public final class Feeder implements Subsystem {
         feederInner775.set(ControlMode.PercentOutput, speed);
     }
 
-    public boolean getPhotoSensor() {
-        return photoSensor.get();
+    public boolean getBeamBreak() {
+        return beamBreaker.get();
+    }
+
+    public void indexPowerCell(){
+        feederOuter775.set(ControlMode.PercentOutput, Constants.kIndexSpeed);
     }
 }

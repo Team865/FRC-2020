@@ -40,6 +40,5 @@ public class TimedPath2dTest {
                 .setReversed(true);
 
         Assertions.assertDoesNotThrow(path::asTrajectory);
-        Assertions.assertDoesNotThrow(path::asTrajectory);
     }
 }

@@ -10,10 +10,6 @@ package ca.warp7.frc2020;
 import ca.warp7.frc2020.lib.NetworkUtil;
 import ca.warp7.frc2020.lib.control.PID;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveKinematicsConstraint;
-import edu.wpi.first.wpilibj.trajectory.constraint.TrajectoryConstraint;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean

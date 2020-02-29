@@ -15,7 +15,6 @@ public class AutonomousMode {
 
     public static Command testMode() {
         return new SequentialCommandGroup(
-                SingleFunctionCommand.getRobotStateEstimation(),
                 SingleFunctionCommand.getSetDriveAutonomousLowGear(),
                 SingleFunctionCommand.getIntakeExtensionToggle(),
                 AutonomousPath.getInitLineShootingToTrench()
@@ -47,9 +46,6 @@ public class AutonomousMode {
 
     private static Command directShootThenTrenchIntakeMode() {
         return new SequentialCommandGroup(
-                new ScheduleCommand(
-                        SingleFunctionCommand.getRobotStateEstimation()
-                ),
                 new ParallelCommandGroup(
                         SingleFunctionCommand.getSetDriveAutonomousLowGear(),
                         SingleFunctionCommand.getIntakeExtensionToggle()

@@ -209,7 +209,7 @@ public class TimedPath2d {
                 exp.getTranslation().getY(), exp.getRotation().getDegrees());
     }
 
-    public List<Trajectory> asTrajectory() {
+    public Trajectory asTrajectory() {
         Objects.requireNonNull(config, "config cannot be null");
         if (points.size() < 2) {
             throw new IllegalArgumentException("<2 points cannot be made into a path");
@@ -231,12 +231,11 @@ public class TimedPath2d {
     private static final Transform2d kFlip =
             new Transform2d(new Translation2d(), Rotation2d.fromDegrees(180.0));
 
-    private static List<Trajectory> generateTrajectory(
+    private static Trajectory generateTrajectory(
             List<ControlPoint> points,
             TrajectoryConfig config,
             boolean optimizePath
     ) {
-        List<Trajectory> trajectories = new ArrayList<>();
         List<QuinticHermiteSpline> splines = new ArrayList<>();
 
         boolean reversed = config.isReversed();
@@ -254,9 +253,7 @@ public class TimedPath2d {
                     a.headingMagnitude, a.headingMagnitude));
         }
 
-        trajectories.add(generateTrajectory(splines, config, optimizePath, reversed));
-
-        return trajectories;
+        return generateTrajectory(splines, config, optimizePath, reversed);
     }
 
     private static Trajectory generateTrajectory(

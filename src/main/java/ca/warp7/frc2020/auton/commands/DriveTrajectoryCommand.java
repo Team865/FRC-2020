@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -37,8 +36,8 @@ public class DriveTrajectoryCommand extends CommandBase {
     private int generationLoopCount = 1;
 
     private Pose2d offset;
-    private List<Trajectory> trajectories;
-    private FutureTask<List<Trajectory>> trajectoryGenerator;
+    private Trajectory trajectory;
+    private FutureTask<Trajectory> trajectoryGenerator;
 
     public DriveTrajectoryCommand(TimedPath2d path) {
         this.path = path;
@@ -57,43 +56,25 @@ public class DriveTrajectoryCommand extends CommandBase {
 
         // First make sure that we know where we are
         var robotState = driveTrain.getRobotState();
-
         var robotRelativeToTrajectory = robotState.relativeTo(offset);
 
         // Add dt to the amount of time tracked
         trajectoryTime += dt;
 
-        // Lookup the current trajectory in the list
-        var trajectoryFinishedTime = 0;
-        var currentTrajectory = trajectories.get(0);
-
-//        for (var trajectory : trajectories) {
-//            if ((trajectoryFinishedTime + trajectory.getTotalTimeSeconds()) >= trajectoryTime) {
-//                currentTrajectory = trajectory;
-//                break;
-//            }
-//            trajectoryFinishedTime += trajectory.getTotalTimeSeconds();
-//        }
-
-        // Calculate the relative time to the current trajectory
-        var relativeTime = trajectoryTime - trajectoryFinishedTime;
-
         // Sample based on relative time
-        var sample = currentTrajectory.sample(relativeTime);
-
+        var sample = trajectory.sample(trajectoryTime);
         var targetPose = sample.poseMeters;
 
         // Compute the error
         var error = targetPose.minus(robotRelativeToTrajectory);
 
         // Correct for the error using the follower
-        var correctedVelocity = follower.calculateTrajectory(currentTrajectory, sample, error);
+        var correctedVelocity = follower.calculateTrajectory(trajectory, sample, error);
 
         // Send signal to drive train
         driveTrain.setChassisVelocity(correctedVelocity.getLinear(), correctedVelocity.getAngular());
 
         // Write logs
-
         double v = sample.velocityMetersPerSecond;
         double w = v * sample.curvatureRadPerMeter;
 
@@ -113,7 +94,7 @@ public class DriveTrajectoryCommand extends CommandBase {
         putNumber("Target Linear (m/s)", v);
         putNumber("Target Angular (deg/s)", Math.toDegrees(w));
 
-        putNumber("Linear Correction(m/s)", linearCorrection);
+        putNumber("Linear Correction (m/s)", linearCorrection);
         putNumber("Angular Correction (deg/s)", Math.toDegrees(angularCorrection));
 
         putNumber("Left PID Error (m/s)", driveTrain.getLeftPIDError());
@@ -128,21 +109,18 @@ public class DriveTrajectoryCommand extends CommandBase {
         } else {
             // get the calculated trajectories
             try {
-                trajectories = trajectoryGenerator.get();
+                trajectory = trajectoryGenerator.get();
                 trajectoryGenerator = null;
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
 
             // calculate the trajectory offset to the robot state
-            var firstTrajectoryPose = trajectories.get(0).getInitialPose();
+            var firstTrajectoryPose = trajectory.getInitialPose();
             offset = driveTrain.getRobotState().relativeTo(firstTrajectoryPose);
 
             // find the  total trajectory time
-            totalTrajectoryTime = 0;
-            for (var trajectory : trajectories) {
-                totalTrajectoryTime += trajectory.getTotalTimeSeconds();
-            }
+            totalTrajectoryTime = trajectory.getTotalTimeSeconds();
 
             System.out.println("Finished Generating Trajectory in " +
                     generationTimeMs + "ms, and " + generationLoopCount + " loops.");
@@ -163,8 +141,8 @@ public class DriveTrajectoryCommand extends CommandBase {
         }
         // create a new trajectory generator on another thread
         trajectoryGenerator = new FutureTask<>(() -> {
-            long initialTime = System.nanoTime();
-            List<Trajectory> result = path.asTrajectory();
+            var initialTime = System.nanoTime();
+            var result = path.asTrajectory();
             generationTimeMs = (System.nanoTime() - initialTime) / 1E6;
             return result;
         });

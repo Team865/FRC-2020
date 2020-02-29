@@ -1,6 +1,5 @@
 package ca.warp7.frc2020.commands;
 
-import ca.warp7.frc2020.auton.vision.Limelight;
 import ca.warp7.frc2020.subsystems.*;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -93,11 +92,6 @@ public class SingleFunctionCommand {
     public static Command getFlywheelSetHoodFarCommand() {
         Flywheel flywheel = Flywheel.getInstance();
         return new InstantCommand(() -> flywheel.setHoodCloseShot(false));
-    }
-
-    public static Command getLimelightGetPoseCommand() {
-        Limelight limelight = Limelight.getInstance();
-        return new RunCommand(limelight::getRobotToTarget);
     }
 
     public static Command getStartCompressor() {

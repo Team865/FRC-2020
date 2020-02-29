@@ -42,6 +42,10 @@ public class AutonomousMode {
                 new ParallelDeadlineGroup(
                         AutonomousPath.getTrenchThreeBalls(),
                         new IntakingCommand(() -> 1.0)
+                ),
+                new ParallelDeadlineGroup(
+                        AutonomousPath.getTrenchThreeBallsReversed(),
+                        new IntakingCommand(() -> 0.0)
                 )
         );
     }

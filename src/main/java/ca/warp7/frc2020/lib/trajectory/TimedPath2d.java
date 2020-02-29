@@ -214,7 +214,7 @@ public class TimedPath2d {
         if (points.size() < 2) {
             throw new IllegalArgumentException("<2 points cannot be made into a path");
         }
-        return generateTrajectory(points, config, optimizePath);
+        return generateTrajectory(new ArrayList<>(points), config, optimizePath);
     }
 
     public List<ControlPoint> getPoints() {
@@ -228,6 +228,9 @@ public class TimedPath2d {
         return function.apply(this);
     }
 
+    private static final Transform2d kFlip =
+            new Transform2d(new Translation2d(), Rotation2d.fromDegrees(180.0));
+
     private static List<Trajectory> generateTrajectory(
             List<ControlPoint> points,
             TrajectoryConfig config,
@@ -238,29 +241,20 @@ public class TimedPath2d {
 
         boolean reversed = config.isReversed();
 
-        for (int i = 0; i < points.size() - 1; i++) {
-            TimedPath2d.ControlPoint a = points.get(i);
-            TimedPath2d.ControlPoint b = points.get(i + 1);
-            if (a.pose.getTranslation().equals(b.pose.getTranslation())) {
-                if (isReversed(a.pose.getRotation(), b.pose.getRotation())) {
-                    if (!splines.isEmpty()) {
-                        trajectories.add(generateTrajectory(splines, config, optimizePath, reversed));
-                        splines.clear();
-                    }
-                    reversed = !reversed;
-                } else {
-                    throw new IllegalArgumentException("Cannot have two pose at the same location" +
-                            "without reversing the direction");
-                }
-            } else {
-                splines.add(QuinticHermiteSpline.fromPose(a.pose, b.pose,
-                        a.headingMagnitude, a.headingMagnitude));
+        if (reversed) {
+            for (ControlPoint point : points) {
+                point.pose = point.pose.plus(kFlip);
             }
         }
 
-        if (!splines.isEmpty()) {
-            trajectories.add(generateTrajectory(splines, config, optimizePath, reversed));
+        for (int i = 0; i < points.size() - 1; i++) {
+            TimedPath2d.ControlPoint a = points.get(i);
+            TimedPath2d.ControlPoint b = points.get(i + 1);
+            splines.add(QuinticHermiteSpline.fromPose(a.pose, b.pose,
+                    a.headingMagnitude, a.headingMagnitude));
         }
+
+        trajectories.add(generateTrajectory(splines, config, optimizePath, reversed));
 
         return trajectories;
     }
@@ -275,6 +269,14 @@ public class TimedPath2d {
             QuinticHermiteSpline.optimizeSpline(splines);
         }
         List<PoseWithCurvature> points = QuinticHermiteSpline.parameterize(splines);
+
+        if (reversed) {
+            for (PoseWithCurvature point : points) {
+                point.poseMeters = point.poseMeters.plus(kFlip);
+                point.curvatureRadPerMeter *= -1;
+            }
+        }
+
         return TrajectoryParameterizer.timeParameterizeTrajectory(points, config.getConstraints(),
                 config.getStartVelocity(), config.getEndVelocity(), config.getMaxVelocity(),
                 config.getMaxAcceleration(), reversed);

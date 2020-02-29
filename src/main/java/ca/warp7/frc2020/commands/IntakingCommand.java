@@ -42,9 +42,4 @@ public class IntakingCommand extends CommandBase {
         else
             intake.setSpeed(0.0);
     }
-
-    @Override
-    public void end(boolean interrupted) {
-        intake.setExtended(false);
-    }
 }

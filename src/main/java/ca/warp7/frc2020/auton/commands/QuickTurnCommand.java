@@ -1,6 +1,6 @@
 package ca.warp7.frc2020.auton.commands;
 
-import ca.warp7.frc2020.auton.vision.Limelight;
+import ca.warp7.frc2020.subsystems.Limelight;
 import ca.warp7.frc2020.lib.control.PID;
 import ca.warp7.frc2020.lib.control.PIDController;
 import ca.warp7.frc2020.subsystems.DriveTrain;

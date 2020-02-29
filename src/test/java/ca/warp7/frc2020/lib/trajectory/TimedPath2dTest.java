@@ -26,7 +26,7 @@ public class TimedPath2dTest {
         var tp = new TimedPath2d("test", new Pose2d()).addForward(3.0);
         assertEquals(new Pose2d(3.0, 0.0, new Rotation2d()), tp.getPoints().get(1).pose);
         tp.setConfig(kConfig);
-        assertFalse(tp.asTrajectory().isEmpty());
+        assertDoesNotThrow(tp::asTrajectory);
     }
 
     @Test

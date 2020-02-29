@@ -12,8 +12,7 @@ public class AutonomousMode {
 
     public static Command shootThreeBalls() {
         return new ParallelDeadlineGroup(
-                new ShootBallsCloseCommand(3),
-                new LimelightCalculationCommand()
+                new ShootBallsCloseCommand(3)
         );
     }
 

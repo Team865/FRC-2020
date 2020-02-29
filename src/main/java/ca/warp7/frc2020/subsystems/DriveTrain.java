@@ -63,6 +63,11 @@ public final class DriveTrain implements Subsystem {
     private DriveTrain() {
     }
 
+    @Override
+    public void periodic() {
+        updateRobotStateEstimation();
+    }
+
     /**
      * @return isHighGear
      */

@@ -8,12 +8,10 @@
 package ca.warp7.frc2020.subsystems;
 
 import ca.warp7.frc2020.Constants;
-import ca.warp7.frc2020.auton.vision.Limelight;
 import ca.warp7.frc2020.lib.LazySolenoid;
 import ca.warp7.frc2020.lib.motor.MotorControlHelper;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 import static ca.warp7.frc2020.Constants.*;
@@ -59,11 +57,28 @@ public final class Flywheel implements Subsystem {
             return 0;
     }
 
-    public double getOptimalCloseShotRPS(){
+    public static double calculateOptimalCloseShotRPS(double metersFromGoal) {
+        double r = 0.5; // meters // the distance to ramp between the normal shot and the outer shot
+        if (metersFromGoal <= maxInnerGoalDist - r) {
+            // if you can hit threes, you don't need to adjust the RPS
+            return optimaInnerGoalRPS(metersFromGoal);
+        } else if (metersFromGoal >= maxInnerGoalDist) {
+            // if you can't hit threes from that distance (because they would hit the top of the power port)
+            // you need to aim for the outer goal instead
+            return optimaInnerGoalRPS(metersFromGoal - innerToOuterGoalAdjustment);
+        } else {
+            // interpolate between the
+            return optimaInnerGoalRPS(
+                    innerToOuterGoalAdjustment * (1 + (metersFromGoal - maxInnerGoalDist) / r)
+            );
+        }
+    }
+
+    public static double getOptimalCloseShotRPS() {
         Limelight limelight = Limelight.getInstance();
         if (limelight.hasValidTarget()) {
             double d = limelight.getCameraToTarget();
-            return Constants.metersFromGoalToRPS(d);
+            return calculateOptimalCloseShotRPS(d);
         } else return Constants.flywheelDefaultCloseRPS;
     }
 

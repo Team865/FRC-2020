@@ -1,12 +1,12 @@
 package ca.warp7.frc2020.commands;
 
-import ca.warp7.frc2020.auton.vision.Limelight;
 import ca.warp7.frc2020.subsystems.*;
-import static ca.warp7.frc2020.Constants.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+
+import static ca.warp7.frc2020.Constants.*;
 
 
 @SuppressWarnings("unused")
@@ -63,11 +63,6 @@ public class SingleFunctionCommand {
         return new InstantCommand(driveTrain::zeroYaw);
     }
 
-    public static Command getRobotStateEstimation() {
-        DriveTrain driveTrain = DriveTrain.getInstance();
-        return new RunCommand(driveTrain::updateRobotStateEstimation);
-    }
-
     public static Command getReportRobotState() {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new RunCommand(() -> System.out.println("Robot State: " + driveTrain.getRobotState()));
@@ -96,11 +91,6 @@ public class SingleFunctionCommand {
     public static Command getFlywheelSetHoodFarCommand() {
         Flywheel flywheel = Flywheel.getInstance();
         return new InstantCommand(() -> flywheel.setHoodCloseShot(false));
-    }
-
-    public static Command getLimelightGetPoseCommand() {
-        Limelight limelight = Limelight.getInstance();
-        return new RunCommand(limelight::getRobotToTarget);
     }
 
     public static Command getStartCompressor() {

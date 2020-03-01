@@ -21,6 +21,9 @@ import java.util.concurrent.FutureTask;
 
 import static edu.wpi.first.wpilibj.smartdashboard.SmartDashboard.putNumber;
 
+/**
+ * Run a spline path on the field
+ */
 public class DriveTrajectoryCommand extends CommandBase {
     private DriveTrain driveTrain = DriveTrain.getInstance();
 

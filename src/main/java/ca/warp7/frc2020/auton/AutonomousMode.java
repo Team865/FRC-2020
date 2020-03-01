@@ -66,7 +66,7 @@ public class AutonomousMode {
 
     public static Command shooterTest() {
         return new ParallelCommandGroup(
-                new FlywheelSpeedCommand(() -> Constants.flywheelDefaultCloseRPS),
+                new FlywheelSpeedCommand(() -> Constants.kFlywheelDefaultCloseRPS),
                 new FeedAutoCommand());
     }
 }

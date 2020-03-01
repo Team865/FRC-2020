@@ -78,18 +78,18 @@ public final class Constants {
 
     // Flywheel Tuning
 
-    public static final double flywheelDefaultCloseRPS = 57.0;
-    public static final double flywheelFarRPS = 100.0;
+    public static final double kFlywheelDefaultCloseRPS = 57.0;
+    public static final double kFlywheelFarRPS = 100.0;
     public static final double kFlywheelKp = 1.94;
     public static final double kFlywheelKs = 0.0911;
     public static final double kFlywheelKv = (0.0644 + 0.063) / 2;
     public static final double kFlywheelKa = (0.0401 + 0.0483) / 2;
     public static final double kFlywheelGearRatio = 1.0 / 2.0; // 0.5
 
-    public static final double maxInnerGoalDist = 7; // meters
-    public static final double innerToOuterGoalAdjustment = 0.7; //meters // the difference in where you are aiming
+    public static final double kMaxInnerGoalDist = 7; // meters
+    public static final double kInnerToOuterGoalAdjustment = 0.7; //meters // the difference in where you are aiming
 
-    public static double optimaInnerGoalRPS(double metersFromGoal) {
+    public static double getOptimaInnerGoalRPS(double metersFromGoal) {
         return 2.79 * Math.pow(metersFromGoal - 4.10, 2) + 55.01;
     }
 

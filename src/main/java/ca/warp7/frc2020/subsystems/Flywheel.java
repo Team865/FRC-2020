@@ -7,7 +7,6 @@
 
 package ca.warp7.frc2020.subsystems;
 
-import ca.warp7.frc2020.Constants;
 import ca.warp7.frc2020.lib.LazySolenoid;
 import ca.warp7.frc2020.lib.motor.MotorControlHelper;
 import com.revrobotics.CANSparkMax;
@@ -59,18 +58,17 @@ public final class Flywheel implements Subsystem {
 
     public static double calculateOptimalCloseShotRPS(double metersFromGoal) {
         double r = 0.5; // meters // the distance to ramp between the normal shot and the outer shot
-        if (metersFromGoal <= maxInnerGoalDist - r) {
+        if (metersFromGoal <= kMaxInnerGoalDist - r) {
             // if you can hit threes, you don't need to adjust the RPS
-            return optimaInnerGoalRPS(metersFromGoal);
-        } else if (metersFromGoal >= maxInnerGoalDist) {
+            return getOptimaInnerGoalRPS(metersFromGoal);
+        } else if (metersFromGoal >= kMaxInnerGoalDist) {
             // if you can't hit threes from that distance (because they would hit the top of the power port)
             // you need to aim for the outer goal instead
-            return optimaInnerGoalRPS(metersFromGoal - innerToOuterGoalAdjustment);
+            return getOptimaInnerGoalRPS(metersFromGoal - kInnerToOuterGoalAdjustment);
         } else {
             // interpolate between the
-            return optimaInnerGoalRPS(
-                    innerToOuterGoalAdjustment * (1 + (metersFromGoal - maxInnerGoalDist) / r)
-            );
+            return getOptimaInnerGoalRPS(kInnerToOuterGoalAdjustment *
+                    (1 + (metersFromGoal - kMaxInnerGoalDist) / r));
         }
     }
 
@@ -79,16 +77,15 @@ public final class Flywheel implements Subsystem {
         if (limelight.hasValidTarget()) {
             double d = limelight.getCameraToTarget();
             return calculateOptimalCloseShotRPS(d);
-        } else return Constants.flywheelDefaultCloseRPS;
+        } else return kFlywheelDefaultCloseRPS;
     }
 
     public void calcOutput() {
         if (targetRPS == 0.0)
             this.setVoltage(0.0);
         else
-            this.setVoltage(
-                    (targetRPS + getError() * kFlywheelKp) * kFlywheelKv + kFlywheelKs * Math.signum(targetRPS)
-            );
+            this.setVoltage((targetRPS + getError() * kFlywheelKp) * kFlywheelKv +
+                    kFlywheelKs * Math.signum(targetRPS));
     }
 
     public void setVoltage(double voltage) {
@@ -97,13 +94,5 @@ public final class Flywheel implements Subsystem {
 
     public void setHoodCloseShot(boolean hoodCloseShot) {
         flywheelHoodPiston.set(hoodCloseShot);
-    }
-
-    public boolean isHoodCloseShot() {
-        return flywheelHoodPiston.get();
-    }
-
-    public void toggleHood() {
-        setHoodCloseShot(!isHoodCloseShot());
     }
 }

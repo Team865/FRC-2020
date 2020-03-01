@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Transform2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 @SuppressWarnings("unused")
@@ -113,42 +112,5 @@ public class Limelight implements Subsystem {
 
     public double getCameraToTarget() {
         return kCameraToTargetHeight / Math.tan(Math.toRadians(getVerticalAngle() + kCameraMountingAngle));
-    }
-
-    /**
-     * Create an estimated robot-to-target pose transform, based on
-     * a robot to field estimation (provided by drive train)
-     * http://docs.limelightvision.io/en/latest/cs_estimating_distance.html
-     */
-    public Pose2d getRobotToTarget(Pose2d robotToFieldEstimation) {
-
-        boolean has_target = hasValidTarget();
-
-        if (!has_target) {
-            // return the best guess based on the drive train
-            return kTargetToField.relativeTo(robotToFieldEstimation);
-        }
-
-        double x = getHorizontalAngle();
-        double camera_to_target_dist = getCameraToTarget();
-
-        Pose2d camera_to_field_estimation = kTargetToField
-                .relativeTo(robotToFieldEstimation.plus(kCameraToRobot));
-        Rotation2d camera_to_target_angle = camera_to_field_estimation
-                .getRotation().plus(kTargetToField.getRotation());
-
-        Rotation2d angle = camera_to_target_angle.plus(Rotation2d.fromDegrees(x));
-        double relative_x = camera_to_target_dist * angle.getCos();
-        double relative_y = camera_to_target_dist * angle.getSin();
-        SmartDashboard.putNumber("lim_X", relative_x);
-        SmartDashboard.putNumber("lim_Y", relative_y);
-        SmartDashboard.putNumber("lim_theta", angle.getDegrees());
-        SmartDashboard.putNumber("lim_mag", camera_to_target_dist);
-        return new Pose2d(new Translation2d(relative_x, relative_y), angle)
-                .relativeTo(new Pose2d().plus(kCameraToRobot));
-    }
-
-    public Pose2d getRobotToTarget() {
-        return getRobotToTarget(new Pose2d());
     }
 }

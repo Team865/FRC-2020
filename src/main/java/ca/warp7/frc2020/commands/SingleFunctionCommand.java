@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 
 import static ca.warp7.frc2020.Constants.*;
 
@@ -79,10 +78,6 @@ public class SingleFunctionCommand {
         return new InstantCommand(intake::toggle);
     }
 
-    public static Command getFlywheelHoodToggle() {
-        Flywheel flywheel = Flywheel.getInstance();
-        return new InstantCommand(flywheel::toggleHood);
-    }
 
     public static Command getFlywheelSetHoodCloseCommand() {
         Flywheel flywheel = Flywheel.getInstance();

@@ -11,6 +11,7 @@ import ca.warp7.frc2020.lib.Util;
 import ca.warp7.frc2020.subsystems.Feeder;
 import ca.warp7.frc2020.subsystems.Flywheel;
 import ca.warp7.frc2020.subsystems.Hopper;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import java.util.function.DoubleSupplier;
@@ -29,6 +30,7 @@ public class FeedCommand extends CommandBase {
 
     @Override
     public void execute() {
+        SmartDashboard.putBoolean("Beam breaker", feeder.getBeamBreak());
         double speed = speedSupplier.getAsDouble();
         if (Util.epsilonEquals(flywheel.getPercentError(),0.0,0.015)) {
             feeder.setSpeed(speed);

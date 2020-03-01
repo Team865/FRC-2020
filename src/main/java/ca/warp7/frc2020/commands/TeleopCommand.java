@@ -32,7 +32,7 @@ public class TeleopCommand extends CommandBase {
     private Command feedCommand = new FeedCommand(this::getFeedSpeed);
     private Command intakingCommand = new IntakingCommand(this::getIntakeSpeed);
     private Command flywheelSpeedCommand = new FlywheelSpeedCommand(this::getWantedFlywheelRPS);
-
+    private Command feedIndexingCommand = new FeedIndexingCommand();
     private Command climbSpeedOptionalCommand = Constants.isPracticeRobot() ?
             new InstantCommand() :
             new ClimbSpeedCommand(this::getClimbSpeed);
@@ -132,6 +132,11 @@ public class TeleopCommand extends CommandBase {
         operator.collectControllerData();
 
         // Driver
+        if(driver.xButton.isPressed()){
+            feedIndexingCommand.schedule();
+        } else if (driver.xButton.isReleased()){
+            feedIndexingCommand.cancel();
+        }
 
         if (driver.rightBumper.isPressed())
             setHighGearDriveCommand.schedule();

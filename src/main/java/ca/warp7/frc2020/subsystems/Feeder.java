@@ -31,7 +31,7 @@ public final class Feeder implements Subsystem {
 
     private Feeder() {
         feederInner775.setInverted(true);
-        feederOuter775.setInverted(true);
+        // feederOuter775.setInverted(true);
         feederInner775.enableVoltageCompensation(false);
         feederOuter775.enableVoltageCompensation(false);
         feederInner775.configOpenloopRamp(0.1);

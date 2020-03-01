@@ -17,47 +17,35 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class FeedIndexingCommand extends CommandBase {
     private Feeder feeder = Feeder.getInstance();
     private Hopper hopper = Hopper.getInstance();
-    
+    private boolean notVisible = true;
+
     private double visibleTimes = 0;
     private double prevT;
     private double time;
-    private double indexTime = 1.0;
   public FeedIndexingCommand() {
       addRequirements(feeder, hopper);
   }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    visibleTimes = 0;
-    prevT  = Timer.getFPGATimestamp();
-  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    boolean notVisible = true;
     time = Timer.getFPGATimestamp();
-
-    SmartDashboard.putNumber("Visible times", visibleTimes);
-    SmartDashboard.putNumber("Time error", time - prevT);
     
-    if(!feeder.getBeamBreak()){
-        visibleTimes++;
-        notVisible = false;
-    } 
-
-    if(notVisible){
+    if(feeder.getBeamBreak()){
         feeder.setSpeed(Constants.kIndexSpeed);
     }
 
-    if(notVisible == false && time - prevT <= indexTime){
-        feeder.indexPowerCell();;
-    } else if (time - prevT > indexTime){
-        notVisible = true;
-    }
+    if(!feeder.getBeamBreak()){
+        prevT  = Timer.getFPGATimestamp();
+        if(time - prevT <= 1.0){
+            //This runs the outer 775 backwards, which moves the ball down
+            SmartDashboard.putNumber("Time error", time - prevT);
+            feeder.indexPowerCell();
+        }
+    } 
 
-  }
+}
 
   // Called once the command ends or is interrupted.
   @Override

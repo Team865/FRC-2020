@@ -50,7 +50,6 @@ public class TeleopCommand extends CommandBase {
     private Command climbLockToggleOptionalCommand = Constants.isPracticeRobot() ?
             new InstantCommand() :
             SingleFunctionCommand.getClimbLockToggle();
-    private Command flywheelHoodToggleCommand = SingleFunctionCommand.getFlywheelHoodToggle();
     private Command flywheelSetHoodCloseCommand = SingleFunctionCommand.getFlywheelSetHoodCloseCommand();
     private Command flywheelSetHoodFarCommand = SingleFunctionCommand.getFlywheelSetHoodFarCommand();
 
@@ -67,7 +66,7 @@ public class TeleopCommand extends CommandBase {
 
     private double getWantedFlywheelRPS() {
         if (isPriming)
-            if (!isClose) return Constants.flywheelFarRPS + farShotAdjustment;
+            if (!isClose) return Constants.kFlywheelFarRPS + farShotAdjustment;
             else return Flywheel.getOptimalCloseShotRPS() + closeShotAdjustment;
         return 0;
     }
@@ -88,7 +87,12 @@ public class TeleopCommand extends CommandBase {
     }
 
     private double getZRotation() {
-        return Util.applyDeadband(driver.rightX, 0.15);
+        double zRotation = Util.applyDeadband(driver.rightX, 0.15);
+        if (isQuickTurn() || driver.leftY < 0) {
+            return  zRotation;
+        } else {
+            return -1 * zRotation;
+        }
     }
 
     private boolean isQuickTurn() {

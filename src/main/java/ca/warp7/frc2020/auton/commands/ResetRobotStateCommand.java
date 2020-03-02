@@ -28,4 +28,9 @@ public class ResetRobotStateCommand extends CommandBase {
         System.out.println("Setting Robot State to " + robotState);
         driveTrain.setRobotState(robotState);
     }
+
+    @Override
+    public boolean isFinished() {
+        return true;
+    }
 }

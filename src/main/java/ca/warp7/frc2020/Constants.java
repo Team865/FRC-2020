@@ -10,10 +10,6 @@ package ca.warp7.frc2020;
 import ca.warp7.frc2020.lib.NetworkUtil;
 import ca.warp7.frc2020.lib.control.PID;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveKinematicsConstraint;
-import edu.wpi.first.wpilibj.trajectory.constraint.TrajectoryConstraint;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -72,7 +68,7 @@ public final class Constants {
     public static final double kHighGearRampRate = 0.3;
 
     public static final PID kAutonLowGearVelocityPID =
-            new PID(1.0, 0.0, 5.0, 0.0);
+            new PID(0.0, 0.0, 0.0, 0.0);
     public static final PID kTeleopLowGearVelocityPID =
             new PID(0.0, 0.0, 0.0, 0.0);
     public static final PID kTeleopHighGearVelocityPID =
@@ -82,18 +78,18 @@ public final class Constants {
 
     // Flywheel Tuning
 
-    public static final double flywheelDefaultCloseRPS = 57.0;
-    public static final double flywheelFarRPS = 100.0;
+    public static final double kFlywheelDefaultCloseRPS = 57.0;
+    public static final double kFlywheelFarRPS = 100.0;
     public static final double kFlywheelKp = 1.94;
     public static final double kFlywheelKs = 0.0911;
     public static final double kFlywheelKv = (0.0644 + 0.063) / 2;
     public static final double kFlywheelKa = (0.0401 + 0.0483) / 2;
     public static final double kFlywheelGearRatio = 1.0 / 2.0; // 0.5
 
-    public static final double maxInnerGoalDist = 7; // meters
-    public static final double innerToOuterGoalAdjustment = 0.7; //meters // the difference in where you are aiming
+    public static final double kMaxInnerGoalDist = 7; // meters
+    public static final double kInnerToOuterGoalAdjustment = 0.7; //meters // the difference in where you are aiming
 
-    public static double optimaInnerGoalRPS(double metersFromGoal) {
+    public static double getOptimaInnerGoalRPS(double metersFromGoal) {
         return 2.79 * Math.pow(metersFromGoal - 4.10, 2) + 55.01;
     }
 
@@ -112,10 +108,8 @@ public final class Constants {
     // Drive Train Constants
 
     public static final double kWheelBaseRadius = 0.35; // metres
-    public static final double kDriveWheelRadius = 3.0 * 0.0254; // 0.1524 meters
+    public static final double kDriveWheelRadius = 0.0760858711932102; // metres
     public static final double kMaxVoltage = 12.0; // volts
-    public static final DifferentialDriveKinematics kKinematics =
-            new DifferentialDriveKinematics(kWheelBaseRadius * 2);
 
     public static class LowGear {
         public static final double kGearRatio = 42.0 / 10.0 * 60.0 / 14.0; // 18.0
@@ -138,15 +132,8 @@ public final class Constants {
                 new SimpleMotorFeedforward(1.0, 12.0, 0.4);
     }
 
-    public static final TrajectoryConstraint kKinematicsConstraint =
-            new DifferentialDriveKinematicsConstraint(kKinematics, 10.0);
-
-    public static final TrajectoryConfig kTrajectoryConfig =
-            new TrajectoryConfig(2.2, 1.0)
-                    .addConstraint(kKinematicsConstraint);
-
     private static class PracticeRobotDetector {
-        private static final String kPracticeRobotAddress = "00-80-2F-27-06-8F";
+        private static final String kPracticeRobotAddress = "00-80-2F-27-06-8E";
         private static final boolean kIsPracticeRobot = NetworkUtil
                 .getMACAddress().equals(kPracticeRobotAddress);
     }

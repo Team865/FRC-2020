@@ -31,13 +31,18 @@ public final class Flywheel implements Subsystem {
 
     private Flywheel() {
         flywheelMasterNeo.setIdleMode(IdleMode.kCoast);
-        flywheelMasterNeo.setOpenLoopRampRate(2.0);
+        flywheelMasterNeo.setOpenLoopRampRate(0.7);
         flywheelMasterNeo.enableVoltageCompensation(12.0);
         MotorControlHelper.assignFollowerSparkMAX(flywheelMasterNeo, kFlywheelShooterFollowerID, true);
     }
 
+    @Override
+    public void periodic() {
+        calcOutput();
+    }
+
     public double getRPS() {
-        return flywheelMasterNeo.getEncoder().getVelocity() / kFlywheelGearRatio / 60;
+        return -flywheelMasterNeo.getEncoder().getVelocity() / kFlywheelGearRatio / 60;
     }
 
     public void setTargetRPS(double target) {
@@ -80,7 +85,7 @@ public final class Flywheel implements Subsystem {
         } else return kFlywheelDefaultCloseRPS;
     }
 
-    public void calcOutput() {
+    private void calcOutput() {
         if (targetRPS == 0.0)
             this.setVoltage(0.0);
         else
@@ -88,8 +93,8 @@ public final class Flywheel implements Subsystem {
                     kFlywheelKs * Math.signum(targetRPS));
     }
 
-    public void setVoltage(double voltage) {
-        flywheelMasterNeo.set(voltage / 12);
+    private void setVoltage(double voltage) {
+        flywheelMasterNeo.set(-voltage / 12);
     }
 
     public void setHoodCloseShot(boolean hoodCloseShot) {

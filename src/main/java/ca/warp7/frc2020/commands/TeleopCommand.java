@@ -187,7 +187,7 @@ public class TeleopCommand extends CommandBase {
             else farShotAdjustment += 5;
         }
 
-        if (operator.backButton.isPressed())
+        if (operator.startButton.isPressed())
             climbLockToggleOptionalCommand.schedule();
     }
 }

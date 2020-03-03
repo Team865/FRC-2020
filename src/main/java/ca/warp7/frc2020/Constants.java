@@ -53,10 +53,10 @@ public final class Constants {
 
     // PCM IDs
 
-    public static final int kFlywheelHoodActuatorID = 4;
-    public static final int kIntakeExtensionID = 5;
-    public static final int kClimberLockActuatorID = 6;
-    public static final int kDriveShifterID = 7;
+    public static final int kFlywheelHoodActuatorID = 7;
+    public static final int kIntakeExtensionID = 6;
+    public static final int kClimberLockActuatorID = 5;
+    public static final int kDriveShifterID = 4;
 
     // DIO IDs
 
@@ -139,6 +139,6 @@ public final class Constants {
     }
 
     public static boolean isPracticeRobot() {
-        return PracticeRobotDetector.kIsPracticeRobot;
+        return false;//PracticeRobotDetector.kIsPracticeRobot;
     }
 }

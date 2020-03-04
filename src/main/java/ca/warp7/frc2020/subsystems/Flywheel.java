@@ -8,6 +8,7 @@
 package ca.warp7.frc2020.subsystems;
 
 import ca.warp7.frc2020.lib.LazySolenoid;
+import ca.warp7.frc2020.lib.Util;
 import ca.warp7.frc2020.lib.motor.MotorControlHelper;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -55,6 +56,10 @@ public final class Flywheel implements Subsystem {
             return getError() / targetRPS;
         else
             return 0;
+    }
+
+    public boolean isTargetReached(double epsilon) {
+        return Util.epsilonEquals(getPercentError(), 0.0, epsilon);
     }
 
     public static double calculateOptimalCloseShotRPS(double metersFromGoal) {

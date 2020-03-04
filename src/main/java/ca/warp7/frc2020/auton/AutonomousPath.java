@@ -23,7 +23,7 @@ public class AutonomousPath {
             new DifferentialDriveKinematicsConstraint(kKinematics, 10.0);
 
     public static TrajectoryConfig createTrajectoryConfig() {
-        return new TrajectoryConfig(2.2, 1.0)
+        return new TrajectoryConfig(2.2, 1.5)
                 .addConstraint(kKinematicsConstraint);
     }
 
@@ -32,6 +32,9 @@ public class AutonomousPath {
 
     public static final Pose2d kRightSideFacingOuterGoal =
             new Pose2d(3.1, 3.0, Rotation2d.fromDegrees(23));
+
+    public static final Pose2d kTrenchCorner =
+            new Pose2d(5.3, 2.9, Rotation2d.fromDegrees(13));
 
     public static Command getSimplePath() {
         return new TimedPath2d("Simple", new Pose2d())
@@ -51,10 +54,9 @@ public class AutonomousPath {
                 .convertTo(DriveTrajectoryCommand::new);
     }
 
-    public static Command getTrenchThreeBallsReversed() {
+    public static Command getTrenchThreeBallsToCorner() {
         return new TimedPath2d("one ball reversed", kTrench3)
-                .addPoint(kTrench1)
-                .addPoint(kRightSideFacingOuterGoal)
+                .addPoint(kTrenchCorner)
                 .setConfig(createTrajectoryConfig())
                 .setReversed(true)
                 .setFollower(new RamseteFollower())

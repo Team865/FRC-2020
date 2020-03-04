@@ -31,7 +31,7 @@ public class AutonomousSelector {
         NothingMode(InstantCommand::new),
         Mode_1(AutonomousMode::shootThreeBalls),
         Mode_2(AutonomousMode::intakeThreeBalls),
-        Mode_3(AutonomousMode::shootThreeBallsThenIntake),
+        Mode_3(AutonomousMode::shoot3_intake3_shoot3),
         Mode_4(AutonomousMode::simplePath);
 
         private Supplier<Command> mode;

@@ -53,10 +53,10 @@ public final class Constants {
 
     // PCM IDs
 
-    public static final int kFlywheelHoodActuatorID = 4;
-    public static final int kIntakeExtensionID = 5;
-    public static final int kClimberLockActuatorID = 6;
-    public static final int kDriveShifterID = 7;
+    public static final int kFlywheelHoodActuatorID = 7;
+    public static final int kIntakeExtensionID = 6;
+    public static final int kClimberLockActuatorID = 5;
+    public static final int kDriveShifterID = 4;
 
     // DIO IDs
 
@@ -87,15 +87,13 @@ public final class Constants {
     public static final double kFlywheelGearRatio = 1.0 / 2.0; // 0.5
 
     public static final double kMaxInnerGoalDist = 7; // meters
-    public static final double kInnerToOuterGoalAdjustment = 0.7; //meters // the difference in where you are aiming
+
+    // the difference in where you are aiming
+    public static final double kInnerToOuterGoalAdjustment = 0.7; //meters
 
     public static double getOptimaInnerGoalRPS(double metersFromGoal) {
         return 2.79 * Math.pow(metersFromGoal - 4.10, 2) + 55.01;
     }
-
-    // Intake Constants
-
-    public static final double kIntakingSpeed = 0.3; // percent
 
     //Feeder Constants
 
@@ -107,18 +105,18 @@ public final class Constants {
 
     // Drive Train Constants
 
-    public static final double kWheelBaseRadius = 0.35; // metres
-    public static final double kDriveWheelRadius = 0.0760858711932102; // metres
+    public static final double kWheelBaseRadius = 0.375; // metres
+    public static final double kWheelRadius = 0.0760858711932102; // metres
     public static final double kMaxVoltage = 12.0; // volts
 
     public static class LowGear {
         public static final double kGearRatio = 42.0 / 10.0 * 60.0 / 14.0; // 18.0
 
         public static final double kMetresPerRotation =
-                (2 * Math.PI * kDriveWheelRadius) / kGearRatio; // ticks/m
+                (2 * Math.PI * kWheelRadius) / kGearRatio; // ticks/m
 
         public static final SimpleMotorFeedforward kTransmission =
-                new SimpleMotorFeedforward(0.0534, 4.180, 0.429);
+                new SimpleMotorFeedforward(0.0353, 4.140, 0.401);
 
     }
 
@@ -126,19 +124,20 @@ public final class Constants {
         public static final double kGearRatio = 42.0 / 10.0 * 50.0 / 24.0; // 8.75
 
         public static final double kMetresPerRotation =
-                (2 * Math.PI * kDriveWheelRadius) / kGearRatio; // m/rotation
+                (2 * Math.PI * kWheelRadius) / kGearRatio; // m/rotation
 
         public static final SimpleMotorFeedforward kTransmission =
-                new SimpleMotorFeedforward(1.0, 12.0, 0.4);
+                new SimpleMotorFeedforward(0.218, 2.01, 0.307);
     }
 
+    @SuppressWarnings("unused")
     private static class PracticeRobotDetector {
         private static final String kPracticeRobotAddress = "00-80-2F-27-06-8E";
-        private static final boolean kIsPracticeRobot = NetworkUtil
-                .getMACAddress().equals(kPracticeRobotAddress);
+        private static final boolean kIsPracticeRobot =
+                NetworkUtil.getMACAddress().equals(kPracticeRobotAddress);
     }
 
     public static boolean isPracticeRobot() {
-        return PracticeRobotDetector.kIsPracticeRobot;
+        return false;
     }
 }

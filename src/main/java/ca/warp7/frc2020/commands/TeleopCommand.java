@@ -65,9 +65,13 @@ public class TeleopCommand extends CommandBase {
     private boolean isPriming = false;
 
     private double getWantedFlywheelRPS() {
-        if (isPriming)
-            if (!isClose) return Constants.kFlywheelFarRPS + farShotAdjustment;
-            else return Flywheel.getOptimalCloseShotRPS() + closeShotAdjustment;
+        if (isPriming) {
+            if (!isClose) {
+                return Constants.kFlywheelFarRPS + farShotAdjustment;
+            } else {
+                return Flywheel.getOptimalCloseShotRPS() + closeShotAdjustment;
+            }
+        }
         return 0;
     }
 

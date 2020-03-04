@@ -18,19 +18,19 @@ public class ShootBallsCloseCommand extends CommandBase {
     private Flywheel flywheel = Flywheel.getInstance();
     private Feeder feeder = Feeder.getInstance();
     private Hopper hopper = Hopper.getInstance();
-    private final double n;
-    private double prevT;
-    private double initT;
-
-    public ShootBallsCloseCommand(double n) {
+    private final int n;
+    //private double prevT;
+    //private double initT;
+    private int cellsCount = 0;
+    public ShootBallsCloseCommand(int n) {
         this.n = n;
         addRequirements(flywheel, feeder, hopper);
     }
 
     @Override
     public void initialize() {
-        initT = Timer.getFPGATimestamp();
-        prevT = Timer.getFPGATimestamp();
+        //initT = Timer.getFPGATimestamp();
+        //prevT = Timer.getFPGATimestamp();
 
         flywheel.setHoodCloseShot(true);
     }
@@ -40,6 +40,11 @@ public class ShootBallsCloseCommand extends CommandBase {
         double time = Timer.getFPGATimestamp();
         flywheel.setTargetRPS(Flywheel.getOptimalCloseShotRPS());
         flywheel.calcOutput();
+
+        if(feeder.getBeamBreak()){
+            cellsCount++;
+        }
+
         if (flywheel.isTargetReached(0.015)) {
             feeder.setSpeed(Constants.kFeedingSpeed);
             hopper.setSpeed(Constants.kHopperSpeed);
@@ -47,7 +52,7 @@ public class ShootBallsCloseCommand extends CommandBase {
             feeder.setSpeed(0);
             hopper.setSpeed(0);
         }
-        prevT = time;
+        //prevT = time;
     }
 
     @Override
@@ -55,10 +60,12 @@ public class ShootBallsCloseCommand extends CommandBase {
         flywheel.setTargetRPS(0);
         feeder.setSpeed(0);
         hopper.setSpeed(0);
+        cellsCount = 0;
     }
 
     @Override
     public boolean isFinished() {
-        return prevT - initT > 1 + n; // TODO make not bad (detect how many balls have been shot)
+        return cellsCount >= n;
+        //return prevT - initT > 1 + n; // TODO make not bad (detect how many balls have been shot)
     }
 }

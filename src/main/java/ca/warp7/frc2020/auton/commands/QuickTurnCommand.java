@@ -7,8 +7,11 @@ import ca.warp7.frc2020.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpiutil.math.MathUtil;
 
 import java.util.function.Supplier;
+
+import static ca.warp7.frc2020.Constants.kQuickTurnPID;
 
 @SuppressWarnings("unused")
 public class QuickTurnCommand extends CommandBase {
@@ -50,8 +53,13 @@ public class QuickTurnCommand extends CommandBase {
         // this is ensured to be between [-180, 180]
         double errorDegrees = errorSupplier.get().getDegrees();
 
-        double correction = pidController.calculate(errorDegrees);
-        driveTrain.setChassisVelocity(0, correction);
+        double result = pidController.calculate(errorDegrees);
+        double correction = MathUtil.clamp(
+                result + driveTrain.getTransmission().ks * Math.signum(result) / 12.0,
+                -1, 1
+        );
+
+        driveTrain.setPercentOutput(-correction, correction);
     }
 
     @Override
@@ -71,7 +79,7 @@ public class QuickTurnCommand extends CommandBase {
         DriveTrain driveTrain = DriveTrain.getInstance();
         return new QuickTurnCommand(
                 () -> target.minus(driveTrain.getRobotState().getRotation()),
-                new PIDController(new PID(0.0, 0.0, 0.0, 0.0))
+                new PIDController(kQuickTurnPID)
         );
     }
 
@@ -81,10 +89,14 @@ public class QuickTurnCommand extends CommandBase {
     public static Command ofRelativeAngle(Rotation2d delta) {
         DriveTrain driveTrain = DriveTrain.getInstance();
         var targetState = new Object() { Rotation2d value; };
+        var controller = new PIDController(kQuickTurnPID);
+        controller.errorEpsilon = 2.0;
+        controller.dErrorEpsilon = 2.0;
+        controller.minTimeInEpsilon = 0.5;
         return new QuickTurnCommand(
                 () -> targetState.value = driveTrain.getYaw().plus(delta),
                 () -> targetState.value.minus(driveTrain.getYaw()),
-                new PIDController(new PID(0.0, 0.0, 0.0, 0.0))
+                new PIDController(kQuickTurnPID)
         );
     }
 

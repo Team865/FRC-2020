@@ -1,9 +1,8 @@
 package ca.warp7.frc2020.auton;
 
 import ca.warp7.frc2020.auton.commands.DriveCharacterizationCommand;
-import ca.warp7.frc2020.auton.commands.ResetRobotStateCommand;
+import ca.warp7.frc2020.auton.commands.RobotStateCommand;
 import ca.warp7.frc2020.auton.commands.ShootBallsCloseCommand;
-import ca.warp7.frc2020.auton.commands.VisionAlignCommand;
 import ca.warp7.frc2020.commands.IntakingCommand;
 import ca.warp7.frc2020.commands.SingleFunctionCommand;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,21 +18,35 @@ public class AutonomousMode {
 
     public static Command shoot3_intake3_shoot3() {
         return new SequentialCommandGroup(
-                SingleFunctionCommand.getResetAutonomousDrive(),
-                new ResetRobotStateCommand(AutonomousPath.kRightSideFacingOuterGoal),
-                new ShootBallsCloseCommand(3),
-                AutonomousPath.getTrenchThreeBalls()
-                        .deadlineWith(new IntakingCommand(() -> 1.0)),
-                AutonomousPath.getTrenchThreeBallsToCorner()
-                        .deadlineWith(new IntakingCommand(() -> 0.0)),
-                new ShootBallsCloseCommand(3)
+                SingleFunctionCommand
+                        .getResetAutonomousDrive(),
+                new RobotStateCommand(
+                        AutonomousPath.kRightSideFacingOuterGoal),
+                new ShootBallsCloseCommand(2),
+//                FlywheelSpeedCommand
+//                        .closeShot()
+//                        .alongWith(new FeedCommand(() -> 0.6))
+//                        .withTimeout(5.0),
+                AutonomousPath
+                        .getTrenchThreeBalls()
+                        .deadlineWith(IntakingCommand.fullPower()),
+                AutonomousPath
+                        .getTrenchThreeBallsToCorner()
+                        .deadlineWith(IntakingCommand.neutral()),
+//                SingleFunctionCommand.getIntakeExtensionToggle(),
+//                new WaitCommand(0.5),
+//                SingleFunctionCommand.getIntakeExtensionToggle(),
+//                FlywheelSpeedCommand.closeShot()
+//                        .alongWith(new FeedCommand(() -> 0.6))
+//                        .withTimeout(5.0)
+                new ShootBallsCloseCommand(5)
         );
     }
 
     public static Command intakeThreeBalls() {
         return new SequentialCommandGroup(
                 SingleFunctionCommand.getResetAutonomousDrive(),
-                new ResetRobotStateCommand(AutonomousPath.kRightSideFacingOuterGoal),
+                new RobotStateCommand(AutonomousPath.kRightSideFacingOuterGoal),
                 new ParallelDeadlineGroup(
                         AutonomousPath.getTrenchThreeBalls(),
                         new IntakingCommand(() -> 1.0)
@@ -65,7 +78,7 @@ public class AutonomousMode {
     public static Command simplePath() {
         return new SequentialCommandGroup(
                 SingleFunctionCommand.getResetAutonomousDrive(),
-                new ResetRobotStateCommand(AutonomousPath.kRightSideFacingOuterGoal),
+                new RobotStateCommand(AutonomousPath.kRightSideFacingOuterGoal),
                 AutonomousPath.getTrenchOneBall()
         );
     }

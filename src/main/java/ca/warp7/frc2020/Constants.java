@@ -68,13 +68,16 @@ public final class Constants {
     public static final double kHighGearRampRate = 0.3;
 
     public static final PID kAutonLowGearVelocityPID =
-            new PID(0.0, 0.0, 0.0, 0.0);
+            new PID(0.2, 0.0, 0.0, 0.0);
     public static final PID kTeleopLowGearVelocityPID =
             new PID(0.0, 0.0, 0.0, 0.0);
     public static final PID kTeleopHighGearVelocityPID =
             new PID(0.0, 0.0, 0.0, 0.0);
     public static final PID kVisionAlignmentYawPID =
             new PID(0.025, 0.0, 0.002, 0.0);
+    // units: degrees => percent
+    public static final PID kQuickTurnPID =
+            new PID(0.04, 0.0, 0.0, 0.0);
 
     // Flywheel Tuning
 

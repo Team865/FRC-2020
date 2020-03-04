@@ -6,19 +6,19 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import java.util.function.Supplier;
 
-public class ResetRobotStateCommand extends CommandBase {
+public class RobotStateCommand extends CommandBase {
     private DriveTrain driveTrain = DriveTrain.getInstance();
     private Supplier<Pose2d> robotStateSupplier;
 
-    public ResetRobotStateCommand(Supplier<Pose2d> robotStateSupplier) {
+    public RobotStateCommand(Supplier<Pose2d> robotStateSupplier) {
         this.robotStateSupplier = robotStateSupplier;
     }
 
-    public ResetRobotStateCommand(Pose2d robotState) {
+    public RobotStateCommand(Pose2d robotState) {
         this(() -> robotState);
     }
 
-    public ResetRobotStateCommand() {
+    public RobotStateCommand() {
         this(new Pose2d());
     }
 

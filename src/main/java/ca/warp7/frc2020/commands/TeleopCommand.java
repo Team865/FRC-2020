@@ -8,7 +8,7 @@
 package ca.warp7.frc2020.commands;
 
 import ca.warp7.frc2020.Constants;
-import ca.warp7.frc2020.auton.commands.ResetRobotStateCommand;
+import ca.warp7.frc2020.auton.commands.RobotStateCommand;
 import ca.warp7.frc2020.auton.commands.VisionAlignCommand;
 import ca.warp7.frc2020.lib.Util;
 import ca.warp7.frc2020.lib.XboxController;
@@ -37,7 +37,7 @@ public class TeleopCommand extends CommandBase {
             new InstantCommand() :
             new ClimbSpeedCommand(this::getClimbSpeed);
 
-    private Command resetRobotStateCommand = new ResetRobotStateCommand();
+    private Command resetRobotStateCommand = new RobotStateCommand();
 
     private Command setLowGearDriveCommand = SingleFunctionCommand.getSetDriveLowGear();
     private Command setHighGearDriveCommand = SingleFunctionCommand.getSetDriveHighGear();

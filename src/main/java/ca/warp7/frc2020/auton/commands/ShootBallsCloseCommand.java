@@ -37,11 +37,11 @@ public class ShootBallsCloseCommand extends CommandBase {
 
     @Override
     public void execute() {
-        double time = Timer.getFPGATimestamp();
+        //double time = Timer.getFPGATimestamp();
         flywheel.setTargetRPS(Flywheel.getOptimalCloseShotRPS());
         flywheel.calcOutput();
 
-        if(feeder.getBeamBreak()){
+        if(!feeder.getBeamBreak() && flywheel.isTargetReached(0.015)){
             cellsCount++;
         }
 

@@ -23,9 +23,17 @@ public class IntakingCommand extends CommandBase {
         addRequirements(intake);
     }
 
+    public static IntakingCommand fullPower() {
+        return new IntakingCommand(() -> 1.0);
+    }
+
+    public static IntakingCommand neutral() {
+        return new IntakingCommand(() -> 0.0);
+    }
+
     @Override
     public void initialize() {
-        pTime = -1.0;
+        pTime = Timer.getFPGATimestamp();
     }
 
     @Override

@@ -115,6 +115,7 @@ public class MotorControlHelper {
         follower.restoreFactoryDefaults();
         follower.setIdleMode(CANSparkMax.IdleMode.kBrake);
         follower.follow(master, inverted);
+        follower.setIdleMode(master.getIdleMode());
     }
 
     /**

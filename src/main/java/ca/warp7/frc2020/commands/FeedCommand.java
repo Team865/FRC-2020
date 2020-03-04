@@ -7,6 +7,7 @@
 
 package ca.warp7.frc2020.commands;
 
+import ca.warp7.frc2020.Constants;
 import ca.warp7.frc2020.lib.Util;
 import ca.warp7.frc2020.subsystems.Feeder;
 import ca.warp7.frc2020.subsystems.Flywheel;
@@ -34,8 +35,8 @@ public class FeedCommand extends CommandBase {
             feeder.setSpeed(speed);
             hopper.setSpeed(speed);
         } else if (speed > 0 && Util.epsilonEquals(flywheel.getPercentError(), 0.0, 0.015) || feeder.getPhotoSensor()) {
-            feeder.setSpeed(0.4);
-            hopper.setSpeed(0.5);
+            feeder.setSpeed(Constants.kFeedingSpeed);
+            hopper.setSpeed(Constants.kHopperSpeed);
         } else {
             feeder.setSpeed(0.0);
             hopper.setSpeed(0.0);

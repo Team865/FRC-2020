@@ -56,13 +56,13 @@ public class ShootBallsCloseCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        flywheel.setVoltage(0);
+        flywheel.setTargetRPS(0);
         feeder.setSpeed(0);
         hopper.setSpeed(0);
     }
 
     @Override
     public boolean isFinished() {
-        return prevT - initT > 1 + n * 2; // TODO make not bad (detect how many balls have been shot)
+        return prevT - initT > 1+n; // TODO make not bad (detect how many balls have been shot)
     }
 }

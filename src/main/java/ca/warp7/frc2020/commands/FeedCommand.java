@@ -30,8 +30,11 @@ public class FeedCommand extends CommandBase {
     @Override
     public void execute() {
         double speed = speedSupplier.getAsDouble();
-        if (speed > 0 && Util.epsilonEquals(flywheel.getPercentError(), 0.0, 0.015)) {
-            feeder.setSpeed(0.7);
+        if (speed < 0) {
+            feeder.setSpeed(speed);
+            hopper.setSpeed(speed);
+        } else if (speed > 0 && Util.epsilonEquals(flywheel.getPercentError(), 0.0, 0.015) || feeder.getPhotoSensor()) {
+            feeder.setSpeed(0.4);
             hopper.setSpeed(0.5);
         } else {
             feeder.setSpeed(0.0);

@@ -14,6 +14,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 import static ca.warp7.frc2020.Constants.*;
+import static ca.warp7.frc2020.Constants.getOptimaInnerGoalRPS;
 
 public final class Flywheel implements Subsystem {
     private static Flywheel instance;
@@ -31,18 +32,13 @@ public final class Flywheel implements Subsystem {
 
     private Flywheel() {
         flywheelMasterNeo.setIdleMode(IdleMode.kCoast);
-        flywheelMasterNeo.setOpenLoopRampRate(0.7);
+        flywheelMasterNeo.setOpenLoopRampRate(1.2);
         flywheelMasterNeo.enableVoltageCompensation(12.0);
         MotorControlHelper.assignFollowerSparkMAX(flywheelMasterNeo, kFlywheelShooterFollowerID, true);
     }
 
-    @Override
-    public void periodic() {
-        calcOutput();
-    }
-
     public double getRPS() {
-        return -flywheelMasterNeo.getEncoder().getVelocity() / kFlywheelGearRatio / 60;
+        return flywheelMasterNeo.getEncoder().getVelocity() / kFlywheelGearRatio / 60;
     }
 
     public void setTargetRPS(double target) {
@@ -62,6 +58,7 @@ public final class Flywheel implements Subsystem {
     }
 
     public static double calculateOptimalCloseShotRPS(double metersFromGoal) {
+//        return getOptimaInnerGoalRPS(metersFromGoal);
         double r = 0.5; // meters // the distance to ramp between the normal shot and the outer shot
         if (metersFromGoal <= kMaxInnerGoalDist - r) {
             // if you can hit threes, you don't need to adjust the RPS
@@ -71,7 +68,7 @@ public final class Flywheel implements Subsystem {
             // you need to aim for the outer goal instead
             return getOptimaInnerGoalRPS(metersFromGoal - kInnerToOuterGoalAdjustment);
         } else {
-            // interpolate between the
+            // interpolate
             return getOptimaInnerGoalRPS(kInnerToOuterGoalAdjustment *
                     (1 + (metersFromGoal - kMaxInnerGoalDist) / r));
         }
@@ -85,7 +82,7 @@ public final class Flywheel implements Subsystem {
         } else return kFlywheelDefaultCloseRPS;
     }
 
-    private void calcOutput() {
+    public void calcOutput() {
         if (targetRPS == 0.0)
             this.setVoltage(0.0);
         else
@@ -94,7 +91,7 @@ public final class Flywheel implements Subsystem {
     }
 
     private void setVoltage(double voltage) {
-        flywheelMasterNeo.set(-voltage / 12);
+        flywheelMasterNeo.set(voltage / 12);
     }
 
     public void setHoodCloseShot(boolean hoodCloseShot) {

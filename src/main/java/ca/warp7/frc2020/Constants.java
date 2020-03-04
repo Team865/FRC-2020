@@ -53,14 +53,14 @@ public final class Constants {
 
     // PCM IDs
 
-    public static final int kFlywheelHoodActuatorID = 4;
-    public static final int kIntakeExtensionID = 5;
-    public static final int kClimberLockActuatorID = 6;
-    public static final int kDriveShifterID = 7;
+    public static final int kFlywheelHoodActuatorID = 7;
+    public static final int kIntakeExtensionID = 6;
+    public static final int kClimberLockActuatorID = 5;
+    public static final int kDriveShifterID = 4;
 
     // DIO IDs
 
-    public static final int kPhotoSensorID = 0;
+    public static final int kPhotoSensorID = 1;
 
     // Drive Train Tuning
 
@@ -99,11 +99,11 @@ public final class Constants {
 
     //Feeder Constants
 
-    public static final double kFeedingSpeed = 0.6; //percent
+    public static final double kFeedingSpeed = 0.4; //percent
 
     //Hopper constants
 
-    public static final double kHopperSpeed = 0.6; //percent
+    public static final double kHopperSpeed = 0.5; //percent
 
     // Drive Train Constants
 
@@ -139,6 +139,6 @@ public final class Constants {
     }
 
     public static boolean isPracticeRobot() {
-        return PracticeRobotDetector.kIsPracticeRobot;
+        return false;//PracticeRobotDetector.kIsPracticeRobot;
     }
 }

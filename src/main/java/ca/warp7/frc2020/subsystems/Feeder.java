@@ -30,7 +30,7 @@ public final class Feeder implements Subsystem {
     private VictorSPX feederInner775 = MotorControlHelper.createMasterVictorSPX(Constants.kFeederInnerID);
 
     private Feeder() {
-        feederInner775.setInverted(true);
+//        feederInner775.setInverted(true);
         feederOuter775.setInverted(true);
         feederInner775.enableVoltageCompensation(false);
         feederOuter775.enableVoltageCompensation(false);

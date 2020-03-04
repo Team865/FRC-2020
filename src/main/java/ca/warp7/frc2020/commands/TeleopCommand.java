@@ -31,6 +31,7 @@ public class TeleopCommand extends CommandBase {
     //    private Command controlPanelDisplay = new ControlPanelCommand(this::getControlPanelSpinnerSpeed);
     private Command feedCommand = new FeedCommand(this::getFeedSpeed);
     private Command intakingCommand = new IntakingCommand(this::getIntakeSpeed);
+    private Command intakeExtensionCommand = SingleFunctionCommand.getIntakeExtensionToggle();
     private Command flywheelSpeedCommand = new FlywheelSpeedCommand(this::getWantedFlywheelRPS);
 
     private Command climbSpeedOptionalCommand = Constants.isPracticeRobot() ?
@@ -89,7 +90,7 @@ public class TeleopCommand extends CommandBase {
     private double getZRotation() {
         double zRotation = Util.applyDeadband(driver.rightX, 0.15);
         if (isQuickTurn() || driver.leftY < 0) {
-            return  zRotation;
+            return zRotation;
         } else {
             return -1 * zRotation;
         }
@@ -148,6 +149,8 @@ public class TeleopCommand extends CommandBase {
             isIntaking = driver.leftTrigger > 0.2;
         }
 
+        if (driver.xButton.isPressed() || driver.xButton.isReleased()) intakeExtensionCommand.schedule();
+
         isReversed = driver.yButton.isHeldDown();
 
         if (driver.aButton.isPressed()) {
@@ -187,7 +190,7 @@ public class TeleopCommand extends CommandBase {
             else farShotAdjustment += 5;
         }
 
-        if (operator.backButton.isPressed())
+        if (operator.startButton.isPressed())
             climbLockToggleOptionalCommand.schedule();
     }
 }

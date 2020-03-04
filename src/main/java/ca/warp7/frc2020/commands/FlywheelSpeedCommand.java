@@ -41,6 +41,6 @@ public class FlywheelSpeedCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        flywheel.setVoltage(0);
+        flywheel.setTargetRPS(0);
     }
 }

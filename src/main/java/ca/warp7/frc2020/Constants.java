@@ -60,7 +60,7 @@ public final class Constants {
 
     // DIO IDs
 
-    public static final int kPhotoSensorID = 1;
+    public static final int kBeamBreakID = 1;
 
     // Drive Train Tuning
 

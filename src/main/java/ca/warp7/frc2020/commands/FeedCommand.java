@@ -34,7 +34,9 @@ public class FeedCommand extends CommandBase {
         if (speed < 0) {
             feeder.setSpeed(speed);
             hopper.setSpeed(speed);
-        } else if (speed > 0 && Util.epsilonEquals(flywheel.getPercentError(), 0.0, 0.015) || feeder.getPhotoSensor()) {
+        } else if (speed > 0 &&
+                Util.epsilonEquals(flywheel.getPercentError(), 0.0, 0.015) ||
+                feeder.getBeamBreak()) {
             feeder.setSpeed(Constants.kFeedingSpeed);
             hopper.setSpeed(Constants.kHopperSpeed);
         } else {

@@ -12,12 +12,17 @@ import ca.warp7.frc2020.lib.motor.MotorControlHelper;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 import static ca.warp7.frc2020.Constants.kBeamBreakID;
 
 public final class Feeder implements Subsystem {
     private static Feeder instance;
+    private boolean previousState = false;
+    private boolean prevEnabled = false;
+    private int cellsCount = 0;
 
     public static Feeder getInstance() {
         if (instance == null) instance = new Feeder();
@@ -45,5 +50,30 @@ public final class Feeder implements Subsystem {
 
     public boolean getBeamBreak() {
         return beamBreak.get();
+    }
+
+    public int getCellsCount() {
+        return cellsCount;
+    }
+
+
+    @Override
+    public void periodic() {
+        boolean isEnabled = RobotState.isEnabled();
+        if (isEnabled) {
+            if (prevEnabled) {
+                SmartDashboard.putNumber("Cells shot", getCellsCount());
+                boolean currentState = this.getBeamBreak();
+
+                if (!previousState && currentState) {
+                    cellsCount++;
+                }
+                previousState = currentState;
+            } else {
+                cellsCount = 0;
+            }
+        }
+
+        prevEnabled = isEnabled;
     }
 }

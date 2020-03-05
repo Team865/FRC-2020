@@ -23,6 +23,7 @@ public final class Feeder implements Subsystem {
     private boolean previousState = false;
     private boolean prevEnabled = false;
     private int cellsCount = 0;
+    private int tempCellCount = 0;
 
     public static Feeder getInstance() {
         if (instance == null) instance = new Feeder();
@@ -56,6 +57,13 @@ public final class Feeder implements Subsystem {
         return cellsCount;
     }
 
+    public void resetCellCountDiff() {
+        tempCellCount = cellsCount;
+    }
+
+    public int getCellsCountDiff() {
+        return cellsCount - tempCellCount;
+    }
 
     @Override
     public void periodic() {

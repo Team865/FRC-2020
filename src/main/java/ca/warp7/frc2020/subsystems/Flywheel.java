@@ -33,7 +33,7 @@ public final class Flywheel implements Subsystem {
 
     private Flywheel() {
         flywheelMasterNeo.setIdleMode(IdleMode.kCoast);
-        flywheelMasterNeo.setOpenLoopRampRate(1.2);
+        flywheelMasterNeo.setOpenLoopRampRate(1);
         flywheelMasterNeo.enableVoltageCompensation(12.0);
         MotorControlHelper.assignFollowerSparkMAX(flywheelMasterNeo, kFlywheelShooterFollowerID, true);
     }
@@ -63,20 +63,20 @@ public final class Flywheel implements Subsystem {
     }
 
     public static double calculateOptimalCloseShotRPS(double metersFromGoal) {
-//        return getOptimaInnerGoalRPS(metersFromGoal);
-        double r = 0.5; // meters // the distance to ramp between the normal shot and the outer shot
-        if (metersFromGoal <= kMaxInnerGoalDist - r) {
-            // if you can hit threes, you don't need to adjust the RPS
-            return getOptimaInnerGoalRPS(metersFromGoal);
-        } else if (metersFromGoal >= kMaxInnerGoalDist) {
-            // if you can't hit threes from that distance (because they would hit the top of the power port)
-            // you need to aim for the outer goal instead
-            return getOptimaInnerGoalRPS(metersFromGoal - kInnerToOuterGoalAdjustment);
-        } else {
-            // interpolate
-            return getOptimaInnerGoalRPS(kInnerToOuterGoalAdjustment *
-                    (1 + (metersFromGoal - kMaxInnerGoalDist) / r));
-        }
+        return getOptimaInnerGoalRPS(metersFromGoal);
+//        double r = 0.5; // meters // the distance to ramp between the normal shot and the outer shot
+//        if (metersFromGoal <= kMaxInnerGoalDist - r) {
+//            // if you can hit threes, you don't need to adjust the RPS
+//            return getOptimaInnerGoalRPS(metersFromGoal);
+//        } else if (metersFromGoal >= kMaxInnerGoalDist) {
+//            // if you can't hit threes from that distance (because they would hit the top of the power port)
+//            // you need to aim for the outer goal instead
+//            return getOptimaInnerGoalRPS(metersFromGoal - kInnerToOuterGoalAdjustment);
+//        } else {
+//            // interpolate
+//            return getOptimaInnerGoalRPS(kInnerToOuterGoalAdjustment *
+//                    (1 + (metersFromGoal - kMaxInnerGoalDist) / r));
+//        }
     }
 
     public static double getOptimalCloseShotRPS() {

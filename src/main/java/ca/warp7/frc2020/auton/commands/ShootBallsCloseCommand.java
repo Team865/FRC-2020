@@ -22,6 +22,7 @@ public class ShootBallsCloseCommand extends CommandBase {
     //private double prevT;
     //private double initT;
     private int cellsCount = 0;
+    private boolean previousState;
     public ShootBallsCloseCommand(int n) {
         this.n = n;
         addRequirements(flywheel, feeder, hopper);
@@ -31,19 +32,27 @@ public class ShootBallsCloseCommand extends CommandBase {
     public void initialize() {
         //initT = Timer.getFPGATimestamp();
         //prevT = Timer.getFPGATimestamp();
+        previousState = feeder.getBeamBreak();
 
         flywheel.setHoodCloseShot(true);
     }
 
     @Override
     public void execute() {
+        boolean currentState;
         //double time = Timer.getFPGATimestamp();
         flywheel.setTargetRPS(Flywheel.getOptimalCloseShotRPS());
         flywheel.calcOutput();
 
-        if(!feeder.getBeamBreak() && flywheel.isTargetReached(0.015)){
+        currentState = feeder.getBeamBreak();
+
+        if(!previousState && currentState){
             cellsCount++;
         }
+
+        previousState = currentState;
+
+
 
         if (flywheel.isTargetReached(0.015)) {
             feeder.setSpeed(Constants.kFeedingSpeed);

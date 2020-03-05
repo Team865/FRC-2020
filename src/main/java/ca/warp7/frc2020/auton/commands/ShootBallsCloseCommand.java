@@ -22,8 +22,6 @@ public class ShootBallsCloseCommand extends CommandBase {
     private final int n;
     //private double prevT;
     //private double initT;
-    private int cellsCount = 0;
-    private boolean previousState;
 
     public ShootBallsCloseCommand(int n) {
         this.n = n;
@@ -34,26 +32,16 @@ public class ShootBallsCloseCommand extends CommandBase {
     public void initialize() {
         //initT = Timer.getFPGATimestamp();
         //prevT = Timer.getFPGATimestamp();
-        previousState = feeder.getBeamBreak();
 
         flywheel.setHoodCloseShot(true);
     }
 
     @Override
     public void execute() {
-        boolean currentState;
-        SmartDashboard.putNumber("Cells shot", cellsCount);
         //double time = Timer.getFPGATimestamp();
         flywheel.setTargetRPS(Flywheel.getOptimalCloseShotRPS());
         flywheel.calcOutput();
 
-        currentState = feeder.getBeamBreak();
-
-        if (!previousState && currentState) {
-            cellsCount++;
-        }
-
-        previousState = currentState;
 
 
         if (flywheel.isTargetReached(0.015)) {
@@ -71,12 +59,11 @@ public class ShootBallsCloseCommand extends CommandBase {
         flywheel.setTargetRPS(0);
         feeder.setSpeed(0);
         hopper.setSpeed(0);
-        cellsCount = 0;
     }
 
     @Override
     public boolean isFinished() {
-        return cellsCount >= n;
+        return feeder.getCellsCount() >= n;
         //return prevT - initT > 1 + n; // TODO make not bad (detect how many balls have been shot)
     }
 }

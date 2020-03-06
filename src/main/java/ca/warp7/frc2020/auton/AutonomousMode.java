@@ -4,7 +4,6 @@ import ca.warp7.frc2020.auton.commands.*;
 import ca.warp7.frc2020.commands.FlywheelSpeedCommand;
 import ca.warp7.frc2020.commands.IntakingCommand;
 import ca.warp7.frc2020.commands.SingleFunctionCommand;
-import ca.warp7.frc2020.subsystems.Feeder;
 import ca.warp7.frc2020.subsystems.Flywheel;
 import edu.wpi.first.wpilibj2.command.*;
 
@@ -12,13 +11,9 @@ import edu.wpi.first.wpilibj2.command.*;
 public class AutonomousMode {
 
     private static Command getShootCellsCommand(int numBalls) {
-        Feeder feeder = Feeder.getInstance();
-        return new SequentialCommandGroup(
-                SingleFunctionCommand.getResetCellCountDiff(),
-                new ParallelCommandGroup(
-                        new FlywheelSpeedCommand(Flywheel::getOptimalCloseShotRPS),
-                        new AutoFeedCommand(() -> true)
-                ).withInterrupt(() -> feeder.getCellsCountDiff() >= numBalls)
+        return new WaitForShotsCommand(numBalls).deadlineWith(
+                new FlywheelSpeedCommand(Flywheel::getOptimalCloseShotRPS),
+                new AutoFeedCommand(() -> true)
         );
     }
 
@@ -28,23 +23,27 @@ public class AutonomousMode {
 
     public static Command shoot3_intake3_shoot3() {
         return new SequentialCommandGroup(
-                SingleFunctionCommand
-                        .getResetAutonomousDrive(),
+                SingleFunctionCommand.getResetAutonomousDrive(),
                 new RobotStateCommand(AutonomousPath.kRightSideFacingOuterGoal),
                 SingleFunctionCommand.getFlywheelSetHoodCloseCommand(),
                 getShootCellsCommand(3),
 
                 AutonomousPath.getTrenchThreeBalls()
-                        .deadlineWith(IntakingCommand.fullPower(), new AutoFeedCommand(() -> false)),
+                        .deadlineWith(
+                                IntakingCommand.fullPower(),
+                                new AutoFeedCommand(() -> false)
+                        ),
+                AutonomousPath.getTrenchThreeBallsToCorner()
+                        .deadlineWith(
+                                IntakingCommand.neutral(),
+                                new AutoFeedCommand(() -> false)
+                        ),
 
-                AutonomousPath
-                        .getTrenchThreeBallsToCorner()
-                        .deadlineWith(IntakingCommand.neutral(), new AutoFeedCommand(() -> false)),
-
-                getShootCellsCommand(5).deadlineWith(
-                        new VisionAlignCommand(() -> 0.0),
-                        new IntakingCommand(() -> 0.5)
-                )
+                getShootCellsCommand(5)
+                        .deadlineWith(
+                                new VisionAlignCommand(() -> 0.0),
+                                new IntakingCommand(() -> 0.5)
+                        )
         );
     }
 

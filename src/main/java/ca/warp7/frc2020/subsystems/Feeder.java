@@ -22,8 +22,7 @@ public final class Feeder implements Subsystem {
     private static Feeder instance;
     private boolean previousState = false;
     private boolean prevEnabled = false;
-    private int cellsCount = 0;
-    private int tempCellCount = 0;
+    private int shotCount = 0;
 
     public static Feeder getInstance() {
         if (instance == null) instance = new Feeder();
@@ -53,16 +52,8 @@ public final class Feeder implements Subsystem {
         return beamBreak.get();
     }
 
-    public int getCellsCount() {
-        return cellsCount;
-    }
-
-    public void resetCellCountDiff() {
-        tempCellCount = cellsCount;
-    }
-
-    public int getCellsCountDiff() {
-        return cellsCount - tempCellCount;
+    public int getShotCount() {
+        return shotCount;
     }
 
     @Override
@@ -70,15 +61,15 @@ public final class Feeder implements Subsystem {
         boolean isEnabled = RobotState.isEnabled();
         if (isEnabled) {
             if (prevEnabled) {
-                SmartDashboard.putNumber("Cells shot", getCellsCount());
+                SmartDashboard.putNumber("Cells shot", getShotCount());
                 boolean currentState = this.getBeamBreak();
 
                 if (!previousState && currentState) {
-                    cellsCount++;
+                    shotCount++;
                 }
                 previousState = currentState;
             } else {
-                cellsCount = 0;
+                shotCount = 0;
             }
         }
 

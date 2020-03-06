@@ -78,11 +78,6 @@ public class SingleFunctionCommand {
         return new InstantCommand(intake::toggle);
     }
 
-    public static Command getResetCellCountDiff(){
-        Feeder feeder = Feeder.getInstance();
-        return new InstantCommand(feeder::resetCellCountDiff);
-    }
-
 
     public static Command getFlywheelSetHoodCloseCommand() {
         Flywheel flywheel = Flywheel.getInstance();

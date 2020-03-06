@@ -11,8 +11,6 @@ import ca.warp7.frc2020.Constants;
 import ca.warp7.frc2020.subsystems.Feeder;
 import ca.warp7.frc2020.subsystems.Flywheel;
 import ca.warp7.frc2020.subsystems.Hopper;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class ShootBallsCloseCommand extends CommandBase {
@@ -63,7 +61,7 @@ public class ShootBallsCloseCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return feeder.getCellsCount() >= n;
+        return feeder.getShotCount() >= n;
         //return prevT - initT > 1 + n; // TODO make not bad (detect how many balls have been shot)
     }
 }

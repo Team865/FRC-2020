@@ -105,7 +105,7 @@ public class Limelight implements Subsystem {
 
     // the angle that the camera is mounted relative to the horizontal in degrees.
     // up is positive todo
-    private static final double kCameraMountingAngle = 23.0;
+    private static final double kCameraMountingAngle = 22.0;
 
     // the relative height between the camera and the target
     private static final double kCameraToTargetHeight = kTargetCentreHeight - kCameraHeight;

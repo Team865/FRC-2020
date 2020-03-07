@@ -8,6 +8,7 @@
 package ca.warp7.frc2020.commands;
 
 import ca.warp7.frc2020.subsystems.DriveTrain;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class DisabledCommand extends CommandBase {
@@ -17,6 +18,8 @@ public class DisabledCommand extends CommandBase {
     @Override
     public void initialize() {
         driveTrain.setCoast();
+        SmartDashboard.putNumber("rps", 0.0);
+        SmartDashboard.putNumber("target", 0.0);
     }
 
     @Override

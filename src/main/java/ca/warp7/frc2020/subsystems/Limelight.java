@@ -32,9 +32,7 @@ public class Limelight implements Subsystem {
     }
 
     public void setPipeline(int pipe) {
-        if (pipe != pipeline.getDouble(-1.0)) {
-            pipeline.setNumber(pipe);
-        }
+        pipeline.setNumber(pipe);
     }
 
     private boolean prevEnabled = false;

@@ -21,6 +21,7 @@ public class Limelight implements Subsystem {
     private NetworkTableEntry tx = table.getEntry("tx");
     private NetworkTableEntry ty = table.getEntry("ty");
     private NetworkTableEntry tl = table.getEntry("tl");
+    private NetworkTableEntry pipeline = table.getEntry("pipeline");
 
     private double smoothHorizontalAngle = 0.0;
     private boolean smoothAngleExists = false;
@@ -28,6 +29,12 @@ public class Limelight implements Subsystem {
     public static Limelight getInstance() {
         if (instance == null) instance = new Limelight();
         return instance;
+    }
+
+    public void setPipeline(int pipe) {
+        if (pipe != pipeline.getDouble(-1.0)) {
+            pipeline.setNumber(pipe);
+        }
     }
 
     private boolean prevEnabled = false;
@@ -105,7 +112,7 @@ public class Limelight implements Subsystem {
 
     // the angle that the camera is mounted relative to the horizontal in degrees.
     // up is positive todo
-    private static final double kCameraMountingAngle = 22.0;
+    private static final double kCameraMountingAngle = 23.0;
 
     // the relative height between the camera and the target
     private static final double kCameraToTargetHeight = kTargetCentreHeight - kCameraHeight;

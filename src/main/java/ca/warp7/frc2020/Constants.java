@@ -89,13 +89,14 @@ public final class Constants {
     public static final double kFlywheelKa = (0.0401 + 0.0483) / 2;
     public static final double kFlywheelGearRatio = 1.0 / 2.0; // 0.5
 
-    public static final double kMaxInnerGoalDist = 7; // meters
+    public static final double kMaxInnerGoalDist = 6.0; // meters
 
     // the difference in where you are aiming
     public static final double kInnerToOuterGoalAdjustment = 0.7; //meters
 
     public static double getOptimaInnerGoalRPS(double metersFromGoal) {
-        return 2.79 * Math.pow(metersFromGoal - 4.10, 2) + 55.01;
+        return 1.95 *Math.pow(metersFromGoal - 4.12821,2) + 59.8679;
+//        return 2.79 * Math.pow(metersFromGoal - 4.10, 2) + 55.01;
     }
 
     //Feeder Constants
@@ -104,7 +105,7 @@ public final class Constants {
 
     //Hopper constants
 
-    public static final double kHopperSpeed = 0.5; //percent
+    public static final double kHopperSpeed = 0.4; //percent
 
     // Drive Train Constants
 

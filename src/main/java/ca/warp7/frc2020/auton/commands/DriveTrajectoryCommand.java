@@ -10,16 +10,16 @@ package ca.warp7.frc2020.auton.commands;
 import ca.warp7.frc2020.lib.trajectory.PathFollower;
 import ca.warp7.frc2020.lib.trajectory.TimedPath2d;
 import ca.warp7.frc2020.subsystems.DriveTrain;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
-
-import static edu.wpi.first.wpilibj.smartdashboard.SmartDashboard.putNumber;
 
 /**
  * Run a spline path on the field
@@ -31,6 +31,7 @@ public class DriveTrajectoryCommand extends CommandBase {
     private final PathFollower follower;
     private final TimedPath2d path;
 
+    private boolean isFMSAttached;
     private double rioTime;
     private double trajectoryTime;
     private double totalTrajectoryTime;
@@ -137,6 +138,7 @@ public class DriveTrajectoryCommand extends CommandBase {
 
     @Override
     public void initialize() {
+        isFMSAttached = DriverStation.getInstance().isFMSAttached();
         System.out.println("Start Generating Trajectory: " + name);
         driveTrain.neutralOutput();
         if (trajectoryGenerator != null) {
@@ -172,5 +174,11 @@ public class DriveTrajectoryCommand extends CommandBase {
     public void end(boolean interrupted) {
         driveTrain.neutralOutput();
         System.out.println("==== END TRAJECTORY FOLLOWING ====");
+    }
+
+    private void putNumber(String key, double value) {
+        if (!isFMSAttached) {
+            SmartDashboard.putNumber(key, value);
+        }
     }
 }

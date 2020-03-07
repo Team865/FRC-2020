@@ -5,7 +5,10 @@ import ca.warp7.frc2020.commands.FlywheelSpeedCommand;
 import ca.warp7.frc2020.commands.IntakingCommand;
 import ca.warp7.frc2020.commands.SingleFunctionCommand;
 import ca.warp7.frc2020.subsystems.Flywheel;
-import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 @SuppressWarnings("unused")
 public class AutonomousMode {
@@ -19,6 +22,39 @@ public class AutonomousMode {
 
     public static Command shootThreeBalls() {
         return new ShootBallsCloseCommand(3);
+    }
+
+    public static Command shoot3_backup() {
+        return new SequentialCommandGroup(
+                SingleFunctionCommand
+                        .getResetAutonomousDrive(),
+                new RobotStateCommand(new Pose2d()),
+                getShootCellsCommand(3),
+                AutonomousPath.getOneMetreForward()
+        );
+    }
+
+    public static Command opposite_intake2_shoot5() {
+        return new SequentialCommandGroup(
+                SingleFunctionCommand
+                        .getResetAutonomousDrive(),
+                new RobotStateCommand(AutonomousPath.kLeftInitLine),
+                AutonomousPath.getOpponentTrenchTwoBalls()
+                        .deadlineWith(
+                                IntakingCommand.fullPower(),
+                                new AutoFeedCommand(() -> false)
+                        ),
+                AutonomousPath.getOpponentTrechTwoBallsToShoot()
+                        .deadlineWith(
+                                IntakingCommand.neutral(),
+                                new AutoFeedCommand(() -> false)
+                        ),
+
+                getShootCellsCommand(3)
+                        .deadlineWith(
+                                new VisionAlignCommand(() -> 0.0)
+                        )
+        );
     }
 
     public static Command shoot3_intake3_shoot3() {

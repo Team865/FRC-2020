@@ -33,7 +33,7 @@ public class IntakingCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        pTime = Timer.getFPGATimestamp();
+        pTime = -1.0;
     }
 
     @Override

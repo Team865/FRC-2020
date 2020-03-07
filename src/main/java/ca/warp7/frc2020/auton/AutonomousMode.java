@@ -14,10 +14,12 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 public class AutonomousMode {
 
     private static Command getShootCellsCommand(int numBalls) {
-        return new WaitForShotsCommand(numBalls).deadlineWith(
-                new FlywheelSpeedCommand(Flywheel::getOptimalCloseShotRPS),
-                new AutoFeedCommand(() -> true)
-        );
+        return new WaitForShotsCommand(numBalls)
+                .withTimeout(numBalls * 2)
+                .deadlineWith(
+                        new FlywheelSpeedCommand(Flywheel::getOptimalCloseShotRPS),
+                        new AutoFeedCommand(() -> true)
+                );
     }
 
     public static Command shootThreeBalls() {
@@ -39,6 +41,7 @@ public class AutonomousMode {
                 SingleFunctionCommand
                         .getResetAutonomousDrive(),
                 new RobotStateCommand(AutonomousPath.kLeftInitLine),
+                SingleFunctionCommand.getFlywheelSetHoodCloseCommand(),
                 AutonomousPath.getOpponentTrenchTwoBalls()
                         .deadlineWith(
                                 IntakingCommand.fullPower(),

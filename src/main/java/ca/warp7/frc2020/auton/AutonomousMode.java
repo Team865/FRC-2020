@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import ca.warp7.frc2020.subsystems.Flywheel;
-import edu.wpi.first.wpilibj2.command.*;
 
 @SuppressWarnings("unused")
 public class AutonomousMode {
@@ -38,27 +36,6 @@ public class AutonomousMode {
 
     public static Command opposite_intake2_shoot5() {
         return new SequentialCommandGroup(
-                SingleFunctionCommand.getResetAutonomousDrive(),
-                new RobotStateCommand(AutonomousPath.kRightSideFacingOuterGoal),
-                SingleFunctionCommand.getFlywheelSetHoodCloseCommand(),
-                getShootCellsCommand(3),
-
-                AutonomousPath.getTrenchThreeBalls()
-                        .deadlineWith(
-                                IntakingCommand.fullPower(),
-                                new AutoFeedCommand(() -> false)
-                        ),
-                AutonomousPath.getTrenchThreeBallsToCorner()
-                        .deadlineWith(
-                                IntakingCommand.neutral(),
-                                new AutoFeedCommand(() -> false)
-                        ),
-
-                getShootCellsCommand(5)
-                        .deadlineWith(
-                                new VisionAlignCommand(() -> 0.0),
-                                new IntakingCommand(() -> 0.5)
-                        )
                 SingleFunctionCommand
                         .getResetAutonomousDrive(),
                 new RobotStateCommand(AutonomousPath.kLeftInitLine),

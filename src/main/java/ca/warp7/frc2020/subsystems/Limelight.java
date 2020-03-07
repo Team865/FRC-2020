@@ -21,6 +21,7 @@ public class Limelight implements Subsystem {
     private NetworkTableEntry tx = table.getEntry("tx");
     private NetworkTableEntry ty = table.getEntry("ty");
     private NetworkTableEntry tl = table.getEntry("tl");
+    private NetworkTableEntry pipeline = table.getEntry("pipeline");
 
     private double smoothHorizontalAngle = 0.0;
     private boolean smoothAngleExists = false;
@@ -28,6 +29,12 @@ public class Limelight implements Subsystem {
     public static Limelight getInstance() {
         if (instance == null) instance = new Limelight();
         return instance;
+    }
+
+    public void setPipeline(int pipe) {
+        if (pipe != pipeline.getDouble(-1.0)) {
+            pipeline.setNumber(pipe);
+        }
     }
 
     private boolean prevEnabled = false;

@@ -34,6 +34,8 @@ public final class Intake implements Subsystem {
     }
 
     public void setSpeed(double speed) {
+        SmartDashboard.putNumber("Intake Speed", speed);
+        SmartDashboard.putBoolean("Intake isReversed", speed < 0);
         intakeNeo550.set(speed);
     }
 

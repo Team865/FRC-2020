@@ -155,9 +155,9 @@ public class TeleopCommand extends CommandBase {
             isIntaking = driver.leftTrigger > 0.2;
         }
 
-        if (driver.xButton.isPressed() || driver.xButton.isReleased()) intakeExtensionCommand.schedule();
-
-        isReversed = driver.yButton.isHeldDown();
+        if (driver.yButton.isPressed()) {
+            isReversed = !isReversed;
+        }
 
         if (driver.aButton.isPressed()) {
             visionAlignCommand.schedule();

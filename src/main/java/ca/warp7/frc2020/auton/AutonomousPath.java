@@ -33,10 +33,10 @@ public class AutonomousPath {
             new Pose2d(3.1, 3.0, Rotation2d.fromDegrees(23));
 
     public static final Pose2d kLeftInitLine =
-            new Pose2d(3.1, -3.38, new Rotation2d());
+            new Pose2d(3.5, -3.38, new Rotation2d());
 
     public static final Pose2d kOpponentTrench2 =
-            new Pose2d(6.1, -3.38, new Rotation2d());
+            new Pose2d(6.0, -3.38, new Rotation2d());
 
     public static final Pose2d kCentreFieldshoot =
             new Pose2d(3.1, 0.0, Rotation2d.fromDegrees(-28));

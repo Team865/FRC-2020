@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 @SuppressWarnings("unused")
 public class AutonomousMode {
@@ -20,10 +21,6 @@ public class AutonomousMode {
                         new FlywheelSpeedCommand(Flywheel::getOptimalCloseShotRPS),
                         new AutoFeedCommand(() -> true)
                 );
-    }
-
-    public static Command shootThreeBalls() {
-        return new ShootBallsCloseCommand(3);
     }
 
     public static Command shoot3_backup() {
@@ -53,7 +50,7 @@ public class AutonomousMode {
                                 new AutoFeedCommand(() -> false)
                         ),
 
-                getShootCellsCommand(3)
+                getShootCellsCommand(7)
                         .deadlineWith(
                                 new VisionAlignCommand(() -> 0.0)
                         )
@@ -81,7 +78,14 @@ public class AutonomousMode {
                 getShootCellsCommand(5)
                         .deadlineWith(
                                 new VisionAlignCommand(() -> 0.0),
-                                new IntakingCommand(() -> 0.5)
+                                new SequentialCommandGroup(
+                                        new WaitCommand(1.0),
+                                        new IntakingCommand(() -> 0.5).withTimeout(1.0),
+                                        new IntakingCommand(() -> 0.0).withTimeout(0.75),
+                                        new IntakingCommand(() -> 0.5).withTimeout(1.0),
+                                        new IntakingCommand(() -> 0.0).withTimeout(0.75),
+                                        new IntakingCommand(() -> 0.5).withTimeout(1.0)
+                                )
                         )
         );
     }

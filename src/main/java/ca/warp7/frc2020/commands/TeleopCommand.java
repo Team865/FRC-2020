@@ -14,6 +14,7 @@ import ca.warp7.frc2020.lib.Util;
 import ca.warp7.frc2020.lib.XboxController;
 import ca.warp7.frc2020.subsystems.Flywheel;
 import ca.warp7.frc2020.subsystems.Limelight;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -32,7 +33,6 @@ public class TeleopCommand extends CommandBase {
     //    private Command controlPanelDisplay = new ControlPanelCommand(this::getControlPanelSpinnerSpeed);
     private Command feedCommand = new FeedCommand(this::getFeedSpeed);
     private Command intakingCommand = new IntakingCommand(this::getIntakeSpeed);
-    private Command intakeExtensionCommand = SingleFunctionCommand.getIntakeExtensionToggle();
     private Command flywheelSpeedCommand = new FlywheelSpeedCommand(this::getWantedFlywheelRPS);
 
     private Command climbSpeedOptionalCommand = Constants.isPracticeRobot() ?
@@ -83,6 +83,7 @@ public class TeleopCommand extends CommandBase {
 //    }
 
     public double getIntakeSpeed() {
+        SmartDashboard.putBoolean("Intake isReversed", isReversed);
         if (isIntaking)
             return Util.applyDeadband(driver.leftTrigger, 0.2) * (isReversed ? -1 : 1);
         return 0.0;

@@ -28,6 +28,6 @@ public final class Hopper implements Subsystem {
     }
 
     public void setSpeed(double speed) {
-        hopperMiniNeo.set(-speed);
+        hopperMiniNeo.set(speed);
     }
 }

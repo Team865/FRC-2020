@@ -34,6 +34,7 @@ public final class Intake implements Subsystem {
     }
 
     public void setSpeed(double speed) {
+        SmartDashboard.putNumber("Intake Speed", speed);
         intakeNeo550.set(speed);
     }
 

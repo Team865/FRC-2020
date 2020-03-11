@@ -29,7 +29,7 @@ public class AutonomousSelector {
 
     public enum SelectedMode {
         NothingMode(InstantCommand::new),
-        Mode_1(AutonomousMode::shootThreeBalls),
+        Mode_1(AutonomousMode::shoot3_backup),
         Mode_2(AutonomousMode::intakeThreeBalls),
         Mode_3(AutonomousMode::shoot3_intake3_shoot3),
         Mode_4(AutonomousMode::simplePath);

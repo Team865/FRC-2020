@@ -5,20 +5,56 @@ import ca.warp7.frc2020.commands.FlywheelSpeedCommand;
 import ca.warp7.frc2020.commands.IntakingCommand;
 import ca.warp7.frc2020.commands.SingleFunctionCommand;
 import ca.warp7.frc2020.subsystems.Flywheel;
-import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 @SuppressWarnings("unused")
 public class AutonomousMode {
 
     private static Command getShootCellsCommand(int numBalls) {
-        return new WaitForShotsCommand(numBalls).deadlineWith(
-                new FlywheelSpeedCommand(Flywheel::getOptimalCloseShotRPS),
-                new AutoFeedCommand(() -> true)
+        return new WaitForShotsCommand(numBalls)
+                .withTimeout(numBalls * 2)
+                .deadlineWith(
+                        new FlywheelSpeedCommand(Flywheel::getOptimalCloseShotRPS),
+                        new AutoFeedCommand(() -> true)
+                );
+    }
+
+    public static Command shoot3_backup() {
+        return new SequentialCommandGroup(
+                SingleFunctionCommand
+                        .getResetAutonomousDrive(),
+                new RobotStateCommand(new Pose2d()),
+                getShootCellsCommand(3),
+                AutonomousPath.getOneMetreForward()
         );
     }
 
-    public static Command shootThreeBalls() {
-        return new ShootBallsCloseCommand(3);
+    public static Command opposite_intake2_shoot5() {
+        return new SequentialCommandGroup(
+                SingleFunctionCommand
+                        .getResetAutonomousDrive(),
+                new RobotStateCommand(AutonomousPath.kLeftInitLine),
+                SingleFunctionCommand.getFlywheelSetHoodCloseCommand(),
+                AutonomousPath.getOpponentTrenchTwoBalls()
+                        .deadlineWith(
+                                IntakingCommand.fullPower(),
+                                new AutoFeedCommand(() -> false)
+                        ),
+                AutonomousPath.getOpponentTrechTwoBallsToShoot()
+                        .deadlineWith(
+                                IntakingCommand.neutral(),
+                                new AutoFeedCommand(() -> false)
+                        ),
+
+                getShootCellsCommand(7)
+                        .deadlineWith(
+                                new VisionAlignCommand(() -> 0.0)
+                        )
+        );
     }
 
     public static Command shoot3_intake3_shoot3() {
@@ -42,7 +78,14 @@ public class AutonomousMode {
                 getShootCellsCommand(5)
                         .deadlineWith(
                                 new VisionAlignCommand(() -> 0.0),
-                                new IntakingCommand(() -> 0.5)
+                                new SequentialCommandGroup(
+                                        new WaitCommand(1.0),
+                                        new IntakingCommand(() -> 0.5).withTimeout(1.0),
+                                        new IntakingCommand(() -> 0.0).withTimeout(0.75),
+                                        new IntakingCommand(() -> 0.5).withTimeout(1.0),
+                                        new IntakingCommand(() -> 0.0).withTimeout(0.75),
+                                        new IntakingCommand(() -> 0.5).withTimeout(1.0)
+                                )
                         )
         );
     }

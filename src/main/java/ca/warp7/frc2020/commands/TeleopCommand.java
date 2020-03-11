@@ -13,6 +13,8 @@ import ca.warp7.frc2020.auton.commands.VisionAlignCommand;
 import ca.warp7.frc2020.lib.Util;
 import ca.warp7.frc2020.lib.XboxController;
 import ca.warp7.frc2020.subsystems.Flywheel;
+import ca.warp7.frc2020.subsystems.Limelight;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -31,7 +33,6 @@ public class TeleopCommand extends CommandBase {
     //    private Command controlPanelDisplay = new ControlPanelCommand(this::getControlPanelSpinnerSpeed);
     private Command feedCommand = new FeedCommand(this::getFeedSpeed);
     private Command intakingCommand = new IntakingCommand(this::getIntakeSpeed);
-    private Command intakeExtensionCommand = SingleFunctionCommand.getIntakeExtensionToggle();
     private Command flywheelSpeedCommand = new FlywheelSpeedCommand(this::getWantedFlywheelRPS);
 
     private Command climbSpeedOptionalCommand = Constants.isPracticeRobot() ?
@@ -82,6 +83,7 @@ public class TeleopCommand extends CommandBase {
 //    }
 
     public double getIntakeSpeed() {
+        SmartDashboard.putBoolean("Intake isReversed", isReversed);
         if (isIntaking)
             return Util.applyDeadband(driver.leftTrigger, 0.2) * (isReversed ? -1 : 1);
         return 0.0;
@@ -93,6 +95,7 @@ public class TeleopCommand extends CommandBase {
 
     private double getZRotation() {
         double zRotation = Util.applyDeadband(driver.rightX, 0.15);
+        if (driver.backButton.isDown()) zRotation *= 0.5;
         if (isQuickTurn() || driver.leftY < 0) {
             return zRotation;
         } else {
@@ -153,9 +156,9 @@ public class TeleopCommand extends CommandBase {
             isIntaking = driver.leftTrigger > 0.2;
         }
 
-        if (driver.xButton.isPressed() || driver.xButton.isReleased()) intakeExtensionCommand.schedule();
-
-        isReversed = driver.yButton.isHeldDown();
+        if (driver.yButton.isPressed()) {
+            isReversed = !isReversed;
+        }
 
         if (driver.aButton.isPressed()) {
             visionAlignCommand.schedule();
@@ -170,10 +173,12 @@ public class TeleopCommand extends CommandBase {
             isPriming = true;
             isClose = true;
             flywheelSetHoodCloseCommand.schedule();
+            Limelight.getInstance().setPipeline(0);
         } else if (operator.rightTrigger > 0.3) {
             isPriming = true;
             isClose = false;
             flywheelSetHoodFarCommand.schedule();
+            Limelight.getInstance().setPipeline(1);
         } else
             isPriming = false;
 

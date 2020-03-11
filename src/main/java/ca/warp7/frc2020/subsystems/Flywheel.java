@@ -12,6 +12,7 @@ import ca.warp7.frc2020.lib.Util;
 import ca.warp7.frc2020.lib.motor.MotorControlHelper;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 import static ca.warp7.frc2020.Constants.*;
@@ -63,20 +64,26 @@ public final class Flywheel implements Subsystem {
     }
 
     public static double calculateOptimalCloseShotRPS(double metersFromGoal) {
-        return getOptimaInnerGoalRPS(metersFromGoal);
-//        double r = 0.5; // meters // the distance to ramp between the normal shot and the outer shot
-//        if (metersFromGoal <= kMaxInnerGoalDist - r) {
-//            // if you can hit threes, you don't need to adjust the RPS
-//            return getOptimaInnerGoalRPS(metersFromGoal);
-//        } else if (metersFromGoal >= kMaxInnerGoalDist) {
-//            // if you can't hit threes from that distance (because they would hit the top of the power port)
-//            // you need to aim for the outer goal instead
-//            return getOptimaInnerGoalRPS(metersFromGoal - kInnerToOuterGoalAdjustment);
-//        } else {
-//            // interpolate
-//            return getOptimaInnerGoalRPS(kInnerToOuterGoalAdjustment *
+//        return getOptimaInnerGoalRPS(metersFromGoal);
+        double r = 0.5; // meters // the distance to ramp between the normal shot and the outer shot
+
+        SmartDashboard.putNumber("m", metersFromGoal);
+        if (metersFromGoal <= kMaxInnerGoalDist - r) {
+            // if you can hit threes, you don't need to adjust the RPS
+            SmartDashboard.putString("close_enough", "ya");
+            return getOptimaInnerGoalRPS(metersFromGoal);
+        } else if (metersFromGoal >= 6.2) {
+            // if you can't hit threes from that distance (because they would hit the top of the power port)
+            // you need to aim for the outer goal instead
+            SmartDashboard.putString("close_enough", "na");
+            return getOptimaInnerGoalRPS(metersFromGoal - kInnerToOuterGoalAdjustment);
+        } else {
+            // interpolate
+            SmartDashboard.putString("close_enough", "kinda");
+            return getOptimaInnerGoalRPS(kMaxInnerGoalDist-r);
+//            return getOptimaInnerGoalRPS(metersFromGoal+kInnerToOuterGoalAdjustment *
 //                    (1 + (metersFromGoal - kMaxInnerGoalDist) / r));
-//        }
+        }
     }
 
     public static double getOptimalCloseShotRPS() {

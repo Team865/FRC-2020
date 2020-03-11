@@ -19,6 +19,6 @@ public class WaitForShotsCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return feeder.getShotCount() > shotCountAtStart + n;
+        return feeder.getShotCount() >= shotCountAtStart + n;
     }
 }
